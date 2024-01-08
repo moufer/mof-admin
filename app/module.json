@@ -1,0 +1,13 @@
+{
+  "name": "admin",
+  "title": "后台管理",
+  "description": "mof开发框架后台管理",
+  "author": "官方",
+  "version": "1.0.0",
+  "keywords": [
+    "admin",
+    "mof"
+  ],
+  "is_kernel": true,
+  "requires": []
+}

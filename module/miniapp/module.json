@@ -1,0 +1,32 @@
+{
+  "name": "miniapp",
+  "title": "小程序平台",
+  "description": "小程序平台管理",
+  "author": "mof官方",
+  "version": "1.0.0",
+  "keywords": [
+    "miniapp",
+    "wechat",
+    "mof"
+  ],
+  "order": 10,
+  "is_kernel": false,
+  "sg_perm": 1,
+  "requires": [],
+  "perms": [
+    {
+      "title": "小程序管理",
+      "perm": "Manage",
+      "url": "miniapp/manage",
+      "sort": 0,
+      "icon": "fa wechat",
+      "actions": [
+        "index",
+        "save",
+        "update",
+        "read",
+        "delete"
+      ]
+    }
+  ]
+}
