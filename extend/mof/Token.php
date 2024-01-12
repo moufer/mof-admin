@@ -10,7 +10,6 @@ use Firebase\JWT\Key;
 use Firebase\JWT\SignatureInvalidException;
 use mof\exception\AuthTokenException;
 use mof\utils\Random;
-use think\facade\Cache;
 
 /**
  * Token
@@ -34,69 +33,76 @@ class Token
 
     /**
      * 创建令牌
-     * @param Model $user 用户模型
-     * @param string $module 模块标识
-     * @return string 令牌
+     * @param string $aud 面向的用户
+     * @return array 令牌信息，格式：['token' => $token, 'expires' => $expires]
      */
-    public function create(Model $user, string $module = 'admin'): string
+    public function create(string $aud = 'admin'): array
     {
         //生成token
         $payload = [];
         $uuid = Random::uuid();
-        $token = $this->createJWT($uuid, $module, $payload);
-        //缓存用户
-        Cache::set($uuid, $user, $this->expires);
+        $token = $this->createJWT($uuid, $aud, $payload);
 
         $this->uuid = $uuid;
         $this->token = $token;
         $this->payload = $payload;
 
-        return $token;
+        return $this->token();
     }
 
     /**
      * 验证令牌
      * @param string $token 令牌
      * @param string $module 模块标识
-     * @return Model 用户模型
      * @throws AuthTokenException
      */
-    public function verify(string $token, string $module = 'admin'): Model
+    public function verify(string $token, string $module = 'admin'): array
     {
         $payload = $this->verifyJWT($token, $module);
         if (!is_object($payload)) {
             throw new AuthTokenException('登录令牌无效，请重新登录');
-        }
-        //通过uuid获取
-        if (!$user = Cache::get($payload->sub)) {
-            throw new AuthTokenException('登录已失效，请重新登录');
         }
 
         $this->uuid = $payload->sub;
         $this->token = $token;
         $this->payload = (array)$payload;
 
-        /** @var Model $user */
-        return $user;
-    }
-
-    public function destroy(): void
-    {
-        Cache::delete($this->uuid);
-        $this->uuid = '';
-        $this->token = '';
-        $this->payload = [];
+        return $this->payload;
     }
 
     /**
-     * 刷新用户
-     * @param Model $user
-     * @return bool
+     * 获取令牌信息
+     * @return array|null 令牌信息 ，格式：['token' => $token, 'expires' => $expires]
      */
-    public function refreshUser(Model $user): bool
+    public function token(): ?array
     {
-        Cache::set($this->uuid, $user, $this->payload['exp'] - time());
-        return true;
+        if (!empty($this->token)) {
+            return [
+                'token'   => $this->token, //令牌
+                'expires' => $this->payload['exp'], //过期时间
+            ];
+        }
+        return null;
+    }
+
+    /**
+     * 获取唯一ID
+     * @return string
+     */
+    public function uuid(): string
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * 清除
+     * @return void
+     */
+    public function destroy(): void
+    {
+        $this->uuid = '';
+        $this->token = '';
+        $this->payload = [];
     }
 
     /**

@@ -3,6 +3,7 @@ declare (strict_types=1);
 
 namespace app\middleware;
 
+use app\library\Auth;
 use Closure;
 use mof\ApiResponse;
 use app\model\AdminMenu;
@@ -27,13 +28,14 @@ class PermissionMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $auth = app(Auth::class);
         //如果未登录，则提示用户登录
-        if (!$request->user) {
+        if (!$auth->isLogin()) {
             return ApiResponse::needLogin();
         }
 
         //如果登录会员是超级管理员则直接通过
-        if ($request->user->is_super_admin) {
+        if ($auth->getUser()->is_super_admin) {
             return $next($request);
         }
 
@@ -45,7 +47,7 @@ class PermissionMiddleware
         }
 
         //获取当前登录会员的所有权限id
-        $ruleIds = AdminRoleMenu::where('role_id', $request->user->role_id)
+        $ruleIds = AdminRoleMenu::where('role_id', $auth->getUser()->role_id)
             ->column('menu_id');
         if (!in_array($ruleId, $ruleIds)) {
             return ApiResponse::noPermission();
