@@ -9,7 +9,8 @@ use think\Collection;
  */
 class ElementData
 {
-    protected array $data = [];
+    protected array  $data     = [];
+    protected string $uniqueId = '';
 
     public static function make(Collection|array $data): static
     {
@@ -22,6 +23,7 @@ class ElementData
     public function __construct(array $data)
     {
         $this->data = $data;
+        $this->uniqueId = uniqid();
     }
 
     public function data(): array
@@ -44,34 +46,36 @@ class ElementData
     public function toSelectOptions($labelKey = 'label', $valueKey = 'value', $extra = [])
     {
         static $_data;
-        if (!$_data) {
-            $_data = array_map(fn($item) => [
+        if (empty($_data[$this->uniqueId])) {
+            $_data[$this->uniqueId] = array_map(fn($item) => [
                 'label' => $item[$labelKey] ?? '',
                 'value' => $item[$valueKey] ?? '',
             ], $this->data);
         }
-        return $_data;
+        return $_data[$this->uniqueId];
     }
 
     public function toTabs($labelKey = 'label', $nameKey = 'name', $extra = [])
     {
         static $_data;
-        if (!$_data) {
-            $_data = array_map(fn($item) => [
+        if (empty($_data[$this->uniqueId])) {
+            $_data[$this->uniqueId] = array_map(fn($item) => [
                 'label' => $item[$labelKey] ?? '',
                 'name'  => $item[$nameKey] ?? '',
             ], $this->data);
         }
-        return $_data;
+        return $_data[$this->uniqueId];
     }
 
     public function toCascaderOptions($idKey = 'id', $labelKey = 'label')
     {
         static $_data;
-        if (!$_data) {
-            $_data = $this->generateCascader($this->data, 0, ['id' => $idKey, 'label' => $labelKey]);
+        if (empty($_data[$this->uniqueId])) {
+            $_data[$this->uniqueId] = $this->generateCascader($this->data, 0, [
+                'id' => $idKey, 'label' => $labelKey
+            ]);
         }
-        return $_data;
+        return $_data[$this->uniqueId];
     }
 
     protected function generateCascader(array $data, int $pid = 0, array $keyAlias = []): array
