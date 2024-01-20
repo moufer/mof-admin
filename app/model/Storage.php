@@ -22,10 +22,10 @@ class Storage extends Model
         'user' => ['admin' => Admin::class],
     ];
 
-    protected array $searchOption = [
-        'id'        => 'integer:pk',
+    protected array $searchFields = [
+        'id'        => 'integer',
         'mime'      => 'string',
-        'create_at' => 'time_range',
+        'create_at' => ['datetime', 'op' => 'between'],
     ];
 
     public static function extendMorph(string $morph, array $alias): void

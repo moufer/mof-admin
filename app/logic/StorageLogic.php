@@ -3,20 +3,26 @@
 namespace app\logic;
 
 use app\model\Storage;
-use League\Flysystem\FileNotFoundException;
 use mof\exception\LogicException;
 use mof\Logic;
 use mof\Searcher;
+use think\Paginator;
+use League\Flysystem\FileNotFoundException;
+
 
 class StorageLogic extends Logic
 {
-    public function search(Searcher $searcher): \think\Paginator
+    /**
+     * @var Storage 模型
+     */
+    protected $model;
+
+    public function search(Searcher $searcher): Paginator
     {
-        return $searcher->model(Storage::class)
-            ->with(['user'])->auto()->paginate();
+        return $searcher->model(Storage::class)->with(['user'])->paginate();
     }
 
-    public function delete(string|int $id)
+    public function delete($id): bool
     {
         /** @var Storage $model */
         $model = (new Storage)->find($id);
@@ -32,5 +38,6 @@ class StorageLogic extends Logic
                 return false;
             }
         }
+        return false;
     }
 }

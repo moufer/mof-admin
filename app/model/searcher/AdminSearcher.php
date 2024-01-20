@@ -12,7 +12,7 @@ trait AdminSearcher
 {
     use _Id, _CreateAt, _Status;
 
-    protected array $searchOption = [
+    protected array $searchFields = [
         'id'        => 'integer:id',
         'status'    => 'integer',
         'create_at' => 'time_range',

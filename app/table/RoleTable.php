@@ -17,7 +17,7 @@ class RoleTable extends Table
     {
         parent::init();
         $this->elSgModules = ElementData::make(array_values(Module::sgPermModules()));
-        $this->tabs = $this->elSgModules->toTabs('title');
+        //$this->tabs = $this->elSgModules->toTabs('title');
         $this->activeTab = $this->elSgModules->data()[0]['name'];
         $this->tabProp = 'category';
     }

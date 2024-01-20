@@ -27,7 +27,7 @@ class UserTable extends Table
         return [
             "prop"  => "avatar",
             "label" => "头像",
-            "type"  => "image",
+            "type"  => "avatar",
             "form"  => FormComponentOptions::fill(['type' => 'upload:image']),
         ];
     }

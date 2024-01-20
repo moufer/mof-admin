@@ -9,12 +9,16 @@ use think\facade\Db;
  */
 class LoginLog
 {
-    public function handle($params): void
+    /**
+     * @param $params array [username=>string, status=>enum]
+     * @return void
+     */
+    public function handle(array $params): void
     {
         // 事件监听处理
         $data = [
             'username'   => $params['username'],
-            'status'     => $params['status'],
+            'status'     => $params['status']->value,
             'ip'         => app('request')->ip(),
             'browser'    => $this->getBrowser(),
             'os'         => $this->getOs(),
@@ -65,6 +69,9 @@ class LoginLog
             $browserVer = $regs[1];
         } elseif (preg_match('/rv:([\d.]+)\) like Gecko/i', $userAgent, $regs)) {
             $browser = 'IE';
+            $browserVer = $regs[1];
+        } elseif (preg_match('/Apifox\/([^\s]+)/i', $userAgent, $regs)) {
+            $browser = 'Apifox';
             $browserVer = $regs[1];
         }
 

@@ -2,23 +2,22 @@
 
 namespace app\model;
 
-use app\model\searcher\PermSearcher;
 use mof\Model;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
 use think\facade\Db;
 
-class Perm extends \mof\Model
+class Perm extends Model
 {
-    protected array $searchOption = [
-        'id'        => 'integer:pk',
+    protected array $searchFields = [
+        'id'        => 'integer',
         'category'  => 'string',
         'module'    => 'string',
         'type'      => 'string',
-        'title'     => 'string',
-        'status'    => 'integer',
-        'create_at' => 'time_range',
+        'title'     => ['string', 'op' => 'like'],
+        'status'    => ['integer', 'zero' => true],
+        'create_at' => ['datetime', 'op' => 'between'],
     ];
 
     public static function onAfterUpdate(Perm $model): void
@@ -36,11 +35,12 @@ class Perm extends \mof\Model
         }
     }
 
-    public static function onAfterDelete(Model $model): void
+    public static function onAfterDelete(Perm $model): void
     {
         //删除菜单时，把菜单下的action也删除
         if ('menu' === $model->getAttr('type')) {
-            self::where('pid', $model->id)->delete();
+            //把下级全删了
+            $model->deleteChildren();
         }
     }
 
@@ -92,7 +92,7 @@ class Perm extends \mof\Model
         });
         //数组转换成数字后，去重
         $ids = array_map('intval', $ids);
-        return array_unique($ids);
+        return array_values(array_unique($ids));
     }
 
     /**
@@ -110,7 +110,7 @@ class Perm extends \mof\Model
         $model = new static();
         $model->save([
             'pid'      => $this->getAttr('id'), //父级id
-            'pid_path' => $this->getParents($this->getAttr('id')), //父级id路径
+            'pid_path' => $this->getParents($this->getAttr('id'), true), //父级id路径
             'type'     => 'action', //类型
             'module'   => $this->getAttr('module'),  //所属模块
             'perm'     => $this->getAttr('perm') . '@' . $action['action'], //权限标识
@@ -125,17 +125,53 @@ class Perm extends \mof\Model
     /**
      * 当前节点的所有父级节点id，格式：1-2-3
      */
-    public function getParents($pid): string
+    public function getParents($pid, $appendSelf = false): string
     {
-        if (!$pid) return '';
-        $parents = [];
-        while ($pid && $pid > 0) {
-            //$pid插入数组$parents的头部
-            array_unshift($parents, $pid);
-            $m = self::find($pid);
-            $pid = $m ? $m->pid : 0;
+        if ($pid) {
+            $parents = [];
+            while ($pid && $pid > 0) {
+                //$pid插入数组$parents的头部
+                array_unshift($parents, $pid);
+                $m = self::find($pid);
+                $pid = $m ? $m->pid : 0;
+            }
+            //添加自己
+            if ($appendSelf) $parents[] = $this->getAttr('id');
+            return implode('-', $parents);
+        } else {
+            return $appendSelf ? $this->getAttr('id') : '';
         }
-        return implode('-', $parents);
+    }
+
+    /**
+     * 更换上级
+     * @return void
+     */
+    public function changeChildrenPidPath(): void
+    {
+        //新的父级id路径
+        $newPidPath = $this->getParents($this->getAttr('pid'), true) . '-';
+        //旧的父级id路径
+        $oldPidPath = $this->getOrigin('pid_path') . '-';
+
+        //查找下级并更新其pid_path
+        self::whereLike('pid_path', "{$newPidPath}%")->update([
+            'pid_path' => Db::raw("REPLACE(pid_path, '{$oldPidPath}', '{$newPidPath}')")
+        ]);
+    }
+
+    /**
+     * 删除自己的下级和引用自己的角色权限
+     * @return void
+     */
+    public function deleteChildren(): void
+    {
+        //找到所有下级
+        $ids = self::whereLike('pid_path', "%{$this->id}-%")->column('id');
+        //去角色权限里找，并删除掉
+        RolePerm::where('perm_id', 'in', array_merge([$this->id], $ids ?: []))->delete();
+        //删除自己的下级
+        $ids && self::where('id', 'in', $ids)->delete();
     }
 
     /**
@@ -150,7 +186,7 @@ class Perm extends \mof\Model
         } else if ($value === '') {
             $value = 0;
         }
-        $this->setAttr('pid_path', $this->getParents($value));
+        $this->setAttr('pid_path', $this->getParents($value, true));
         return $value;
     }
 

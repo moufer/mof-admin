@@ -2,12 +2,12 @@
 
 namespace app\controller;
 
-use mof\BaseController;
+use mof\ApiController;
 use mof\ApiResponse;
 use think\helper\Str;
 use think\response\Json;
 
-class Table extends BaseController
+class Table extends ApiController
 {
     /**
      * 表格配置

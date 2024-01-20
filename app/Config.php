@@ -3,7 +3,7 @@
 namespace app;
 
 use mof\annotation\Description;
-use mof\ConfigOptions;
+use mof\utils\ConfigOptions;
 
 class Config extends ConfigOptions
 {

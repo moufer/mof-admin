@@ -2,55 +2,60 @@
 
 namespace app\controller;
 
-use app\library\AdminController;
+use app\library\Controller;
 use app\logic\PermLogic;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use mof\utils\Arr;
 use think\response\Json;
 
-class Perm extends AdminController
+class Perm extends Controller
 {
-    protected string $modelName    = \app\model\Perm::class;
-    protected string $validateName = \app\validate\Perm::class;
-
     #[inject]
-    protected PermLogic $permLogic;
+    protected PermLogic $logic;
+
+    protected array $formValidate = [
+        'param' => [
+            'title', 'icon', 'type', 'module', 'category', 'pid/a', 'url', 'perm',
+            'sort/d', 'status/d',
+        ],
+        'rule'   => \app\validate\PermValidate::class,
+    ];
 
     public function index(): Json
     {
-        $paginate = $this->permLogic->paginate($this->request->searcher());
+        $rows = $this->logic->select($this->request->searcher());
         return ApiResponse::success(
-            Arr::generateMenuTree($paginate->toArray()) //数据转换成树形结构
+            Arr::generateMenuTree($rows->toArray()) //数据转换成树形结构
         );
     }
 
     public function read($id): Json
     {
-        return ApiResponse::success($this->permLogic->read($id));
+        return ApiResponse::success($this->logic->read($id));
     }
 
     public function save(): Json
     {
-        $this->permLogic->save($this->validate('.param', $this->validateName . '.add'));
+        $this->logic->save($this->form->get());
         return ApiResponse::success();
     }
 
     public function update($id): Json
     {
-        $this->permLogic->update($id, $this->validate('.param', $this->validateName . '.edit'));
+        $this->logic->update($id, $this->form->get());
         return ApiResponse::success();
     }
 
     public function delete($id): Json
     {
-        $this->permLogic->delete($id);
+        $this->logic->delete($id);
         return ApiResponse::success();
     }
 
     public function deletes(): Json
     {
-        $this->permLogic->deletes($this->request->post('ids/d', []));
+        $this->logic->deletes($this->request->getPostIds());
         return ApiResponse::success();
     }
 

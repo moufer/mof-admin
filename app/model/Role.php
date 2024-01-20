@@ -2,7 +2,6 @@
 
 namespace app\model;
 
-use app\model\searcher\RoleSearcher;
 use mof\Model;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
@@ -18,11 +17,11 @@ use think\model\relation\HasMany;
  */
 class Role extends Model
 {
-    protected array $searchOption = [
-        'id'       => 'integer:pk',
+    protected array $searchFields = [
+        'id'       => 'integer',
         'category' => 'string',
-        'name'     => ['type' => 'string', 'op' => 'like'],
-        'status'   => 'integer',
+        'name'     => ['string', 'op' => 'like'],
+        'status'   => ['integer', 'zero' => true],
     ];
 
     public static function onAfterDelete(Model $model): void
@@ -84,16 +83,18 @@ class Role extends Model
      * @param string $category 权限分类
      * @param array|null $module 模块名
      * @return array
+     * @throws DbException
      */
     public function getPerms(string $category = 'admin', array $module = null): array
     {
         if ($this->getAttr('id') > 1) {
+            $permIds = Perm::getCompletePermIds($this->role_perms->column('perm_id'));
             $where = [];
+            $where[] = ['id', 'in', $permIds];
             $category && $where[] = ['category', '=', $category];
-            $rolePerms = $where ? $this->role_perms : $this->role_perms()->where($where)->select();
+            $permRows = Perm::where($where)->select();
             $perms = [];
-            foreach ($rolePerms as $rolePerm) {
-                $perm = $rolePerm->perm;
+            foreach ($permRows as $perm) {
                 if ($module && in_array($perm->module, $module)) continue;
                 $perms[] = $perm;
             }
@@ -147,5 +148,5 @@ class Role extends Model
         return $permIds;
     }
 
-    
+
 }

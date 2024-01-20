@@ -4,10 +4,10 @@ declare (strict_types=1);
 namespace app\middleware;
 
 use app\library\Auth;
+use app\model\Perm;
+use app\model\RolePerm;
 use Closure;
 use mof\ApiResponse;
-use app\model\AdminMenu;
-use app\model\AdminRoleMenu;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
@@ -46,9 +46,9 @@ class PermissionMiddleware
             return ApiResponse::noPermission();
         }
 
-        //获取当前登录会员的所有权限id
-        $ruleIds = AdminRoleMenu::where('role_id', $auth->getUser()->role_id)
-            ->column('menu_id');
+        //获取当前登录会员的所有权限id，判断是否拥有权限
+        $ruleIds = (new RolePerm)->where('role_id', $auth->getUser()->role_id)
+            ->column('perm_id');
         if (!in_array($ruleId, $ruleIds)) {
             return ApiResponse::noPermission();
         }
@@ -63,15 +63,14 @@ class PermissionMiddleware
      */
     protected function parseRule(string $name): array
     {
-        //name格式1: \app\{module}\controller\{controller}@{action}
-        //name格式2: \app\{module}\controller\{controller}\{action}
-        //name格式3: \app\{module}\controller\{controller}/{action}
+        //name格式1: \app\\controller\{controller}[@\/]{action}
+        //name格式2: \module\\miniapp\controller\{controller}[@\/]{action}
 
         $name = trim(str_replace(['\\', '@', '//'], '/', $name), '/');
         $path = explode('/', $name);
-        $module = $path[1];
-        $controller = $path[3];
-        $action = $path[4];
+        $action = array_pop($path);
+        $controller = array_pop($path);
+        $module = $path[0] === 'app' ? 'admin' : $path[1];
 
         return [$module, $controller, $action];
     }
@@ -91,10 +90,11 @@ class PermissionMiddleware
         $perm = "$controller@$action";
         $where = [
             'module' => $module,
+            'type'   => 'action',
             'perm'   => $perm,
             'status' => 1,
         ];
-        $menu = AdminMenu::where($where)->find();
+        $menu = (new Perm)->where($where)->find();
         return $menu ? $menu->id : 0;
     }
 }

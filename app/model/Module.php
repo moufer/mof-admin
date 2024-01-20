@@ -89,25 +89,28 @@ class Module extends \mof\Model
             self::uninstallPerms($moduleInfo['name']);
             //先新建权限组
             $group = Perm::create([
-                'type'   => 'group',
-                'module' => $moduleInfo['name'],
-                'title'  => $moduleInfo['title'],
-                'icon'   => $moduleInfo['perm_icon'] ?? '',
+                'type'     => 'group',
+                'category' => $moduleInfo['parent'] ?? 'admin', //所属分类，默认为admin
+                'module'   => $moduleInfo['name'],
+                'title'    => $moduleInfo['title'],
+                'icon'     => $moduleInfo['perm_icon'] ?? '',
             ]);
-            foreach ($moduleInfo['perms'] as $perm) {
-                //从数组 $perm 中获取键名为perm、title、url、icon的值，组成一个新数组
-                $data = array_intersect_key($perm, array_flip(['perm', 'title', 'url', 'icon', 'sort']));
-                $data['pid'] = $group->id;
-                $data['type'] = 'menu';
-                $data['module'] = $moduleInfo['name'];
-                $data['status'] = 1;
-                //新建根权限
-                $prem = Perm::create($data);
-                //新建action类型权限
-                if (isset($perm['actions']) && is_array($perm['actions'])) {
-                    $actions = array_map(function ($action) use ($prem) {
-                        return $prem->createAction($action);
-                    }, $perm['actions']);
+            if (!empty($moduleInfo['perms'])) {
+                foreach ($moduleInfo['perms'] as $perm) {
+                    //从数组 $perm 中获取键名为perm、title、url、icon的值，组成一个新数组
+                    $data = array_intersect_key($perm, array_flip(['perm', 'title', 'url', 'icon', 'sort']));
+                    $data['pid'] = $group->id;
+                    $data['type'] = 'menu';
+                    $data['module'] = $moduleInfo['name'];
+                    $data['status'] = 1;
+                    //新建根权限
+                    $prem = Perm::create($data);
+                    //新建action类型权限
+                    if (isset($perm['actions']) && is_array($perm['actions'])) {
+                        $actions = array_map(function ($action) use ($prem) {
+                            return $prem->createAction($action);
+                        }, $perm['actions']);
+                    }
                 }
             }
             $model->commit();

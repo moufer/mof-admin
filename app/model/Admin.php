@@ -4,6 +4,8 @@ namespace app\model;
 
 use mof\Model;
 use mof\Mof;
+use think\db\exception\DbException;
+use think\facade\Event;
 use think\model\relation\BelongsTo;
 
 /**
@@ -15,14 +17,15 @@ use think\model\relation\BelongsTo;
  */
 class Admin extends Model
 {
-    protected $hidden = ['password'];
-
-    protected array $searchOption = [
-        'id'        => 'integer:pk',
+    protected array $searchFields = [
+        'id'        => 'integer',
+        'module'    => 'string',
         'username'  => ['type' => 'string', 'op' => 'like'],
-        'status'    => 'integer',
-        'create_at' => 'time_range',
+        'status'    => ['integer', 'zero' => true],
+        'create_at' => ['datetime', 'op' => 'between'],
     ];
+
+    protected $hidden = ['password'];
 
     /**
      * 状态
@@ -42,6 +45,23 @@ class Admin extends Model
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    /**
+     * 获取权限数组
+     * @param string $module
+     * @return array
+     * @throws DbException
+     */
+    public function getPerms(string $module = 'admin'): array
+    {
+        if ($module === 'admin') {
+            $perms = $this->role->getPerms($module);
+        } else {
+            //其他模块通过事件来获取
+            $perms = Event::until('GetPerms', [$this, $module]);
+        }
+        return $perms;
     }
 
     /**
@@ -74,6 +94,11 @@ class Admin extends Model
         ] : [];
     }
 
+    /**
+     * 角色ID修改器
+     * @param $value
+     * @return float|int|mixed|string|null
+     */
     protected function setRoleIdAttr($value)
     {
         if (is_array($value)) {

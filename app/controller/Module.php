@@ -2,31 +2,26 @@
 
 namespace app\controller;
 
-use app\library\AdminController;
+use app\library\Controller;
 use app\logic\ModuleLogic;
 use mof\annotation\Inject;
 use mof\ApiResponse;
-use mof\InstallModule;
-use think\db\exception\DbException;
 use think\response\Json;
 
-class Module extends AdminController
+class Module extends Controller
 {
-    protected string $modelName = \app\model\Module::class;
-
     #[Inject]
-    protected ModuleLogic $moduleLogic;
+    protected ModuleLogic $logic;
 
     public function initialize(): void
     {
-        parent::initialize();
         // 载入命令行
-        $this->moduleLogic->loadCommand();
+        $this->logic->loadCommand();
     }
 
     public function index(): Json
     {
-        $modules = $this->moduleLogic->list($this->request->get('params/a'));
+        $modules = $this->logic->list($this->request->get('params/a'));
         return ApiResponse::success(array_values($modules));
     }
 
@@ -38,7 +33,7 @@ class Module extends AdminController
      */
     public function install($name): Json
     {
-        return ApiResponse::success($this->moduleLogic->install($name));
+        return ApiResponse::success($this->logic->install($name));
     }
 
     /**
@@ -48,7 +43,7 @@ class Module extends AdminController
      */
     public function uninstall($name): Json
     {
-        $this->moduleLogic->uninstall($name);
+        $this->logic->uninstall($name);
         return ApiResponse::success();
     }
 
@@ -59,7 +54,7 @@ class Module extends AdminController
      */
     public function disable($name): Json
     {
-        $this->moduleLogic->disable($name);
+        $this->logic->disable($name);
         return ApiResponse::success();
     }
 
@@ -70,7 +65,7 @@ class Module extends AdminController
      */
     public function enable($name): Json
     {
-        $this->moduleLogic->enable($name);
+        $this->logic->enable($name);
         return ApiResponse::success();
     }
 }

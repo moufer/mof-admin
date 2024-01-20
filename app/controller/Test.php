@@ -2,11 +2,11 @@
 
 namespace app\controller;
 
-use app\library\AdminController;
+use app\library\Controller;
 use mof\ApiResponse;
 use think\response\Json;
 
-class Test extends AdminController
+class Test extends Controller
 {
     public function permUpdate(): Json
     {

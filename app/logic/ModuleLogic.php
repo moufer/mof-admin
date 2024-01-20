@@ -2,15 +2,22 @@
 
 namespace app\logic;
 
+use app\model\Module;
 use mof\command\MigrateRollback;
 use mof\command\MigrateRun;
 use mof\command\SeedRun;
 use mof\exception\LogicException;
 use mof\InstallModule;
 use mof\Logic;
+use mof\Model;
 
 class ModuleLogic extends Logic
 {
+    /**
+     * @var Module 模型
+     */
+    protected $model;
+
     /**
      * 载入命令行
      * 用于添加/删除模块数据
@@ -69,10 +76,10 @@ class ModuleLogic extends Logic
 
     /**
      * @param $name
-     * @return \mof\Model|\think\Model
+     * @return Model|\think\Model
      * @throws \Exception
      */
-    public function install($name)
+    public function install($name): Model|\think\Model
     {
         $module = $this->model->getByName($name);
         if ($module) {

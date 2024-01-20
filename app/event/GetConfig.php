@@ -13,7 +13,7 @@ class GetConfig
         $config = app('cache')->get($cacheKey);
         if (!$config) {
             $config = [];
-            $rows = Config::where(['module' => 'admin'])->select();
+            $rows = (new Config)->where(['module' => 'admin'])->select();
             $rows->each(function ($row) use (&$config) {
                 $config[$row['name']] = $row['value'];
             });

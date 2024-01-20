@@ -2,17 +2,14 @@
 
 namespace app\controller;
 
-use app\library\AdminController;
+use app\library\Controller;
 use mof\ApiResponse;
 use think\db\exception\DbException;
 use think\facade\Cache;
 use think\response\Json;
 
-class Config extends AdminController
+class Config extends Controller
 {
-    protected string $modelName    = \app\model\Config::class;
-    protected string $validateName = \app\validate\Config::class;
-
     /**
      * 获取参数选项
      * @param $module string 模块名称
@@ -48,7 +45,8 @@ class Config extends AdminController
         foreach ($options as $option) {
             $prop = $option['prop'];
             if (isset($rows[$prop])) {
-                $model = $this->model->where(['module' => $module, 'name' => $prop])->findOrEmpty();
+                $model = (new \app\model\Config)
+                    ->where(['module' => $module, 'name' => $prop])->findOrEmpty();
                 //如果配置参数不存在，创建新的配置参数
                 if ($model->isEmpty()) {
                     $model->setAttr('module', $module);
@@ -77,7 +75,7 @@ class Config extends AdminController
         try {
             $result = [];
             //为了触发setValueAttr，必须使用select方法
-            $rows = $this->model->where(['module' => $module])->select();
+            $rows = (new \app\model\Config())->where(['module' => $module])->select();
             $rows->each(function ($item) use (&$result) {
                 $result[$item->name] = $item->value;
             });

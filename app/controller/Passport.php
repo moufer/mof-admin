@@ -2,52 +2,57 @@
 
 namespace app\controller;
 
-use app\model\Admin;
-use mof\BaseController;
+use app\library\Controller;
+use app\logic\PassportLogic;
+use mof\annotation\Inject;
 use mof\ApiResponse;
 use mof\utils\Arr;
-use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
-use think\db\exception\ModelNotFoundException;
-use think\exception\ValidateException;
 use think\response\Json;
 
-class Passport extends BaseController
+class Passport extends Controller
 {
+    #[Inject]
+    protected PassportLogic $logic;
+
+    protected array $formValidate = [
+        'param' => [
+            'username', 'password', 'module'
+        ],
+        'rule'  => [
+            'username|用户名' => 'require',
+            'password|密码'   => 'require',
+            'module|模块名'     => 'require',
+        ],
+    ];
+
     /**
      * 登录
      * @return Json
-     * @throws DataNotFoundException
      * @throws DbException
-     * @throws ModelNotFoundException
      */
     public function login(): Json
     {
-        $status = 0;
-        $username = input('username');
-        $password = input('password');
-        try {
-            $user = Admin::where('username', $username)->find();
-            if (!$user) {
-                $status = -1;
-                throw new ValidateException('用户不存在');
-            }
-            //验证密码
-            if (!password_verify($password, $user->password)) {
-                $status = -2;
-                throw new \InvalidArgumentException('密码错误');
-            }
-            //生成token
-            $token = app('token')->create($user, 'admin');
-            $status = 1;
-            return ApiResponse::success([
-                'token' => $token,
-                'user'  => $user,
-            ]);
-        } finally {
-            //登录事件
-            event('AdminLogin', ['username' => $username, 'status' => $status]);
-        }
+        $data = $this->form->get();
+        //登录
+        $auth = $this->logic->withModule($data['module'])->login($data['username'], $data['password']);
+        //登录时指定了模块，使用该模块的权限
+        $module = $this->request->param('module', 'admin');
+        return ApiResponse::success([
+            'token' => $auth->getToken(),
+            'user'  => $auth->getUser()->hidden(['password']),
+            'perms' => Arr::tree($auth->getUser()->getPerms($module)),
+        ]);
+    }
+
+    /**
+     * 登出
+     * @return Json
+     */
+    public function logout(): Json
+    {
+        $this->logic->logout();
+        return ApiResponse::success();
     }
 
     /**
@@ -56,37 +61,33 @@ class Passport extends BaseController
      */
     public function token(): Json
     {
-        $token = $this->request->header('Authorization');
-        return ApiResponse::success([
-            'token' => $token,
-            'user'  => $this->request->user,
-            'perms' => Arr::tree($this->request->user->role->getPerms()),
-        ]);
-    }
-
-    /**
-     * 退出登录
-     * @return Json
-     */
-    public function logout(): Json
-    {
-        app('token')->destroy();
-        event('AdminLogout', ['username' => $this->request->user->username]);
-        return ApiResponse::success();
+        return ApiResponse::success($this->auth->getToken());
     }
 
     public function info(): Json
     {
+        $module = $this->request->param('module', 'admin');
+        $user = $this->auth->getUser()->hidden(['password']);
+        if('admin' === $module && 'admin' !== $user->module) {
+            return ApiResponse::error('当前用户没有系统后台权限');
+        }
+        $perms = $user->module === 'admin'
+            ? $this->auth->getUser()->role->getPerms()
+            : [];
         $result = [
-            'user'     => $this->request->user->toArray(),
-            'perms'    => Arr::tree($this->request->user->role->getPerms()),
+            'user'  => $user->toArray(),
+            'perms' => Arr::tree($perms),
         ];
         return ApiResponse::success($result);
     }
 
     public function perms(): Json
     {
-        $perms = $this->request->user->role->getPerms();
+        $user = $this->auth->getUser();
+        if ($user->module !== 'admin') {
+            return ApiResponse::error('当前用户没有管理该模块的权限');
+        }
+        $perms = $this->auth->getUser()->role->getPerms();
         return ApiResponse::success(Arr::tree($perms));
     }
 }

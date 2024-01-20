@@ -2,12 +2,14 @@
 
 namespace app\controller;
 
+use app\library\Controller;
 use app\model\Storage;
 use mof\ApiResponse;
 use think\exception\ValidateException;
+use think\Image;
 use think\response\Json;
 
-class Upload extends \mof\BaseController
+class Upload extends Controller
 {
     public function file(): Json
     {
@@ -58,7 +60,7 @@ class Upload extends \mof\BaseController
         //验证
         try {
             $file = $this->request->file('file');
-            $this->validate(['file' => $file], ['file' => $rules], $messages);
+            $this->request->withValidate(['file' => $rules], $messages)->validate(['file' => $file]);
         } catch (ValidateException $exception) {
             return ApiResponse::fail($exception->getMessage());
         }
@@ -71,8 +73,8 @@ class Upload extends \mof\BaseController
                 $maxW = (int)$match[1];
                 $maxH = (int)$match[2];
                 if ($maxH && $maxW) {
-                    $image = \think\Image::open($file);
-                    $image->thumb($maxW, $maxH, \think\Image::THUMB_SCALING)
+                    $image = Image::open($file);
+                    $image->thumb($maxW, $maxH)
                         ->save($file->getRealPath());
                 }
             }
@@ -94,7 +96,7 @@ class Upload extends \mof\BaseController
         //保存到数据库
         $data = [
             'user_type' => 'admin',
-            'user_id'   => $this->request->user->id,
+            'user_id'   => $this->auth->getId() ?? 0,
             'name'      => basename($path),
             'title'     => $file->getOriginalName(),
             'path'      => $path,

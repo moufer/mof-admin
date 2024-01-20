@@ -2,14 +2,14 @@
 
 namespace app\concern;
 
-use app\library\AdminController;
+use app\library\Controller;
 use mof\ApiResponse;
 use think\db\exception\DbException;
 use think\response\Json;
 
 /**
  * 批量操作
- * @mixin AdminController
+ * @mixin Controller
  */
 trait Batch
 {

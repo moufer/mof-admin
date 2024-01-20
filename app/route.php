@@ -9,6 +9,7 @@ Route::post('passport/login', '\app\controller\Passport@login');
 Route::group('passport', function () {
     Route::post('logout', '\app\controller\Passport@logout');
     Route::get('perms', '\app\controller\Passport@perms');
+    Route::get('token', '\app\controller\Passport@token');
     Route::get('info', '\app\controller\Passport@info');
 })->middleware(AuthTokenMiddleware::class);
 

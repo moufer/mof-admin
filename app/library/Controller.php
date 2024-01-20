@@ -4,6 +4,7 @@ namespace app\library;
 
 use mof\annotation\Inject;
 use mof\ApiController;
+use mof\FormValidate;
 
 /**
  * 后台管理基础控制器
@@ -25,37 +26,34 @@ class Controller extends ApiController
     protected Auth $auth;
 
     /**
+     * @var ?FormValidate 表单验证
+     */
+    protected ?FormValidate $form;
+
+    /**
+     * 验证信息
+     * 格式 [params=>params,allow=>allow,only=>only,rule=>rule,message=>message]
+     */
+    protected array $formValidate = [];
+
+    /**
      * 是否开启软删除
      * @var bool
      */
     protected bool $softDelete = false;
 
-    /**
-     * 验证规则或验证器类名
-     */
-    protected string|array $validate = [];
-
-    /**
-     * 验证反馈消息
-     * @var array
-     */
-    protected array $validateMessage = [];
-
-
     protected function initialize(): void
     {
         parent::initialize();
-        $this->setValidate();
+        $this->formValidate();
     }
 
     /**
      * 给定验证规则或验证器
      * @return void
      */
-    protected function setValidate(): void
+    protected function formValidate(): void
     {
-        if ($this->validate) {
-            $this->request->withValidate($this->validate, $this->validateMessage);
-        }
+        $this->form = FormValidate::make($this->formValidate);
     }
 }

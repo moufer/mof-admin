@@ -3,38 +3,39 @@
 namespace app\logic;
 
 use app\model\Role;
-use mof\annotation\InjectModel;
 use mof\exception\LogicException;
 use mof\Logic;
 use mof\Model;
+use think\Collection;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 
 class RoleLogic extends Logic
 {
-    /** @var Role $model 模型 */
-    #[InjectModel(Role::class)]
-    protected Model $model;
+    /**
+     * @var Role 模型
+     */
+    protected $model;
 
-    public function save(array $params): bool
+    public function save($params): Model
     {
-        parent::save($params);
-        $this->model->setPermission($params['perms']);
-        return true;
+        $model = parent::save($params);
+        $model->setPermission($params['perms']);
+        return $model;
     }
 
     /**
      * @throws DbException
      * @throws DataNotFoundException
      */
-    public function update($id, array $params): bool
+    public function update($id, $params): Model
     {
         if (1 === (int)$id) {
             throw new LogicException('禁止修改超级管理员角色');
         }
-        parent::update($id, $params);
-        $this->model->setPermission($params['perms']);
-        return true;
+        $model = parent::update($id, $params);
+        $model->setPermission($params['perm_ids']);
+        return $model;
     }
 
     public function delete($id): bool
@@ -45,4 +46,11 @@ class RoleLogic extends Logic
         return parent::delete($id);
     }
 
+    public function deletes($ids): Collection
+    {
+        if ($ids && in_array(1, $ids)) {
+            throw new LogicException('禁止删除超级管理员角色');
+        }
+        return parent::deletes($ids);
+    }
 }

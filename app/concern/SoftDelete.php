@@ -2,14 +2,14 @@
 
 namespace app\concern;
 
-use app\library\AdminController;
+use app\library\Controller;
 use mof\ApiResponse;
 use mof\Model;
 use think\response\Json;
 
 /**
  * 软删除
- * @mixin AdminController
+ * @mixin Controller
  * @method  onRestoreBefore(Model|Model[] $list) 恢复前回调
  * @method  onRestoreAfter(Model|Model[] $model) 恢复后回调
  */
