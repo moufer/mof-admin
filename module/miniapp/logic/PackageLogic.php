@@ -2,8 +2,11 @@
 
 namespace module\miniapp\logic;
 
+use app\library\Auth;
 use module\miniapp\library\WechatMiniAppPackage;
+use module\miniapp\model\MiniApp;
 use module\miniapp\model\Package;
+use mof\annotation\Inject;
 use mof\exception\LogicException;
 use mof\Logic;
 use think\db\exception\DataNotFoundException;
@@ -13,6 +16,12 @@ use think\response\File;
 
 class PackageLogic extends Logic
 {
+    #[Inject]
+    protected MiniApp $miniapp;
+
+    #[Inject]
+    protected Auth $auth;
+
     /**
      * 小程序打包配置表单
      * @return array[]
@@ -21,8 +30,8 @@ class PackageLogic extends Logic
     public function form(): array
     {
         //设置默认数值
-        $values['app_name'] = $this->request->miniapp->title;
-        $values['app_url'] = $this->request->miniapp->api_root;
+        $values['app_name'] = $this->miniapp->title;
+        $values['app_url'] = $this->miniapp->api_root;
         $values['plugins'] = [];
         return $this->getFormConfig($values);
     }
@@ -33,14 +42,12 @@ class PackageLogic extends Logic
      */
     public function submit(array $postData): array
     {
-        $miniapp = $this->request->miniapp;
-
-        $package = new WechatMiniAppPackage($this->request->miniapp);
+        $package = new WechatMiniAppPackage($this->miniapp);
         $package->setValues($postData); //设置打包配置
 
         //定义文件名(不含后缀)
         $name = sprintf('%s%s',
-            md5($miniapp->module . $miniapp->id . $this->request->user->id),
+            md5($this->miniapp->module . $this->miniapp->id . $this->auth->getId()),
             '.miniapp'
         );
         $filePath = $package->zip($name);
@@ -56,9 +63,9 @@ class PackageLogic extends Logic
             $model = new Package();
             $model->save([
                 'key'      => $key,
-                'ma_id'    => $miniapp->id,
-                'admin_id' => $this->request->user->id,
-                'module'   => $miniapp->module,
+                'ma_id'    => $this->miniapp->id,
+                'admin_id' => $this->auth->getId(),
+                'module'   => $this->miniapp->module,
                 'filename' => basename($filePath),
                 'filesize' => filesize($filePath),
             ]);
@@ -74,7 +81,7 @@ class PackageLogic extends Logic
         //返回打包下载信息
         return [
             'key'      => $key,
-            'filename' => "{$miniapp->module}_wxapp.zip"
+            'filename' => "{$this->miniapp->module}_wxapp.zip"
         ];
     }
 
@@ -91,9 +98,10 @@ class PackageLogic extends Logic
         //查找打包记录
         $packageModel = Package::where([
             'key'      => $key,
-            'ma_id'    => $this->request->miniapp->id,
-            'admin_id' => $this->request->user->id,
+            'ma_id'    => $this->miniapp->id,
+            'admin_id' => $this->auth->getId(),
         ])->find();
+
         if (!$packageModel) {
             throw new LogicException('打包信息不存在');
         }
@@ -118,7 +126,7 @@ class PackageLogic extends Logic
         ]);
 
         //下载
-        $name = $this->request->miniapp->module . '_wxapp.zip';
+        $name = $this->miniapp->module . '_wxapp.zip';
         return download($filePath, $name);
     }
 
@@ -132,8 +140,8 @@ class PackageLogic extends Logic
     {
         $package = Package::where([
             'key'      => $key,
-            'ma_id'    => $this->request->miniapp->id,
-            'admin_id' => $this->request->user->id,
+            'ma_id'    => $this->miniapp->id,
+            'admin_id' => $this->auth->getId(),
         ])->find();
 
         if ($package) {
@@ -155,7 +163,7 @@ class PackageLogic extends Logic
     private function getFormConfig(array $values): array
     {
         //源代码包
-        $package = new WechatMiniAppPackage($this->request->miniapp);
+        $package = new WechatMiniAppPackage($this->miniapp);
         return [
             [
                 "label" => "小程序名称",

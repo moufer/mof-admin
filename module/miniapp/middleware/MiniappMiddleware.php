@@ -28,14 +28,15 @@ class MiniappMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $id = $request->param('id/d', 0);
-        if (!$id) {
-            return ApiResponse::error('未指小程序ID');
+        if (!$id = $request->param('id/d')) {
+            return ApiResponse::error('未指小程序');
         }
         if (!$miniapp = MiniApp::find($id)) {
             return ApiResponse::error('小程序不存在');
         }
-        $request->miniapp = $miniapp;
+
+        //挂载到容器内，控制器和逻辑层可以通过inject注解注入
+        app()->instance(get_class($miniapp), $miniapp);
 
         return $next($request);
     }

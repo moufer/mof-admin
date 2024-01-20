@@ -2,17 +2,13 @@
 
 namespace module\miniapp\library;
 
-use app\library\AdminController;
+use app\library\Controller;
 use module\miniapp\model\MiniApp;
+use mof\annotation\Inject;
 
-class MiniappController extends AdminController
+class MiniappController extends Controller
 {
-    /** @var MiniApp 小程序表模型 */
-    protected MiniApp $miniapp;
+    #[Inject]
+    protected MiniApp $miniapp; //获取在中间件中已挂在的小程序模型
 
-    protected function initialize(): void
-    {
-        parent::initialize();
-        $this->miniapp = $this->request->miniapp;
-    }
 }

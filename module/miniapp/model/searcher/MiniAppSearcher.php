@@ -21,11 +21,16 @@ trait MiniAppSearcher
 
     public function searchTypeAttr(Query $query, $value, $data): void
     {
-        $value && $query->where('type', $value);
+        $value && $value!=='all' && $query->where('type', $value);
     }
 
     public function searchModuleAttr(Query $query, $value, $data): void
     {
         $value && $query->where('module', $value);
+    }
+
+    public function searchMiniappIdsAttr(Query $query, $value, $data): void
+    {
+        $value && $query->whereIn('id', $value);
     }
 }

@@ -4,6 +4,7 @@ namespace module\miniapp\library;
 
 use module\miniapp\model\MiniApp;
 use mof\exception\LogicException;
+use mof\Module;
 use ZipArchive;
 
 /**
@@ -28,7 +29,7 @@ class WechatMiniAppPackage
     {
         $this->miniapp = $miniapp;
 
-        $this->path = app()->getBasePath() . $miniapp->module . '/miniapp/wechat/';
+        $this->path = Module::path($miniapp->module) . '/miniapp/wechat/';
         $this->path = str_replace('/', DIRECTORY_SEPARATOR, $this->path);
 
         if (!$this->checkIntegrity()) {

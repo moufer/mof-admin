@@ -14,11 +14,13 @@ use module\miniapp\model\searcher\MiniAppSearcher;
  * @property Module $module 模块
  * @property string $title 小程序名称
  * @property string $api_root API接口
- * @property MiniAppApplication $easyWechatMiniApp 小程序应用
+ * @property MiniAppApplication $sdk 小程序应用
  * @property PayApplication $easyWechatPay 小程序应用
  */
 class MiniApp extends \mof\Model
 {
+    use MiniAppSearcher;
+
     protected $name = 'miniapp';
 
     protected $type = [
@@ -26,8 +28,6 @@ class MiniApp extends \mof\Model
         'avatar_img' => 'el-image',
         'qrcode_img' => 'el-image',
     ];
-
-    use MiniAppSearcher;
 
     public function moduleInfo(): \think\model\relation\HasOne
     {
@@ -41,7 +41,7 @@ class MiniApp extends \mof\Model
      * @return MiniAppApplication|mixed
      * @throws InvalidArgumentException
      */
-    public function getEasyWechatMiniAppAttr($value, $data): ?MiniAppApplication
+    public function getSdkAttr($value, $data): ?MiniAppApplication
     {
         static $app = [];
 

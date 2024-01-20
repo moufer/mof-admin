@@ -15,9 +15,11 @@ use think\response\Json;
  */
 class Package extends MiniappController
 {
-    /** @var PackageLogic 小程序打包业务逻辑 */
+    /**
+     * @var PackageLogic 小程序打包业务逻辑
+     */
     #[Inject]
-    protected PackageLogic $packageLogic;
+    protected PackageLogic $logic;
 
     /**
      * @return Json
@@ -25,7 +27,7 @@ class Package extends MiniappController
      */
     public function form(): Json
     {
-        return ApiResponse::success($this->packageLogic->form());
+        return ApiResponse::success($this->logic->form());
     }
 
     /**
@@ -35,9 +37,10 @@ class Package extends MiniappController
      */
     public function submit(): Json
     {
-        //获取post参数
-        $data = $this->request->post();
-        return ApiResponse::success($this->packageLogic->submit($data));
+        $data = $this->request->withValidate([
+            'app_name|小程序名称', 'app_url|通信地址'
+        ])->param();
+        return ApiResponse::success($this->logic->submit($data));
     }
 
     /**
@@ -47,10 +50,8 @@ class Package extends MiniappController
      */
     public function download(): File|Json
     {
-        $key = $this->request->param('key');
-        if (!$key) return ApiResponse::error('参数错误');
-        //下载
-        return $this->packageLogic->download($key);
+        $key = $this->request->withValidate(['key|参数'])->param('key');
+        return $this->logic->download($key);
     }
 
     /**
@@ -60,12 +61,9 @@ class Package extends MiniappController
      */
     public function downloaded(): Json
     {
-        $key = $this->request->param('key');
-        if ($key) {
-            $this->packageLogic->downloaded($key);
-            return ApiResponse::success();
-        }
-        return ApiResponse::error();
+        $key = $this->request->withValidate(['key|参数'])->param('key');
+        $this->logic->downloaded($key);
+        return ApiResponse::success();
     }
 
 }

@@ -3,6 +3,8 @@
 namespace module\miniapp\controller;
 
 use module\miniapp\library\MiniappController;
+use module\miniapp\model\MiniApp;
+use mof\annotation\Inject;
 use mof\ApiResponse;
 use mof\Module;
 use think\response\Json;
