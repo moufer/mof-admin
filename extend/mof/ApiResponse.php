@@ -61,7 +61,7 @@ class ApiResponse
      */
     public static function dataNotFound(string $errmsg = ''): Json
     {
-        return self::json(null, $errmsg ?? '数据不存在', 404)->code(404);
+        return self::json(null, $errmsg ?: '数据不存在', 404)->code(404);
     }
 
     /**
@@ -71,7 +71,7 @@ class ApiResponse
      */
     public static function pageNotFound(string $errmsg = ''): Json
     {
-        return self::json(null, $errmsg ?? '请求不存在', 404)->code(404);
+        return self::json(null, $errmsg ?: '请求不存在', 404)->code(404);
     }
 
     /**
@@ -79,7 +79,7 @@ class ApiResponse
      */
     public static function needLogin($errmsg = ''): Json
     {
-        return self::json(null, $errmsg ?? '请先登录', 401)->code(401);
+        return self::json(null, $errmsg ?: '请先登录', 401)->code(401);
     }
 
     /**
@@ -89,7 +89,7 @@ class ApiResponse
      */
     public static function noPermission(string $errmsg = ''): Json
     {
-        return self::json(null, $errmsg ?? '权限不足', 403)->code(403);
+        return self::json(null, $errmsg ?: '权限不足', 403)->code(403);
     }
 
     /**

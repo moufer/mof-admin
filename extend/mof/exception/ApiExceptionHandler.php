@@ -35,7 +35,7 @@ class ApiExceptionHandler extends Handle
     {
         if ($e instanceof ValidateException || $e instanceof DataNotFoundException) {
             return ApiResponse::fail($e->getMessage(), $e->getCode() ?: 1);
-        } else if ($e instanceof LogicException) {
+        } else if ($e instanceof LogicException || $e instanceof NoPermissionException) {
             return ApiResponse::error($e->getMessage(), $e->getCode() ?: 2);
         } else if ($e instanceof AuthTokenException) {
             return ApiResponse::needLogin($e->getMessage());

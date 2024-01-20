@@ -13,7 +13,7 @@ class Logic
     /**
      * @var Model|null 操作模型
      */
-    protected ?Model $model = null;
+    protected $model = null;
 
     /**
      * 模型是否已初始化

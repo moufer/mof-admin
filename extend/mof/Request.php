@@ -2,16 +2,29 @@
 
 namespace mof;
 
-use think\exception\ValidateException;
 use think\Validate;
 
+/**
+ * 请求类
+ * 增加验证验证功能(支持验证的方法：param,get,post,put,request,route,only,except)
+ * 举例 $request->withValidate($rule)->param()
+ * @package mof
+ */
 class Request extends \think\Request
 {
+    /**
+     * 全局过滤
+     * 过滤两遍空格，过滤html标签，转码特殊字符
+     * @var string[]
+     */
+    protected $filter = ['trim', 'strip_tags', 'htmlspecialchars'];
+
     /**
      * 是否批量验证
      * @var bool
      */
     protected bool $batchValidate = false;
+
     /**
      * 验证规则或验证类名
      * @var array|string
@@ -25,25 +38,78 @@ class Request extends \think\Request
     protected array $validateMessage = [];
 
     /**
-     * 获取提交的表单数据
-     * @param string $scene 数据提交场景 格式：add,edit,...
-     * @param string $type 数据来源类型 格式：param,get,post,request，支持获取部分参数,点号(.)后面键名用逗号(,)分割
-     * @param bool|array|string $validate 是否对数据进行验证，true为使用内置规则验证，false为不验证，array为自定义规则数组，string为验证类名
-     * @return array
+     * 场景值
+     * @var string
      */
-    public function formData(string $scene = '', string $type = 'param', bool|string|array $validate = true): array
+    protected string $scene = '';
+
+    /**
+     * @inheritdoc
+     */
+    public function param($name = '', $default = null, array|string|null $filter = '')
     {
-        if (str_contains('.', $type)) {
-            //设置了获取部分参数
-            [$type, $keys] = explode('.', $type, 2);
-            $keys = explode(',', $keys); //参数列表
-            $data = $this->only($keys, $type);
-        } else {
-            $data = $this->{$type}();
-        }
-        if ($validate !== false) {
-            $this->validate($data, $validate, $scene);
-        }
+        $data = parent::param($name, $default, $filter);
+        if ($this->validate) $this->validate($name ? [$name => $data] : $data);
+        return $data;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function get(bool|array|string $name = '', $default = null, array|string|null $filter = '')
+    {
+        $data = parent::get($name, $default, $filter);
+        if ($this->validate) $this->validate($name ? [$name => $data] : $data);
+        return $data;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function post(bool|array|string $name = '', $default = null, array|string|null $filter = '')
+    {
+        $data = parent::post($name, $default, $filter);
+        if ($this->validate) $this->validate($name ? [$name => $data] : $data);
+        return $data;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function put(bool|array|string $name = '', $default = null, array|string|null $filter = '')
+    {
+        $data = parent::put($name, $default, $filter);
+        if ($this->validate) $this->validate($name ? [$name => $data] : $data);
+        return $data;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function request(bool|array|string $name = '', $default = null, array|string|null $filter = '')
+    {
+        $data = parent::request($name, $default, $filter);
+        if ($this->validate) $this->validate($name ? [$name => $data] : $data);
+        return $data;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function only(array $name, $data = 'param', array|string|null $filter = ''): array
+    {
+        $data = parent::only($name, $data, $filter);
+        if ($this->validate) $this->validate($data);
+        return $data;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function except(array $name, string $type = 'param'): array
+    {
+        $data = parent::except($name, $type);
+        if ($this->validate) $this->validate($data);
         return $data;
     }
 
@@ -51,14 +117,28 @@ class Request extends \think\Request
      * 设置验证
      * @param string|array $validate
      * @param array|null $message
+     * @param bool $batch
      * @return $this
      */
-    public function withValidate(string|array $validate, array $message = null): static
+    public function withValidate(string|array $validate, array $message = null, bool $batch = false): static
     {
+        if (is_array($validate)) {
+            $_validate = $validate;
+            $validate = [];
+            foreach ($_validate as $key => $item) {
+                //如果没有key，只有item，则item就是key，item=require
+                if (is_numeric($key)) {
+                    $validate[$item] = 'require';
+                } else {
+                    $validate[$key] = $item;
+                }
+            }
+        }
         $this->validate = $validate;
         if (is_array($message)) {
             $this->validateMessage = $message;
         }
+        $this->batchValidate = $batch;
         return $this;
     }
 
@@ -87,32 +167,27 @@ class Request extends \think\Request
 
     /**
      * 数据验证
-     * @param array $data
-     * @param array|string|bool $validate
-     * @param string $scene
-     * @return bool
+     * @param mixed $data
+     * @return mixed
      */
-    public function validate(array $data, array|string|bool $validate = true, string $scene = ''): bool
+    public function validate(array $data): mixed
     {
-        if (true === $validate) {
-            $validate = $this->validateRules();
-        }
+        $validate = $this->validateRules();
 
         if (!$validate) {
-            return true;
+            return $data;
         }
 
         if (is_array($validate)) {
-            $v = new Validate();
+            $v = new \mof\Validate();
             $v->rule($validate['rule']);
             $v->message($validate['message'] ?? []);
-            $v->scene($scene);
         } else {
             $class = $validate;
             $v = new $class();
         }
 
-        if (!empty($scene)) {
+        if (!empty($scene) && $v->hasScene($scene)) {
             $v->scene($scene);
         }
 
@@ -120,6 +195,11 @@ class Request extends \think\Request
         if ($this->batchValidate) {
             $v->batch(true);
         }
+
+        //清除
+        $this->validate = [];
+        $this->validateMessage = [];
+        $this->scene = '';
 
         //验证不通过是抛出ValidationException
         return $v->failException(true)->check($data);

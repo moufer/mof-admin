@@ -45,13 +45,13 @@ class Searcher
 
     public function pageSize(int $num): static
     {
-        $num > 0 && $this->pageSize = $num;
+        $num > 0 && $num < 100 && $this->pageSize = $num;
         return $this;
     }
 
-    public function params(array $params): static
+    public function params(array $params, $override = true): static
     {
-        $this->params = $params;
+        $this->params = $override ? $params : array_merge($this->params, $params);
         return $this;
     }
 
@@ -69,12 +69,12 @@ class Searcher
         $query = $this->model->where(function ($query) {
             foreach ($this->params as $key => $val) {
                 $method = 'search' . Str::studly($key) . 'Attr';
-                $searchOption = method_exists($this->model, 'getSearchOption')
-                    ? $this->model->getSearchOption() : false;
+                $searchFields = method_exists($this->model, 'getSearchFields')
+                    ? $this->model->getSearchFields() : false;
                 if (method_exists($this->model, $method)) {
                     $this->model->$method($query, $val, $this->params);
-                } elseif ($searchOption && isset($searchOption[$key])) {
-                    $this->searchAttr($searchOption[$key], $query, $key, $val, $this->params);
+                } elseif ($searchFields && isset($searchFields[$key])) {
+                    $this->searchAttr($searchFields[$key], $query, $key, $val, $this->params);
                 }
             }
         });
@@ -110,20 +110,22 @@ class Searcher
         return $query->paginate($this->pageSize, $simple);
     }
 
-    protected function searchAttr(array|string $option, Query $query, string $key, mixed $value, array $data): void
+    protected function searchAttr(array|string $option,
+                                  Query        $query, string $key, mixed $value, array $data): void
     {
-        if (is_string($option)) $option = ['type' => $option];
-        if (empty($option['type'])) $option['type'] = 'string';
+        if (is_string($option)) $option = [$option];
+        if (empty($option[0])) $option[0] = 'string';
         if (empty($option['op'])) $option['op'] = '=';
 
-        switch ($option['type']) {
+        switch ($option[0]) {
             case 'integer':
-            case 'integer:pk':
                 if (!is_numeric($value)) return;
-                if (!empty($option['min']) && $value < $option['min']) return;
-                if (!empty($option['max']) && $value > $option['max']) return;
-                if ('integer:pk' === $option['type'] && empty($value)) return;
-                $query->where($key, $option['op'], $value);
+                if (empty($value) && empty($option['zero'])) return;
+                if ('find_in_set' === $option['op']) {
+                    $query->whereFindInSet($key, $value);
+                } else {
+                    $query->where($key, $option['op'], $value);
+                }
                 break;
             case 'string':
                 if (!is_string($value) && !is_numeric($value)) return;
@@ -135,21 +137,17 @@ class Searcher
                     $query->where($key, $option['op'], $value);
                 }
                 break;
-            case 'find_in_set':
+            case 'datetime':
                 if (empty($value)) return;
-                $query->whereFindInSet($key, $value);
-                break;
-            case 'time':
-                if (empty($value)) return;
-                $query->whereTime($key, $option['op'], $value);
-                break;
-            case 'time_range':
-                if (empty($value)) return;
-                empty($option['split']) && $option['split'] = ',';
-                if (!is_array($value) && str_contains($value, $option['split'])) {
-                    $value = explode($option['split'], $value);
+                if ('between' === $option['op']) {
+                    empty($option['split']) && $option['split'] = ',';
+                    if (!is_array($value) && str_contains($value, $option['split'])) {
+                        $value = explode($option['split'], $value);
+                    }
+                    is_array($value) && $query->whereBetweenTime($key, $value[0], $value[1]);
+                } else {
+                    $query->whereTime($key, $option['op'], $value);
                 }
-                is_array($value) && $query->whereBetweenTime($key, $value[0], $value[1]);
                 break;
             case 'array':
                 if (!is_array($value) || empty($value)) return;

@@ -96,15 +96,28 @@ abstract class Table
      */
     protected function getTableColumns(): void
     {
+        $result = [];
         $methods = get_class_methods($this);
+        $index = 0;
         foreach ($methods as $method) {
             if (str_starts_with($method, 'column')) {
                 $column = $this->$method();
+                if (!$column) continue;
                 //默认宽度
                 $column = $this->fillColumnOptions($column);
-                $this->tableColumns[] = $column;
+                //排序序号
+                if (empty($column['order'])) {
+                    $column['order'] = $index;
+                }
+                $index++;
+                $result[] = $column;
             }
         }
+        //根据order排序
+        usort($result, function ($a, $b) {
+            return $a['order'] - $b['order'];
+        });
+        $this->tableColumns = $result;
     }
 
     /**

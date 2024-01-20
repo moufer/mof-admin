@@ -10,34 +10,34 @@ use think\Model;
 trait Searcher
 {
     /** @var array 搜索配置 */
-    protected array $searchOption = [];
+    protected array $searchFields = [];
 
-    public function setSearchOption(array $searchOption, $override = true): static
+    public function setSearchFields(array $searchFields, $override = true): static
     {
         if ($override) {
-            $this->searchOption = $searchOption;
+            $this->searchFields = $searchFields;
         } else {
-            $this->searchOption = array_merge($this->searchOption, $searchOption);
+            $this->searchFields = array_merge($this->searchFields, $searchFields);
         }
         return $this;
     }
 
-    public function removeSearchOption(string|array $searchOption = null): static
+    public function removeSearchField(string|array $searchFields = null): static
     {
-        if (null === $searchOption) {
-            $this->searchOption = [];
+        if (null === $searchFields) {
+            $this->searchFields = [];
             return $this;
         }
-        if (is_array($searchOption)) {
-            $this->searchOption = array_diff_key($this->searchOption, array_flip($searchOption));
-        } else if (isset($this->searchOption[$searchOption])) {
-            unset($this->searchOption[$searchOption]);
+        if (is_array($searchFields)) {
+            $this->searchFields = array_diff_key($this->searchFields, array_flip($searchFields));
+        } else if (isset($this->searchFields[$searchFields])) {
+            unset($this->searchFields[$searchFields]);
         }
         return $this;
     }
 
-    public function getSearchOption(): array
+    public function getSearchFields(): array
     {
-        return $this->searchOption;
+        return $this->searchFields;
     }
 }

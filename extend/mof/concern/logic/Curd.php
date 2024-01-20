@@ -2,6 +2,8 @@
 
 namespace mof\concern\logic;
 
+use mof\exception\LogicException;
+use mof\exception\NoPermissionException;
 use mof\Logic;
 use mof\Model;
 use mof\Searcher;
@@ -9,7 +11,6 @@ use think\Collection;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
-use think\exception\InvalidArgumentException;
 use think\Paginator;
 
 /**
@@ -18,6 +19,22 @@ use think\Paginator;
  */
 trait Curd
 {
+    /**
+     * 是否进行权限检测
+     * @var bool
+     */
+    protected bool $access = false;
+    /**
+     * 访问/编辑权限检测
+     * @var mixed
+     */
+    protected mixed $accessMethod = null;
+    /**
+     * 权限检测失败提示
+     * @var string
+     */
+    protected string $accessMessage = '权限不足';
+
     /**
      * 综合分页
      * @param Searcher $searcher
@@ -49,8 +66,9 @@ trait Curd
     public function read($id): Model
     {
         try {
-            $this->model = $this->model->findOrFail($id);
-            return $this->model;
+            $model = $this->model->findOrFail($id);
+            $this->access && $this->checkAccess($model);
+            return $model;
         } catch (ModelNotFoundException) {
             throw new DataNotFoundException('数据不存在');
         }
@@ -59,11 +77,15 @@ trait Curd
     /**
      * 添加数据
      * @param $params
-     * @return bool
+     * @return Model
      */
-    public function save($params): bool
+    public function save($params): Model
     {
-        return $this->model->data($params, true)->save();
+        $model = $this->model->newInstance();
+        $model->data($params, true);
+        $this->access && $this->checkAccess($model);
+        $model->save();
+        return $model;
     }
 
     /**
@@ -71,13 +93,16 @@ trait Curd
      * @throws DbException
      * @throws DataNotFoundException
      */
-    public function update($id, $params): bool
+    public function update($id, $params): Model
     {
+        //更新数据里去掉主键信息
         if (isset($params[$this->model->getPk()])) {
             unset($params[$this->model->getPk()]);
         }
 
-        return $this->read($id)->save($params);
+        $model = $this->read($id);
+        $model->save($params);
+        return $model;
     }
 
     /**
@@ -127,5 +152,56 @@ trait Curd
         }
 
         return $models;
+    }
+
+    /**
+     * 设置访问权限
+     * @param mixed $method
+     * @param string $message
+     * @return $this
+     */
+    public function withAccess(mixed $method, string $message = ''): static
+    {
+        if (is_bool($method)) {
+            $this->access = $method;
+            return $this;
+        } else {
+            $this->access = true;
+            $this->accessMethod = $method;
+            $this->accessMessage = $message ?: '权限不足';
+        }
+        return $this;
+    }
+
+    /**
+     * 权限检测
+     * @param Model $model 要检测的模型
+     * @param bool $reset 检测后是否重置
+     * @return bool
+     */
+    protected function checkAccess(Model $model, bool $reset = true): bool
+    {
+        $allow = true;
+        $method = $this->accessMethod;
+        if (is_callable($method)) {
+            //执行匿名方法
+            $allow = call_user_func($method, $model);
+        } else if (is_array($method) && !empty($method)) {
+            //字段对比
+            foreach ($method as $key => $value) {
+                if ($model[$key] !== $value) {
+                    $allow = false;
+                    break;
+                }
+            }
+        } else {
+            throw new LogicException('未设置权限检测方法');
+        }
+        if (!$allow) {
+            throw new NoPermissionException($this->accessMessage);
+        }
+
+        $reset && $this->access = false; //检测一次后恢复
+        return true;
     }
 }

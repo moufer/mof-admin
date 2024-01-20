@@ -2,6 +2,7 @@
 
 namespace mof;
 
+use mof\concern\model\Form;
 use mof\concern\model\Searcher;
 use think\db\Raw;
 

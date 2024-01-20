@@ -2,6 +2,7 @@
 
 namespace mof;
 
+use mof\utils\ConfigOptions;
 use think\facade\Route;
 
 class Module

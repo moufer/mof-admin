@@ -16,6 +16,9 @@ class MigrateCreate extends Create
 {
     protected function configure()
     {
+        /**
+         * php think mof-migrate:create module name
+         */
         $this->setName('mof-migrate:create')
             ->setDescription('新建数据库迁移')
             ->addArgument('module', InputArgument::REQUIRED, '模块名称')

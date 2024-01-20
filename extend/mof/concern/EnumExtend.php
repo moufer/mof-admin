@@ -16,10 +16,10 @@ trait EnumExtend
     public function options(): array
     {
         $result = [];
-        $class = new \ReflectionClass($this);
-        foreach ($class->getConstants() as $key => $value) {
+        $reflectionClass = new \ReflectionClass($this);
+        foreach ($reflectionClass->getConstants() as $key => $value) {
             $result[] = [
-                'label' => $this->getDescription($key),
+                'label' => $this->getDescription($key, $reflectionClass),
                 'value' => $value
             ];
         }
@@ -29,21 +29,12 @@ trait EnumExtend
     /**
      * 获取枚举描述
      * @param string $key
+     * @param \ReflectionClass|null $reflectionClass
      * @return string
      */
-    private function getDescription(string $key): string
+    private function getDescription(string $key, ?\ReflectionClass $reflectionClass = null): string
     {
-        $class = new \ReflectionClass($this);
-        try {
-            $property = $class->getProperty($key);
-            $attributes = $property->getAttributes();
-            foreach ($attributes as $attribute) {
-                if ($attribute->getName() == 'mof\attributes\Description') {
-                    return $attribute->getArguments()[0];
-                }
-            }
-        } catch (\ReflectionException $e) {
-        }
-        return $key;
+        !$reflectionClass && $reflectionClass = new \ReflectionClass($this);
+        return $reflectionClass->getReflectionConstant($key)->getAttributes()[0]->getArguments()[0];
     }
 }
