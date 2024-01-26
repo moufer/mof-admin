@@ -9,12 +9,13 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Firebase\JWT\SignatureInvalidException;
 use mof\exception\AuthTokenException;
+use mof\interface\TokenInterface;
 use mof\utils\Random;
 
 /**
  * Token
  */
-class Token
+class Token implements TokenInterface
 {
     protected string $key;
     protected int    $expires;
@@ -47,7 +48,7 @@ class Token
         $this->token = $token;
         $this->payload = $payload;
 
-        return $this->token();
+        return $this->toArray();
     }
 
     /**
@@ -72,9 +73,9 @@ class Token
 
     /**
      * 获取令牌信息
-     * @return array|null 令牌信息 ，格式：['token' => $token, 'expires' => $expires]
+     * @return array 令牌信息 ，格式：['token' => $token, 'expires' => $expires]
      */
-    public function token(): ?array
+    public function toArray(): array
     {
         if (!empty($this->token)) {
             return [
@@ -82,7 +83,7 @@ class Token
                 'expires' => $this->payload['exp'], //过期时间
             ];
         }
-        return null;
+        return [];
     }
 
     /**
@@ -112,7 +113,7 @@ class Token
      * @param array $payload
      * @return string
      */
-    public function createJWT(string $sub, string $aud, array &$payload = []): string
+    protected function createJWT(string $sub, string $aud, array &$payload = []): string
     {
         $time = time();
         $payload = [
@@ -131,7 +132,7 @@ class Token
      * @param string|null $aud null时不对aud进行验证
      * @return int|\stdClass
      */
-    public function verifyJWT(string $jwt, string $aud = null): int|\stdClass
+    protected function verifyJWT(string $jwt, string $aud = null): int|\stdClass
     {
         try {
             $key = new Key($this->key, 'HS256');

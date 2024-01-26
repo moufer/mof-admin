@@ -5,6 +5,7 @@ namespace app\library;
 use mof\annotation\Inject;
 use mof\ApiController;
 use mof\FormValidate;
+use mof\interface\AuthInterface;
 
 /**
  * 后台管理基础控制器
@@ -22,8 +23,8 @@ class Controller extends ApiController
     /**
      * @var Auth 登录授权
      */
-    #[Inject]
-    protected Auth $auth;
+    #[Inject(Auth::class)]
+    protected AuthInterface $auth;
 
     /**
      * @var ?FormValidate 表单验证
@@ -35,12 +36,6 @@ class Controller extends ApiController
      * 格式 [params=>params,allow=>allow,only=>only,rule=>rule,message=>message]
      */
     protected array $formValidate = [];
-
-    /**
-     * 是否开启软删除
-     * @var bool
-     */
-    protected bool $softDelete = false;
 
     protected function initialize(): void
     {

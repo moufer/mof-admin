@@ -39,7 +39,7 @@ class Passport extends Controller
         //登录时指定了模块，使用该模块的权限
         $module = $this->request->param('module', 'admin');
         return ApiResponse::success([
-            'token' => $auth->getToken(),
+            'token' => $auth->getToken()->toArray(),
             'user'  => $auth->getUser()->hidden(['password']),
             'perms' => Arr::tree($auth->getUser()->getPerms($module)),
         ]);
@@ -61,7 +61,7 @@ class Passport extends Controller
      */
     public function token(): Json
     {
-        return ApiResponse::success($this->auth->getToken());
+        return ApiResponse::success($this->auth->getToken()->toArray());
     }
 
     public function info(): Json
