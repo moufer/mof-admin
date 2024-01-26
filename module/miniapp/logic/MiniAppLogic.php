@@ -44,4 +44,5 @@ class MiniAppLogic extends Logic
 
         return $model->delete();
     }
+
 }

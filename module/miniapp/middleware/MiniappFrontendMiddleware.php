@@ -14,7 +14,7 @@ use think\Response;
 /**
  * 获取指定的应用信息
  */
-class MiniappMiddleware
+class MiniappFrontendMiddleware
 {
     /**
      * 处理请求
@@ -31,7 +31,6 @@ class MiniappMiddleware
         if (!$id = $request->param('id/d')) {
             return ApiResponse::error('未指小程序');
         }
-
         if (!$miniapp = MiniApp::find($id)) {
             return ApiResponse::error('小程序不存在');
         }

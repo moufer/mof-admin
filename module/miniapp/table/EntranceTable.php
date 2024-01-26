@@ -6,7 +6,7 @@ use mof\front\Table;
 
 class EntranceTable extends Table
 {
-    protected string $serverBaseUrl  = '/{module}/{id}/entrance';
+    protected string $serverBaseUrl  = '/{module}/backend/{id}/entrance';
     protected bool   $tableSelection = false;
     protected bool   $showSearch     = false;
     protected array  $toolbarButtons = ['refresh'];

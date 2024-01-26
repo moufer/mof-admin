@@ -1,6 +1,6 @@
 <?php
 
-namespace module\miniapp\controller;
+namespace module\miniapp\controller\backend;
 
 use module\miniapp\library\MiniappController;
 use module\miniapp\logic\StatisticsLogic;

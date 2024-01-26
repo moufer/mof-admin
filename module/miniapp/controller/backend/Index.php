@@ -1,13 +1,13 @@
 <?php
 
-namespace module\miniapp\controller;
+namespace module\miniapp\controller\backend;
 
 use app\library\Controller;
 use app\model\Perm;
 use module\miniapp\model\AdminRelation;
 use module\miniapp\model\MiniApp;
-use mof\Searcher;
 use mof\ApiResponse;
+use mof\Searcher;
 use mof\utils\Arr;
 use think\db\exception\DbException;
 use think\response\Json;

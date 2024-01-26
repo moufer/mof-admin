@@ -1,6 +1,6 @@
 <?php
 
-namespace module\miniapp\controller;
+namespace module\miniapp\controller\backend;
 
 use app\library\Controller;
 use module\miniapp\logic\MiniAppLogic;

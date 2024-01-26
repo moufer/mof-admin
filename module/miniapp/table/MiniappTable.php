@@ -9,7 +9,7 @@ use mof\utils\ElementData;
 
 class MiniappTable extends Table
 {
-    protected string $serverBaseUrl  = '/{module}/manage';
+    protected string $serverBaseUrl  = '/{module}/backend/manage';
     protected bool   $tableSelection = false;
     protected bool   $showSearch     = false;
     protected array  $toolbarButtons = ['refresh', 'add'];

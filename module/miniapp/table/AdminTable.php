@@ -8,6 +8,8 @@ use mof\utils\ElementData;
 
 class AdminTable extends UserTable
 {
+    protected string $serverBaseUrl = '/{module}/backend/{table}';
+
     public function columnRoleId(): array
     {
         return [];
