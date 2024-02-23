@@ -34,7 +34,8 @@
         "overtrue/flysystem-cos": "^2.0.0",
         "xxtime/flysystem-aliyun-oss": "^1.4",
         "liz/flysystem-qiniu": "^1.10",
-        "w7corp/easywechat": "^6.7"
+        "w7corp/easywechat": "^6.7",
+        "imangazaliev/didom": "^2.0"
     },
     "require-dev": {
         "symfony/var-dumper": "^5.4|^6.0",

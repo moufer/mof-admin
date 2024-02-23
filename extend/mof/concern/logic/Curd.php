@@ -179,7 +179,7 @@ trait Curd
      * @param bool $reset 检测后是否重置
      * @return bool
      */
-    protected function checkAccess(Model $model, bool $reset = true): bool
+    protected function checkAccess(Model $model, bool $reset = false): bool
     {
         $allow = true;
         $method = $this->accessMethod;

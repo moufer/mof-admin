@@ -60,7 +60,7 @@ class Config extends Controller
             }
         }
         if ($saved) {
-            Cache::delete('admin_config');
+            Cache::delete("{$module}_config");
         }
         return ApiResponse::success();
     }

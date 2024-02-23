@@ -30,7 +30,7 @@ class MigrateCreate extends Create
     {
         $module = $input->getArgument('module');
         $className = $input->getArgument('name');
-        $className = Str::studly($module . $className);
+        $className = Str::studly($module . '_' . $className);
         $path = $this->create($module, $className);
         $output->writeln('<info>created</info> .' . str_replace(getcwd(), '', realpath($path)));
     }

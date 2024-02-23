@@ -134,17 +134,23 @@ class FormValidate
         //处理验证
         if ($validate === true) {
             if ($validate = $this->getValidate()) {
-                if ($allowParams) {
+                if ($this->scene && !empty($this->sceneOnly[$this->scene])) {
+                    //配置了场景验证字段
+                    $allowParams = explode(',', $this->sceneOnly[$this->scene]);
+                } else if ($allowParams) {
+                    //只验证允许提交的字段
                     $allowParams = array_map(function ($item) {
                         //去除item里，"/"以及后面的字符
                         $i = strpos($item, '/');
                         return $i ? substr($item, 0, $i) : $item;
                     }, $allowParams);
-                    //只验证允许提交的字段
-                    //如果$validate是一个自定义的验证类，且类内存在场景时，only操作无效，
-                    //具体验证规则由，验证类里的场景规则来决定
-                    $validate->only($allowParams);
                 }
+
+                //如果$validate是一个自定义的验证类，且类内存在场景时，only操作无效，
+                //具体验证规则由，验证类里的场景规则来决定
+                $validate->only($allowParams);
+                !empty($allowParams) && $validate->only($allowParams);
+
                 //验证不通过报 ValidationException
                 $validate->failException(true)->check($data);
             }

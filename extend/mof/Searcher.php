@@ -67,14 +67,20 @@ class Searcher
     {
         /** @var Query $query */
         $query = $this->model->where(function ($query) {
-            foreach ($this->params as $key => $val) {
-                $method = 'search' . Str::studly($key) . 'Attr';
-                $searchFields = method_exists($this->model, 'getSearchFields')
-                    ? $this->model->getSearchFields() : false;
-                if (method_exists($this->model, $method)) {
-                    $this->model->$method($query, $val, $this->params);
-                } elseif ($searchFields && isset($searchFields[$key])) {
-                    $this->searchAttr($searchFields[$key], $query, $key, $val, $this->params);
+            //获取允许参与搜索的字段
+            $searchFields = method_exists($this->model, 'getSearchFields')
+                ? $this->model->getSearchFields() : false;
+            if ($searchFields) {
+                foreach ($searchFields as $field => $option) {
+                    if (empty($this->params[$field])) continue;        //没有提供这个参数
+                    $val = $this->params[$field];                      //参数值
+                    $method = 'search' . Str::studly($field) . 'Attr'; //先查找是否存在专有搜索器
+                    if (method_exists($this->model, $method)) {
+                        $this->model->$method($query, $val, $this->params);
+                    } else {
+                        //通用搜索器
+                        $this->searchAttr($option, $query, $field, $val, $this->params);
+                    }
                 }
             }
         });

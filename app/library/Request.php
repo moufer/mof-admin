@@ -2,6 +2,7 @@
 
 namespace app\library;
 
+use mof\Searcher;
 use think\exception\InvalidArgumentException;
 use think\exception\ValidateException;
 
@@ -9,13 +10,14 @@ class Request extends \mof\Request
 {
     /**
      * 获取搜索器
-     * @return \mof\Searcher
+     * @param array $defaultParams
+     * @return Searcher
      */
-    public function searcher(): \mof\Searcher
+    public function searcher(array $defaultParams = []): Searcher
     {
         $data = $this->searcherData();
-        return (new \mof\Searcher())
-            ->params($data['params'])
+        return (new Searcher())
+            ->params(array_merge($defaultParams, $data['params']))
             ->pageSize($data['pageSize'])
             ->order($data['order']);
     }
