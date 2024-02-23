@@ -2,7 +2,7 @@
 
 use think\migration\Migrator;
 
-class Miniappadmin extends Migrator
+class MiniappAdmin extends Migrator
 {
     /**
      * Change Method.
