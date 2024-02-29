@@ -1,6 +1,6 @@
 <?php
 
-namespace app\library;
+namespace mof\utils;
 
 use think\helper\Str;
 
@@ -53,9 +53,9 @@ class FormComponentOptions
             "action"       => upload_url($type),
             "limit"        => 1, //默认单文件
             "headers"      => ['Authorization' => app('request')->header('Authorization')],
-            "limitExt"    => config("admin.storage_{$type}_ext", ''),
-            "limitSize"   => (int)config("admin.storage_{$type}_size", 0) * 1024 * 1024, //MB->字节
-            "listType"    => $type === 'image' ? "picture-card" : 'text',
+            "limitExt"     => config("admin.storage_{$type}_ext", ''),
+            "limitSize"    => (int)config("admin.storage_{$type}_size", 0) * 1024 * 1024, //MB->字节
+            "listType"     => $type === 'image' ? "picture-card" : 'text',
             "showFileList" => true
         ];
     }

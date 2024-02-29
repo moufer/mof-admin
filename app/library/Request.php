@@ -30,7 +30,7 @@ class Request extends \mof\Request
     {
         $data = [];
         $data['params'] = $this->get('params/a', []);
-        $data['pageSize'] = $this->get('pageSize/d', 10);
+        $data['pageSize'] = $this->get('page_size/d', 10);
         $data['order'] = [];
         $orderRaw = $this->get('order/a', []);
         if (!empty($orderRaw['field'])) {

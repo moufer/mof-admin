@@ -17,9 +17,9 @@ class Table extends ApiController
      */
     public function config($module, $name): Json
     {
-        $className = \mof\Module::namespace($module) . 'table\\' . Str::studly($name) . 'Table';
+        $className = \mof\Module::namespace($module) . 'front\\table\\' . Str::studly($name) . 'Table';
         if (!class_exists($className)) {
-            return ApiResponse::error('配置信息不存在');
+            return ApiResponse::error('配置信息不存在'.$className);
         } else {
             $table = (new $className)->getTableConfig();
             return ApiResponse::success($table);

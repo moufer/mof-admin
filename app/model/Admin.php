@@ -117,9 +117,9 @@ class Admin extends Model implements UserInterface
     /**
      * 角色ID修改器
      * @param $value
-     * @return float|int|mixed|string|null
+     * @return int
      */
-    protected function setRoleIdAttr($value)
+    protected function setRoleIdAttr($value): int
     {
         if (is_array($value)) {
             return array_pop($value);

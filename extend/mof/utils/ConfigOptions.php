@@ -2,12 +2,23 @@
 
 namespace mof\utils;
 
-use app\library\FormComponentOptions;
 use mof\annotation\Description;
 use think\helper\Str;
 
 abstract class ConfigOptions
 {
+    /**
+     * 扩展信息
+     * @return array
+     */
+    public function extendInfo(): array
+    {
+        return [
+            'extend_type' => '',
+            'extend_Id'   => 0
+        ];
+    }
+
     /**
      * 获取参数配置选项
      * @param array $values 已有的配置参数

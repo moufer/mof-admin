@@ -26,29 +26,4 @@ class Controller extends ApiController
     #[Inject(Auth::class)]
     protected AuthInterface $auth;
 
-    /**
-     * @var ?FormValidate 表单验证
-     */
-    protected ?FormValidate $form;
-
-    /**
-     * 验证信息
-     * 格式 [params=>params,allow=>allow,only=>only,rule=>rule,message=>message]
-     */
-    protected array $formValidate = [];
-
-    protected function initialize(): void
-    {
-        parent::initialize();
-        $this->formValidate();
-    }
-
-    /**
-     * 给定验证规则或验证器
-     * @return void
-     */
-    protected function formValidate(): void
-    {
-        $this->form = FormValidate::make($this->formValidate);
-    }
 }

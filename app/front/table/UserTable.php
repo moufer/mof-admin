@@ -1,8 +1,8 @@
 <?php
 
-namespace app\table;
+namespace app\front\table;
 
-use app\library\FormComponentOptions;
+use mof\utils\FormComponentOptions;
 use app\model\Admin;
 use app\model\Module;
 use app\model\Role;
@@ -11,7 +11,9 @@ use mof\utils\ElementData;
 
 class UserTable extends Table
 {
-    protected bool $showSearch = false;
+    protected bool  $showSearch     = false;
+    protected array $toolbarButtons = ['refresh', 'add', 'search'];
+    protected bool  $tableSelection = false;
 
     protected function columnId(): array
     {
@@ -28,7 +30,6 @@ class UserTable extends Table
             "prop"  => "avatar",
             "label" => "头像",
             "type"  => "avatar",
-            "form"  => FormComponentOptions::fill(['type' => 'upload:image']),
         ];
     }
 
@@ -39,11 +40,6 @@ class UserTable extends Table
             "label"  => "用户名",
             "width"  => "*",
             "search" => true,
-            "form"   => [
-                "rules" => [
-                    ["required" => true],
-                ]
-            ]
         ];
     }
 
@@ -53,13 +49,6 @@ class UserTable extends Table
             "prop"    => "password",
             "label"   => "密码",
             "visible" => false,
-            "form"    => [
-                "type"      => "password",
-                "introEdit" => "不修改密码请留空",
-                "rulesAdd"  => [
-                    ["required" => true],
-                ]
-            ]
         ];
     }
 
@@ -69,11 +58,6 @@ class UserTable extends Table
             "prop"  => "name",
             "label" => "姓名",
             "width" => "*",
-            "form"  => [
-                "rules" => [
-                    ["required" => true],
-                ]
-            ],
         ];
     }
 
@@ -83,50 +67,22 @@ class UserTable extends Table
             "prop"  => "email",
             "label" => "邮箱",
             "width" => 250,
-            "form"  => [
-                "rules" => [
-                    ["required" => true],
-                ]
-            ],
         ];
     }
 
     protected function columnRoleId(): array
     {
         $rows = Role::where('status', '=', 1)
-            ->order('id', 'asc')->select()->toArray();
-        $selectOptions = ElementData::make($rows)->toSelectOptions('name', 'id');
-
-        $sgPermModules = Module::sgPermModules();
-        foreach ($rows as $key => $item) {
-            $rows[$key]['pid'] = -($sgPermModules[$item['category']]['id'] ?? 0);
-        }
-        foreach ($sgPermModules as $item) {
-            $rows[] = [
-                'id'   => -($item['id']),
-                'pid'  => 0,
-                'name' => $item['title'],
-            ];
-        }
-        $cascaderOptions = ElementData::make($rows)->toCascaderOptions('id', 'name');
+            ->order('id', 'asc')
+            ->select()
+            ->toArray();
 
         return [
             "prop"      => "role.name",
             "propAlias" => "role_id",
             "label"     => "角色",
             "type"      => "select",
-            "options"   => $selectOptions,
-            "search"    => [
-                'type'      => 'select',
-                'clearable' => true
-            ],
-            "form"      => [
-                "type"    => "cascader",
-                "rules"   => [
-                    ["required" => true],
-                ],
-                'options' => $cascaderOptions,
-            ],
+            "options"   => ElementData::make($rows)->toSelectOptions('name', 'id'),
         ];
     }
 
@@ -141,9 +97,6 @@ class UserTable extends Table
                 'type'      => 'select',
                 'clearable' => true,
             ],
-            "form"    => [
-                '_defaultValue' => 1
-            ]
         ];
     }
 

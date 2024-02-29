@@ -6,6 +6,10 @@ use mof\Mof;
 
 class Config extends \mof\Model
 {
+    protected $type = [
+        'extra' => 'json'
+    ];
+
     protected function setValueAttr($value, $data): float|bool|int|string
     {
         //获取参数类型
@@ -15,6 +19,9 @@ class Config extends \mof\Model
             'number' => (int)$value,
             'float' => (float)$value,
             'switch' => $value ? 1 : 0,
+            'input-dict',
+            'select-multiple',
+            'checkbox',
             'keyvalue',
             'upload:image',
             'upload:file',
@@ -29,6 +36,9 @@ class Config extends \mof\Model
         $type = $data['type'] ?? 'text';
         //根据参数类型进行转换
         $value = match ($type) {
+            'input-dict' => empty($value) ? (object)[] : json_decode($value, true),
+            'select-multiple' => empty($value) ? [] : json_decode($value, true),
+            'checkbox',
             'keyvalue',
             'upload:image',
             'upload:file',

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\table;
+namespace app\front\table;
 
 use app\model\Module;
 use mof\front\Table;
@@ -34,26 +34,7 @@ class PermTable extends Table
             "label"  => "名称",
             "width"  => '*',
             "align"  => "left",
-            "form"   => [
-                "rules" => [
-                    ["required" => true],
-                ]
-            ],
             "search" => true,
-        ];
-    }
-
-    public function columnCategory(): array
-    {
-        return [
-            "prop"    => "category",
-            "label"   => "分类",
-            "width"   => 120,
-            "form"    => true,
-            "search"  => true,
-            "visible" => false,
-            "type"    => "select",
-            "options" => $this->elSgModules->toSelectOptions('title', 'name'),
         ];
     }
 
@@ -63,7 +44,6 @@ class PermTable extends Table
             "prop"    => "type",
             "label"   => "类型",
             "width"   => 150,
-            "form"    => true,
             "search"  => true,
             "type"    => "select",
             "options" => [
@@ -79,32 +59,7 @@ class PermTable extends Table
         return [
             "prop"  => "icon",
             "label" => "图标",
-            "type"  => "icon",
-            "form"  => [
-                'type'     => 'icon-selector',
-                '_visible' => 'type=group,menu',
-            ]
-        ];
-    }
-
-    public function columnPid(): array
-    {
-        $perms = \app\model\Perm::where('type', 'in', ['group', 'menu'])
-            ->where('status', 1)
-            ->order('sort', 'asc')
-            ->select();
-        return [
-            "prop"    => "pid",
-            "label"   => "上级",
-            "visible" => false,
-            "form"    => [
-                'type'      => 'cascader',
-                'clearable' => true,
-                'props'     => [
-                    'checkStrictly' => true,
-                ],
-                'options'   => ElementData::make($perms)->toCascaderOptions('id', 'title'),
-            ]
+            "type"  => "icon"
         ];
     }
 
@@ -114,40 +69,10 @@ class PermTable extends Table
             "prop"    => "module",
             "label"   => "模块",
             "visible" => true,
-            "form"    => [
-                'type'     => 'select',
-                '_visible' => 'type=group,menu',
-            ],
             "search"  => true,
             "type"    => "select",
             "options" => ElementData::make(Module::enabledModules())
                 ->toSelectOptions('title', 'name'),
-        ];
-    }
-
-    public function columnUrl(): array
-    {
-        return [
-            "prop"    => "url",
-            "label"   => "URL",
-            "visible" => false,
-            "form"    => [
-                '_visible' => 'type=menu',
-                'intro'    => '前端页面的访问地址'
-            ]
-        ];
-    }
-
-    public function columnPerm(): array
-    {
-        return [
-            "prop"    => "perm",
-            "label"   => "权限",
-            "visible" => false,
-            "form"    => [
-                '_visible' => 'type=menu,action',
-                'intro'    => '后端API接口地址'
-            ]
         ];
     }
 
@@ -157,7 +82,6 @@ class PermTable extends Table
             "prop"    => "status",
             "label"   => "状态",
             "search"  => true,
-            "form"    => true,
             "type"    => "select",
             "options" => [
                 ["label" => "禁用", "value" => 0],
@@ -171,9 +95,6 @@ class PermTable extends Table
         return [
             "prop"  => "sort",
             "label" => "排序",
-            "form"  => [
-                '_visible' => 'type=menu,group',
-            ],
         ];
     }
 }

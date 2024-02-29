@@ -2,6 +2,7 @@
 
 namespace app\controller;
 
+use app\front\form\PassportForm;
 use app\library\Controller;
 use app\logic\PassportLogic;
 use mof\annotation\Inject;
@@ -15,16 +16,8 @@ class Passport extends Controller
     #[Inject]
     protected PassportLogic $logic;
 
-    protected array $formValidate = [
-        'param' => [
-            'username', 'password', 'module'
-        ],
-        'rule'  => [
-            'username|用户名' => 'require',
-            'password|密码'   => 'require',
-            'module|模块名'     => 'require',
-        ],
-    ];
+    #[Inject]
+    protected PassportForm $form;
 
     /**
      * 登录

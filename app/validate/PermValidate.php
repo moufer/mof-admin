@@ -52,12 +52,11 @@ class PermValidate extends Validate
         return true;
     }
 
-    protected function checkPid($value, $rule, $data): bool|string
+    protected function checkPid(array $value, $rule, $data): bool|string
     {
-        if (!empty($value)) {
-            if (is_array($value)) {
-                $value = array_pop($value);
-            }
+        //$value是数组字段
+        $value = (int)array_pop($value);
+        if ($value > 0) {
             $parent = \app\model\Perm::find($value);
             if (!$parent) {
                 return '上级权限不存在';

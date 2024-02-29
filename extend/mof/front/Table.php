@@ -18,6 +18,8 @@ abstract class Table
     protected array $serverActions = [
         'search'  => '',
         'create'  => '',
+        'add'     => '/create',
+        'edit'    => '/{id}/edit',
         'read'    => '/{id}',
         'update'  => '/{id}',
         'delete'  => '/{id}',

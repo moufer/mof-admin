@@ -2,10 +2,9 @@
 
 namespace app\controller;
 
+use app\front\form\UserForm;
 use app\library\Controller;
 use app\logic\AdminLogic;
-use app\model\Admin;
-use app\validate\AdminValidate;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\response\Json;
@@ -15,12 +14,8 @@ class User extends Controller
     #[Inject]
     protected AdminLogic $logic;
 
-    protected array $formValidate = [
-        'param' => [
-            'username', 'password', 'name', 'avatar/a', 'email', 'role_id/d', 'status/d'
-        ],
-        'rule'  => AdminValidate::class
-    ];
+    #[Inject]
+    protected UserForm $form;
 
     public function index(): Json
     {
@@ -31,17 +26,27 @@ class User extends Controller
         );
     }
 
-    public function save(): Json
+    public function create(): Json
     {
-        return ApiResponse::success(
-            $this->logic->save($this->form->withFixed(['module'=>'admin'])->get())
-        );
+        return ApiResponse::success($this->form->build());
+    }
+
+    public function edit($id): Json
+    {
+        return ApiResponse::success($this->form->build($this->logic->read($id)));
     }
 
     public function read($id): Json
     {
         return ApiResponse::success(
             $this->logic->read($id)->hidden(['password'])
+        );
+    }
+
+    public function save(): Json
+    {
+        return ApiResponse::success(
+            $this->logic->save($this->form->withFixed(['module'=>'admin'])->get())
         );
     }
 

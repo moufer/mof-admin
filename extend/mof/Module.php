@@ -2,6 +2,8 @@
 
 namespace mof;
 
+use mof\front\Config;
+use mof\front\Form;
 use mof\utils\ConfigOptions;
 use think\facade\Route;
 
@@ -211,12 +213,12 @@ class Module
     /**
      * 获取配置选项
      * @param string $module
-     * @return null|ConfigOptions
+     * @return Config|null
      */
-    public static function loadConfig(string $module): ConfigOptions|null
+    public static function loadConfig(string $module): ?Config
     {
-        $file = static::path($module) . 'Config.php';
-        $className = static::namespace($module) . 'Config';
+        $file = static::path($module) . 'front' . DIRECTORY_SEPARATOR . 'Config.php';
+        $className = static::namespace($module) . 'front\\Config';
         if (!file_exists($file) || !class_exists($className)) return null;
         return new $className();
     }

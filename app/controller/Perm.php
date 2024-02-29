@@ -2,6 +2,7 @@
 
 namespace app\controller;
 
+use app\front\form\PermForm;
 use app\library\Controller;
 use app\logic\PermLogic;
 use mof\annotation\Inject;
@@ -14,13 +15,8 @@ class Perm extends Controller
     #[inject]
     protected PermLogic $logic;
 
-    protected array $formValidate = [
-        'param' => [
-            'title', 'icon', 'type', 'module', 'category', 'pid/a', 'url', 'perm',
-            'sort/d', 'status/d',
-        ],
-        'rule'   => \app\validate\PermValidate::class,
-    ];
+    #[Inject]
+    protected PermForm $form;
 
     public function index(): Json
     {
@@ -28,6 +24,16 @@ class Perm extends Controller
         return ApiResponse::success(
             Arr::generateMenuTree($rows->toArray()) //数据转换成树形结构
         );
+    }
+
+    public function create(): Json
+    {
+        return ApiResponse::success($this->form->build());
+    }
+
+    public function edit($id): Json
+    {
+        return ApiResponse::success($this->form->build($this->logic->read($id)));
     }
 
     public function read($id): Json

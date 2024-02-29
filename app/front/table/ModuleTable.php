@@ -1,6 +1,6 @@
 <?php
 
-namespace app\table;
+namespace app\front\table;
 
 use mof\front\Table;
 

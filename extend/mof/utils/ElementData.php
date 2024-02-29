@@ -16,6 +16,13 @@ class ElementData
     {
         if ($data instanceof Collection) {
             $data = $data->toArray();
+        } else if (!is_numeric(array_keys($data)[0])) {
+            //k-v数组转换成[key=>'',value=>'']
+            $_data = $data;
+            $data = [];
+            foreach ($_data as $value => $label) {
+                $data[] = ['label' => $label, 'value' => $value];
+            }
         }
         return new static($data);
     }

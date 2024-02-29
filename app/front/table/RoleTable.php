@@ -1,6 +1,6 @@
 <?php
 
-namespace app\table;
+namespace app\front\table;
 
 use app\model\Module;
 use app\model\Perm;

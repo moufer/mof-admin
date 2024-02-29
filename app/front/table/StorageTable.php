@@ -1,6 +1,6 @@
 <?php
 
-namespace app\table;
+namespace app\front\table;
 
 use mof\front\Table;
 
@@ -80,9 +80,9 @@ class StorageTable extends Table
     public function columnMime(): array
     {
         return [
-            "prop"  => "mime",
-            "label" => "文件类型",
-            "width" => 120,
+            "prop"   => "mime",
+            "label"  => "文件类型",
+            "width"  => 120,
             "search" => true,
         ];
     }
@@ -92,8 +92,10 @@ class StorageTable extends Table
         return [
             "prop"   => "create_at",
             "label"  => "上传时间",
-            "type"   => "datetimerange",
-            "search" => true,
+            "type"   => "datetime",
+            "search" => [
+                'type' => 'datetimerange',
+            ],
         ];
     }
 }
