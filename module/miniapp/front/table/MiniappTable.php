@@ -1,11 +1,11 @@
 <?php
 
-namespace module\miniapp\table;
+namespace module\miniapp\front\table;
 
-use mof\utils\FormComponentOptions;
 use app\model\Module;
 use mof\front\Table;
 use mof\utils\ElementData;
+use mof\utils\FormComponentOptions;
 
 class MiniappTable extends Table
 {

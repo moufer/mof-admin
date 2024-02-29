@@ -28,14 +28,16 @@ Route::group('backend', function () {
     })->middleware(PermissionMiddleware::class);
 
     //小程序应用（独立后台）
-    Route::group('<id>', function () {
+    Route::group('<miniappId>', function () {
+        Route::get('config/<module>', '\module\miniapp\controller\backend\Config@options');
+        Route::post('config/<module>', '\module\miniapp\controller\backend\Config@submit');
         Route::get('statistics$', '\module\miniapp\controller\backend\Statistics@index');
         Route::get('entrance$', '\module\miniapp\controller\backend\Entrance@index');
         Route::get('package/form$', '\module\miniapp\controller\backend\Package@form');
         Route::post('package/submit$', '\module\miniapp\controller\backend\Package@submit');
         Route::get('package/download$', '\module\miniapp\controller\backend\Package@download');
         Route::post('package/downloaded$', '\module\miniapp\controller\backend\Package@downloaded');
-    })->pattern(['id' => '\d+'])
+    })->pattern(['miniappId' => '\d+'])
         ->middleware([MiniappMiddleware::class, PermissionMiddleware::class]);
 
 })->middleware([
@@ -46,12 +48,11 @@ Route::group('backend', function () {
 Route::group('<id>', function () {
 
     Route::group('wechat', function () {
+        //API消息推送
+        Route::get('message/index', '\module\miniapp\controller\frontend\Message@index');
         //小程序登录
         Route::get('user/login', '\module\miniapp\controller\frontend\WechatUser@login');
-    
-
-    //API消息推送
-    Route::get('wechat/message', '\module\miniapp\controller\frontend\Message@index');
+    });
 
 })->middleware(MiniappMiddleware::class);
 

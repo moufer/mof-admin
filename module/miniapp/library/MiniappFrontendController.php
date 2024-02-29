@@ -2,6 +2,7 @@
 
 namespace module\miniapp\library;
 
+use module\miniapp\model\MiniApp;
 use mof\annotation\Inject;
 use mof\ApiController;
 use mof\FormValidate;
@@ -21,6 +22,12 @@ class MiniappFrontendController extends ApiController
      */
     #[Inject(AuthFrontend::class)]
     protected AuthInterface $auth;
+
+    /**
+     * @var MiniApp 当前小程序
+     */
+    #[Inject]
+    protected MiniApp $miniapp;
 
     /**
      * @var ?FormValidate 表单验证

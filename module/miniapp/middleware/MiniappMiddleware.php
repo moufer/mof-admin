@@ -28,7 +28,7 @@ class MiniappMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$id = $request->param('id/d')) {
+        if (!$id = $request->param('miniappId/d')) {
             return ApiResponse::error('未指小程序');
         }
 

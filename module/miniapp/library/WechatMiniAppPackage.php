@@ -80,8 +80,8 @@ class WechatMiniAppPackage
             $options = [];
             foreach ($plugins as $key => $val) {
                 $options[] = [
-                    'label' => "【{$val['provider']}】{$key}",
-                    'value' => $val['provider'],
+                    'caption' => "【{$val['provider']}】{$key}",
+                    'label'   => $val['provider'],
                 ];
             }
             return $options;

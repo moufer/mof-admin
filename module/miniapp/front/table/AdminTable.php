@@ -1,6 +1,6 @@
 <?php
 
-namespace module\miniapp\table;
+namespace module\miniapp\front\table;
 
 use app\front\table\UserTable;
 use module\miniapp\model\MiniApp;
@@ -17,24 +17,18 @@ class AdminTable extends UserTable
 
     public function columnMiniappIds(): array
     {
-        $rows = MiniApp::order('id', 'asc')->select()->toArray();
-        $selectOptions = ElementData::make($rows)->toSelectOptions('title', 'id');
-
+        $rows = MiniApp::order('id', 'asc')->select();
         return [
             "order"     => 7,
             "prop"      => "miniapp_ids",
             "propAlias" => "miniapp_ids",
             "label"     => "关联小程序",
             "type"      => "select",
-            "options"   => $selectOptions,
+            "options"   => ElementData::make($rows)->toSelectOptions('title', 'id'),
             "search"    => [
                 'type'      => 'select',
                 'clearable' => true
             ],
-            "form"      => [
-                "type" => "select",
-                'multiple' => true
-            ]
         ];
     }
 

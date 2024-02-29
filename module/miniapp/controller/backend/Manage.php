@@ -3,6 +3,7 @@
 namespace module\miniapp\controller\backend;
 
 use app\library\Controller;
+use module\miniapp\front\form\MiniappForm;
 use module\miniapp\logic\MiniAppLogic;
 use mof\annotation\Inject;
 use mof\ApiResponse;
@@ -16,27 +17,24 @@ class Manage extends Controller
     #[Inject]
     protected MiniAppLogic $logic;
 
-    protected function formValidate(): void
-    {
-        $this->formValidate = [
-            'param' => [
-                'type', 'title', 'appid', 'app_secret',
-            ],
-            'rule'  => [
-                'type|类型'            => 'require|in:wechat',
-                'title|名称'           => 'require',
-                'appid|AppID'          => 'require|unique:miniapp',
-                'app_secret|AppSecret' => 'require',
-            ]
-        ];
-        parent::formValidate();
-    }
+    #[Inject]
+    protected MiniappForm $form;
 
     public function index(): Json
     {
         return ApiResponse::success(
             $this->logic->paginate($this->request->searcher())
         );
+    }
+
+    public function create(): Json
+    {
+        return ApiResponse::success($this->form->build());
+    }
+
+    public function edit($id): Json
+    {
+        return ApiResponse::success($this->form->build($this->logic->read($id)));
     }
 
     public function read($id): Json

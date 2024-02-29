@@ -2,8 +2,6 @@
 
 namespace module\miniapp\validate;
 
-use mof\Validate;
-
 class AdminValidate extends \app\validate\AdminValidate
 {
     protected $rule = [

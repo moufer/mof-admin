@@ -1,6 +1,6 @@
 <?php
 
-namespace module\miniapp\table;
+namespace module\miniapp\front\table;
 
 use mof\front\Table;
 

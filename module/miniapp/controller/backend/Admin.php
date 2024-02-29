@@ -3,8 +3,8 @@
 namespace module\miniapp\controller\backend;
 
 use app\library\Controller;
+use module\miniapp\front\form\AdminForm;
 use module\miniapp\logic\AdminLogic;
-use module\miniapp\validate\AdminValidate;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\response\Json;
@@ -14,12 +14,8 @@ class Admin extends Controller
     #[Inject]
     protected AdminLogic $logic;
 
-    protected array $formValidate = [
-        'param' => [
-            'username', 'password', 'name', 'avatar/a', 'email', 'status/d', 'miniapp_ids/a',
-        ],
-        'rule'  => AdminValidate::class
-    ];
+    #[Inject]
+    protected AdminForm $form;
 
     public function index(): Json
     {
@@ -27,6 +23,16 @@ class Admin extends Controller
         return ApiResponse::success(
             $this->logic->paginate($searcher->params(['module' => 'miniapp'], false))
         );
+    }
+
+    public function create(): Json
+    {
+        return ApiResponse::success($this->form->build());
+    }
+
+    public function edit($id): Json
+    {
+        return ApiResponse::success($this->form->build($this->logic->read($id)));
     }
 
     public function read($id): Json
@@ -47,5 +53,11 @@ class Admin extends Controller
         return ApiResponse::success(
             $this->logic->update($id, $data)
         );
+    }
+
+    public function delete($id): Json
+    {
+        $this->logic->delete($id);
+        return ApiResponse::success();
     }
 }
