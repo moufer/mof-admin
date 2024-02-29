@@ -2,7 +2,7 @@
 
 namespace module\miniapp\table;
 
-use app\table\UserTable;
+use app\front\table\UserTable;
 use module\miniapp\model\MiniApp;
 use mof\utils\ElementData;
 

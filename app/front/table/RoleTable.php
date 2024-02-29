@@ -36,7 +36,6 @@ class RoleTable extends Table
         ];
     }
 
-
     protected function columnId(): array
     {
         return [

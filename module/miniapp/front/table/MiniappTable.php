@@ -2,7 +2,7 @@
 
 namespace module\miniapp\table;
 
-use app\library\FormComponentOptions;
+use mof\utils\FormComponentOptions;
 use app\model\Module;
 use mof\front\Table;
 use mof\utils\ElementData;
