@@ -18,6 +18,10 @@ use think\model\relation\BelongsTo;
  */
 class Admin extends Model implements UserInterface
 {
+    protected $type = [
+        'avatar' => 'storage'
+    ];
+
     protected array $searchFields = [
         'id'        => 'integer',
         'module'    => 'string',
@@ -52,11 +56,7 @@ class Admin extends Model implements UserInterface
 
     public function getAvatar(): string
     {
-        $avatar = $this->getAttr('avatar');
-        if (is_array($avatar)) {
-            $avatar = $avatar['url'];
-        }
-        return $avatar;
+        return $this->getAttr('avatar');
     }
 
     /**
@@ -82,36 +82,6 @@ class Admin extends Model implements UserInterface
             $perms = Event::until('GetPerms', [$this, $module]);
         }
         return $perms;
-    }
-
-    /**
-     * 头像
-     * @param $value array|string 图片，格式: [ ['url'=>url,'path' => 'xxx'] ]
-     * @return string
-     */
-    public function setAvatarAttr(array|string $value): string
-    {
-        if (is_array($value) && isset($value[0]['path'])) {
-            return $value[0]['path'];
-        } else {
-            return '';
-        }
-    }
-
-    /**
-     * 头像
-     * @param $value
-     * @return array
-     */
-    public function getAvatarAttr($value): array
-    {
-        return $value ? [
-            [
-                'name' => 'avatar',
-                'url'  => Mof::storageUrl($value),
-                'path' => $value
-            ]
-        ] : [];
     }
 
     /**

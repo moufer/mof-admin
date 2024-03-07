@@ -21,7 +21,7 @@ class Module extends Controller
 
     public function index(): Json
     {
-        $modules = $this->logic->list($this->request->get('params/a'));
+        $modules = $this->logic->list($this->request->get('params/a', []));
         return ApiResponse::success(array_values($modules));
     }
 

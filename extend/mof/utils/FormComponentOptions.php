@@ -40,7 +40,28 @@ class FormComponentOptions
      * @param $type
      * @return array
      */
-    protected function optUpload($type): array
+//    protected function optUpload($type): array
+//    {
+//        $accept = [
+//            'image' => 'image/*',
+//            'video' => "video/*",
+//            'audio' => "audio/*",
+//            'file'  => '*/*',
+//        ];
+//        $type = substr($type, 7); //upload:image，upload:file，upload:media
+//        return [
+//            "accept"       => $accept[$type],
+//            "action"       => upload_url($type),
+//            "limit"        => 1, //默认单文件
+//            "headers"      => ['Authorization' => app('request')->header('Authorization')],
+//            "limitExt"     => config("admin.storage_{$type}_ext", ''),
+//            "limitSize"    => (int)config("admin.storage_{$type}_size", 0) * 1024 * 1024, //MB->字节
+//            "listType"     => $type === 'image' ? "picture-card" : 'text',
+//            "showFileList" => true
+//        ];
+//    }
+
+    protected function optUploadRaw($type): array
     {
         $accept = [
             'image' => 'image/*',
@@ -57,6 +78,14 @@ class FormComponentOptions
             "limitSize"    => (int)config("admin.storage_{$type}_size", 0) * 1024 * 1024, //MB->字节
             "listType"     => $type === 'image' ? "picture-card" : 'text',
             "showFileList" => true
+        ];
+    }
+
+    protected function optWangEditor($type = ''): array
+    {
+        return [
+            'toolbarConfig' => [],
+            'editorConfig'  => [],
         ];
     }
 

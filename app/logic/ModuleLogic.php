@@ -61,7 +61,7 @@ class ModuleLogic extends Logic
 
         //过滤
         return array_filter(array_values($modules), function ($module) use ($params) {
-            if (!empty($params['status']) && $module['status'] != $params['status']) {
+            if (isset($params['status']) && (int)$module['status'] !== (int)$params['status']) {
                 return false;
             }
             if (!empty($params['author']) && !str_contains($module['author'], $params['author'])) {

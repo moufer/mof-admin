@@ -17,6 +17,9 @@ Route::group('passport', function () {
 Route::get('table/<module>:<name>', '\app\controller\Table@config')
     ->middleware(AuthTokenMiddleware::class);
 
+//Ueditor配置
+Route::rule('ueditor', '\app\controller\Ueditor@index', 'GET|POST');
+
 // 上传
 Route::group('upload', function () {
     Route::post('file', '\app\controller\Upload@file');
@@ -35,6 +38,7 @@ Route::group(function () {
     Route::post('config/<module>', '\app\controller\Config@submit');
 
     // 附件
+    Route::get('storage/selector$', '\app\controller\Storage@selector');
     Route::resource('storage', '\app\controller\Storage')
         ->except(['save']);
 

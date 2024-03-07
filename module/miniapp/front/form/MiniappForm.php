@@ -13,7 +13,7 @@ class MiniappForm extends Form
     protected array $validate = [
         'param' => [
             'type', 'title', 'appid', 'app_secret', 'original_id', 'module',
-            'avatar_img/a', 'qrcode_img/a'
+            'avatar_img', 'qrcode_img'
         ],
         'rule'  => [
             'type|类型'            => 'require|in:wechat',
@@ -28,7 +28,7 @@ class MiniappForm extends Form
         return [
             [
                 "prop"    => "type",
-                "label"   => "类型",
+                "label"   => "小程序类型",
                 "type"    => "select",
                 "value"   => $model ? $model->type : 'wechat',
                 "options" => [
@@ -36,7 +36,20 @@ class MiniappForm extends Form
                 ],
                 "rules"   => [
                     ["required" => true],
-                ]
+                ],
+                "colSpan" => 12,
+            ],
+            [
+                "prop"    => "module",
+                "label"   => "关联模块",
+                "type"    => "select",
+                "value"   => $model ? $model->module : '',
+                "options" => ElementData::make(Module::enabledModules('miniapp'))
+                    ->toSelectOptions('title', 'name'),
+                "rules"   => [
+                    ["required" => true],
+                ],
+                "colSpan" => 12,
             ],
             [
                 "prop"  => "title",
@@ -73,27 +86,16 @@ class MiniappForm extends Form
                 "value" => $model ? $model->original_id : '',
             ],
             [
-                "prop"    => "module",
-                "label"   => "应用模块",
-                "type"    => "select",
-                "value"   => $model ? $model->module : '',
-                "options" => ElementData::make(Module::enabledModules('miniapp'))
-                    ->toSelectOptions('title', 'name'),
-                "rules"   => [
-                    ["required" => true],
-                ]
-            ],
-            [
                 "prop"  => "avatar_img",
                 "label" => "图标",
-                ...FormComponentOptions::fill(['type' => 'upload:image']),
-                "value" => $model ? $model->avatar_img : [],
+                'type' => 'upload:image',
+                "value" => $model ? $model->avatar_img :'',
             ],
             [
                 "prop"  => "qrcode_img",
                 "label" => "二维码",
-                ...FormComponentOptions::fill(['type' => 'upload:image']),
-                "value" => $model ? $model->qrcode_img : [],
+                'type' => 'upload:image',
+                "value" => $model ? $model->qrcode_img : '',
             ],
         ];
     }

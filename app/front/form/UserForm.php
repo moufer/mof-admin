@@ -15,7 +15,7 @@ class UserForm extends Form
 {
     protected array $validate = [
         'param' => [
-            'username', 'password', 'name', 'avatar/a', 'email', 'role_id/a', 'status/d'
+            'username', 'password', 'name', 'avatar', 'email', 'role_id/a', 'status/d'
         ],
         'rule'  => AdminValidate::class
     ];
@@ -35,17 +35,17 @@ class UserForm extends Form
             [
                 "prop"  => "avatar",
                 "label" => "头像",
-                ...FormComponentOptions::fill(['type' => 'upload:image']),
-                "value" => $values['avatar'] ?? [],
+                'type' => 'upload:image',
+                "value" => $values['avatar'] ?? '',
             ],
             [
                 "prop"      => "password",
                 "label"     => "密码",
                 "type"      => "password",
                 "introEdit" => "不修改密码请留空",
-                "rulesAdd"  => [
+                "rules"     => empty($model) ? [
                     ["required" => true],
-                ]
+                ] : []
             ],
             [
                 "prop"  => "name",
@@ -64,14 +64,14 @@ class UserForm extends Form
                 ]
             ],
             [
-                "prop"      => "role_id",
-                "label"     => "角色",
-                "type"      => "cascader",
-                "value"     => $values['role_id'] ?? 0,
-                "rules"     => [
+                "prop"    => "role_id",
+                "label"   => "角色",
+                "type"    => "cascader",
+                "value"   => $values['role_id'] ?? 0,
+                "rules"   => [
                     ["required" => true],
                 ],
-                'options'   => $this->getRolesOptions(),
+                'options' => $this->getRolesOptions(),
             ],
             [
                 "prop"          => "status",

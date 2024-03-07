@@ -2,7 +2,6 @@
 
 namespace mof;
 
-use mof\concern\model\Form;
 use mof\concern\model\Searcher;
 use think\db\Raw;
 
@@ -45,8 +44,10 @@ class Model extends \think\Model
         }
 
         switch ($type) {
-            case 'el-image':
+            case 'el-upload':
                 return is_array($value) && isset($value[0]['path']) ? $value[0]['path'] : '';
+            case 'storage':
+                return Mof::removeStorageUrl($value);
         }
 
         return parent::writeTransform($value, $type);
@@ -68,10 +69,12 @@ class Model extends \think\Model
         }
 
         switch ($type) {
-            case 'el-image':
+            case 'el-upload':
                 return $value
                     ? [['name' => basename($value), 'url' => Mof::storageUrl($value), 'path' => $value]]
                     : [];
+            case 'storage':
+                return Mof::storageUrl($value);
         }
 
         return parent::readTransform($value, $type);

@@ -25,8 +25,8 @@ class MiniApp extends \mof\Model
 
     protected $type = [
         'config'     => 'json',
-        'avatar_img' => 'el-image',
-        'qrcode_img' => 'el-image',
+        'avatar_img' => 'storage',
+        'qrcode_img' => 'storage',
     ];
 
     public function moduleInfo(): \think\model\relation\HasOne

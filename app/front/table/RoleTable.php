@@ -53,7 +53,6 @@ class RoleTable extends Table
             "width"   => 120,
             "search"  => true,
             "visible" => false,
-            "form"    => true,
             "type"    => "select",
             "options" => $this->elSgModules->toSelectOptions('title', 'name'),
         ];
@@ -65,7 +64,6 @@ class RoleTable extends Table
             "prop"   => "name",
             "label"  => "角色名称",
             "width"  => 180,
-            "form"   => true,
             "search" => true,
         ];
     }
@@ -77,29 +75,6 @@ class RoleTable extends Table
             "label" => "角色描述",
             "width" => "*",
             "align" => "left",
-            "form"  => true
-        ];
-    }
-
-    protected function columnPerms(): array
-    {
-        $switch = $this->elSgModules->map(fn($tab) => [
-            '_expr' => 'category=' . $tab['name'],
-            'data'  => Perm::getAll('category=' . $tab['name'], true),
-        ]);
-        return [
-            "prop"    => "perm_ids",
-            "label"   => "权限",
-            "visible" => false,
-            "form"    => [
-                "type"          => "tree",
-                "nodeKey"       => "id",
-                "data"          => [],
-                "_visible"      => 'category=regex:/.*/',
-                "_defaultValue" => [],
-                //根据其他数据切换显示内容
-                "_switch"       => $switch
-            ],
         ];
     }
 
@@ -109,7 +84,6 @@ class RoleTable extends Table
             "prop"    => "status",
             "label"   => "状态",
             "search"  => true,
-            "form"    => true,
             "type"    => "select",
             "options" => [
                 ["label" => "禁用", "value" => 0],

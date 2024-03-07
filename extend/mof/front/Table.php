@@ -74,8 +74,14 @@ abstract class Table
         'type.media'    => ['width' => 120, 'align' => 'center'],
     ];
 
-    public function __construct()
+    /**
+     * @var array Query参数数组
+     */
+    protected array $params = [];
+
+    public function __construct($params = [])
     {
+        $this->params = $params;
         $this->init();
     }
 

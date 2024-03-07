@@ -17,23 +17,23 @@ class Config extends \mof\front\Config
                 "value" => $values['site_name'] ?? "",
                 "intro" => "请填写站点名称。"
             ], [
-                "label" => "站点LOGO",
-                "prop"  => "site_logo",
-                "type"  => "upload:image",
-                "value" => $values['site_logo'] ?? "",
-                "intro" => "请上传站点LOGO。",
+                "label"     => "站点LOGO",
+                "prop"      => "site_logo",
+                "type"      => "upload:image",
+                "value"     => $values['site_logo'] ?? "",
+                "intro"     => "请上传站点LOGO。",
             ], [
-                "label" => "站点协议",
-                "prop"  => "site_protocol",
-                "type"  => "upload:file",
-                "value" => $values['site_protocol'] ?? "",
-                "intro" => "请上传站点协议。",
+                "label"     => "站点协议",
+                "prop"      => "site_protocol",
+                "type"      => "upload:file",
+                "value"     => $values['site_protocol'] ?? "",
+                "intro"     => "请上传站点协议。",
             ], [
-                "label" => "站点视频",
-                "prop"  => "site_video",
-                "type"  => "upload:media",
-                "value" => $values['site_video'] ?? "",
-                "intro" => "请上传站点视频。",
+                "label"     => "站点视频",
+                "prop"      => "site_video",
+                "type"      => "upload:video",
+                "value"     => $values['site_video'] ?? "",
+                "intro"     => "请上传站点视频。",
             ], [
                 "label" => "备案号",
                 "prop"  => "site_icp",
@@ -56,64 +56,64 @@ class Config extends \mof\front\Config
         ];
     }
 
-    #[Description('邮箱设置')]
-    public function groupMail(array $values): array
-    {
-        return [
-            [
-                "label"   => "邮件发送方式",
-                "prop"    => "email_type",
-                "type"    => "select",
-                "intro"   => "邮件发送方式。",
-                "value"   => $values['email_type'] ?? "",
-                "options" => [
-                    ["value" => "", "label" => "请选择"],
-                    ["label" => "SMTP", "value" => "smtp"]
-                ]
-            ], [
-                "label" => "SMTP服务器",
-                "prop"  => "smtp_server",
-                "type"  => "input",
-                "intro" => "SMTP服务器。",
-                "value" => $values['smtp_server'] ?? ""
-            ], [
-                "label" => "SMTP端口",
-                "prop"  => "smtp_port",
-                "type"  => "input",
-                "intro" => "SMTP端口。",
-                "value" => $values['smtp_port'] ?? ""
-            ], [
-                "label" => "SMTP账号",
-                "prop"  => "smtp_account",
-                "type"  => "input",
-                "intro" => "SMTP账号。",
-                "value" => $values['smtp_account'] ?? ""
-            ], [
-                "label" => "SMTP密码",
-                "prop"  => "smtp_password",
-                "type"  => "password",
-                "intro" => "SMTP密码。",
-                "value" => $values['smtp_password'] ?? ""
-            ], [
-                "label" => "SMTP发件人邮箱",
-                "prop"  => "smtp_sender_email",
-                "type"  => "input",
-                "intro" => "SMTP发件人邮箱。",
-                "value" => $values['smtp_sender_email'] ?? ""
-            ], [
-                "label"   => "SMTP加密方式",
-                "prop"    => "smtp_encryption",
-                "type"    => "select",
-                "intro"   => "SMTP加密方式。",
-                "value"   => $values['smtp_encryption'] ?? "",
-                "options" => [
-                    ["value" => "", "label" => "请选择"],
-                    ["label" => "SSL", "value" => "ssl"],
-                    ["label" => "TLS", "value" => "tls"]
-                ]
-            ]
-        ];
-    }
+//    #[Description('邮箱设置')]
+//    public function groupMail(array $values): array
+//    {
+//        return [
+//            [
+//                "label"   => "邮件发送方式",
+//                "prop"    => "email_type",
+//                "type"    => "select",
+//                "intro"   => "邮件发送方式。",
+//                "value"   => $values['email_type'] ?? "",
+//                "options" => [
+//                    ["value" => "", "label" => "请选择"],
+//                    ["label" => "SMTP", "value" => "smtp"]
+//                ]
+//            ], [
+//                "label" => "SMTP服务器",
+//                "prop"  => "smtp_server",
+//                "type"  => "input",
+//                "intro" => "SMTP服务器。",
+//                "value" => $values['smtp_server'] ?? ""
+//            ], [
+//                "label" => "SMTP端口",
+//                "prop"  => "smtp_port",
+//                "type"  => "input",
+//                "intro" => "SMTP端口。",
+//                "value" => $values['smtp_port'] ?? ""
+//            ], [
+//                "label" => "SMTP账号",
+//                "prop"  => "smtp_account",
+//                "type"  => "input",
+//                "intro" => "SMTP账号。",
+//                "value" => $values['smtp_account'] ?? ""
+//            ], [
+//                "label" => "SMTP密码",
+//                "prop"  => "smtp_password",
+//                "type"  => "password",
+//                "intro" => "SMTP密码。",
+//                "value" => $values['smtp_password'] ?? ""
+//            ], [
+//                "label" => "SMTP发件人邮箱",
+//                "prop"  => "smtp_sender_email",
+//                "type"  => "input",
+//                "intro" => "SMTP发件人邮箱。",
+//                "value" => $values['smtp_sender_email'] ?? ""
+//            ], [
+//                "label"   => "SMTP加密方式",
+//                "prop"    => "smtp_encryption",
+//                "type"    => "select",
+//                "intro"   => "SMTP加密方式。",
+//                "value"   => $values['smtp_encryption'] ?? "",
+//                "options" => [
+//                    ["value" => "", "label" => "请选择"],
+//                    ["label" => "SSL", "value" => "ssl"],
+//                    ["label" => "TLS", "value" => "tls"]
+//                ]
+//            ]
+//        ];
+//    }
 
     #[Description('附件设置')]
     public function groupStorage(array $values): array
@@ -147,8 +147,8 @@ class Config extends \mof\front\Config
                 "label" => "允许上传的媒体格式",
                 "prop"  => "storage_media_ext",
                 "type"  => "input",
-                "value" => $values['storage_media_ext'] ?? "mp4",
-                "intro" => "多媒体文件类型，如mp4,avi,mav等"
+                "value" => $values['storage_media_ext'] ?? "mp4,mp3",
+                "intro" => "多媒体文件类型，如mp4,avi,mp3,wav等"
             ], [
                 "label" => "允许上传的附件格式",
                 "prop"  => "storage_file_ext",

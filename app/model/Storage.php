@@ -24,7 +24,10 @@ class Storage extends Model
 
     protected array $searchFields = [
         'id'        => 'integer',
+        'user_id'   => 'integer',
+        'file_type' => 'string',
         'mime'      => 'string',
+        'title'     => ['string', 'op' => 'like'],
         'create_at' => ['datetime', 'op' => 'between'],
     ];
 

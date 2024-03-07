@@ -35,4 +35,16 @@ class Storage extends Controller
         $this->logic->deletes($this->request->getPostIds());
         return ApiResponse::success();
     }
+
+    public function selector(): Json
+    {
+        return ApiResponse::success(
+            $this->logic->paginate(
+                $this->request->searcher([
+                    'user_type' => 'admin',
+                    'user_id'   => $this->auth->getId()
+                ])
+            )
+        );
+    }
 }

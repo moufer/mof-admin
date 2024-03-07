@@ -22,7 +22,6 @@ class MiniappTable extends Table
             "prop"  => "avatar_img",
             "label" => "图标",
             "type"  => "image",
-            "form"  => FormComponentOptions::fill(['type' => 'upload:image', 'order' => 98]),
         ];
     }
 
@@ -33,7 +32,6 @@ class MiniappTable extends Table
             "label"   => "二维码",
             "search"  => false,
             "visible" => false,
-            "form"    => FormComponentOptions::fill(['type' => 'upload:image', 'order' => 99]),
         ];
     }
 
@@ -43,7 +41,6 @@ class MiniappTable extends Table
             "prop"    => "type",
             "label"   => "类型",
             "width"   => 120,
-            "form"    => true,
             "search"  => true,
             "type"    => "select",
             "options" => [
@@ -59,7 +56,6 @@ class MiniappTable extends Table
             "label"  => "名称",
             "width"  => '*',
             "align"  => "left",
-            "form"   => true,
             "search" => true,
         ];
     }
@@ -70,7 +66,6 @@ class MiniappTable extends Table
             "prop"    => "intro",
             "label"   => "描述",
             "width"   => '*',
-            "form"    => true,
             "search"  => false,
             "visible" => false,
         ];
@@ -82,7 +77,6 @@ class MiniappTable extends Table
             "prop"   => "appid",
             "label"  => "AppID",
             "width"  => 200,
-            "form"   => true,
             "search" => false,
         ];
     }
@@ -92,7 +86,6 @@ class MiniappTable extends Table
         return [
             "prop"    => "app_secret",
             "label"   => "App secret",
-            "form"    => true,
             "search"  => false,
             "visible" => false,
         ];
@@ -103,7 +96,6 @@ class MiniappTable extends Table
         return [
             "prop"    => "original_id",
             "label"   => "原始ID",
-            "form"    => true,
             "search"  => false,
             "visible" => false,
         ];
@@ -118,7 +110,6 @@ class MiniappTable extends Table
             "options" => ElementData::make(Module::enabledModules('miniapp'))
                 ->toSelectOptions('title', 'name'),
             "search"  => true,
-            "form"    => true,
         ];
     }
 

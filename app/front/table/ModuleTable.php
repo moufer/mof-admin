@@ -36,7 +36,6 @@ class ModuleTable extends Table
             "label"  => "模块名称",
             "width"  => 200,
             "align"  => "left",
-            "form"   => true,
             "search" => true,
         ];
     }
@@ -75,7 +74,6 @@ class ModuleTable extends Table
             "prop"    => "status",
             "label"   => "状态",
             "type"    => "select",
-            "form"    => true,
             "search"  => true,
             "options" => [
                 ["label" => "已停用", "value" => 0],

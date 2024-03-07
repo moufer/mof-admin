@@ -12,8 +12,9 @@ class Route extends \think\Route
         'index'  => ['get', '', 'index'], // 列表
         'create' => ['get', '/create', 'create'],
 
-        'updates' => ['put', '/updates', 'updates'], // 批量更新
-        'deletes' => ['post', '/deletes', 'deletes'], // 批量删除
+        'updates'      => ['put', '/updates', 'updates'], // 批量更新
+        'deletes'      => ['post', '/deletes', 'deletes'], // 批量删除
+        'selectSearch' => ['get', '/selectSearch', 'selectSearch'], // select搜索
 
         'edit'   => ['get', '/<id>/edit', 'edit'],
         'read'   => ['get', '/<id>', 'read'], // 详情

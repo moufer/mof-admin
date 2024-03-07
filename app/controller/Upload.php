@@ -83,7 +83,10 @@ class Upload extends Controller
         //保存目录
         $dirs = ['image' => 'images', 'media' => 'media'];
         $dir = $this->request->param('dir', $dirs[$type] ?? 'files');
-        $fs = $this->app->filesystem->disk(); //获取文件系统
+
+        $local = $this->request->param('local/d', 0); //是否存在本地
+        $fs = $this->app->filesystem->disk($local?'local':null);
+
         $path = $fs->putFile($dir, $file);    //保存文件
         if (!$path) {
             return ApiResponse::error('文件保存失败');
@@ -110,16 +113,20 @@ class Upload extends Controller
             $data['height'] = $image->height();
         }
 
-        //保存到数据库
-        $storage = Storage::create($data);
+        if(!$local) {
+            //保存到数据库
+            $storage = Storage::create($data);
 
-        //触发事件
-        event('StorageUpload', $storage);
+            //触发事件
+            event('StorageUpload', $storage);
 
-        //返回
-        $data = $storage->visible([
-            'id', 'title', 'url', 'path', 'size', 'mime', 'width', 'height'
-        ])->toArray();
+            //返回
+            $data = $storage->visible([
+                'id', 'title', 'url', 'path', 'size', 'mime', 'width', 'height'
+            ])->toArray();
+        } else {
+            $data['url'] = $path;
+        }
 
         //获取用户附加参数，并原样返回
         $data['extra'] = $this->request->param('extra', '');

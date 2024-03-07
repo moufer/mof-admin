@@ -18,6 +18,7 @@ class Mof
      */
     public static function storageUrl($path, string $provider = ''): string
     {
+        if(empty(trim($path))) return '';
         empty($provider) && $provider = config('filesystem.default');
         $path = str_replace('\\', '/', $path);
         try {
@@ -27,6 +28,27 @@ class Mof
         }
         if (str_starts_with($url, '/')) {
             $url = app('request')->domain() . $url;
+        }
+        return $url;
+    }
+
+    /**
+     * 去掉附件链接前缀
+     * @param $url
+     * @param string $provider
+     * @return string
+     */
+    public static function removeStorageUrl($url, string $provider = ''): string
+    {
+        if (str_starts_with($url, 'http')) {
+            $config = config('filesystem');
+            empty($provider) && $provider = $config['default'];
+            $preUrl = $config['disks'][$provider]['url'] ?? '/';
+            if (!str_starts_with($preUrl, 'http')) {
+                $preUrl = app('request')->domain() . $preUrl;
+            }
+            $preUrl = rtrim($preUrl, '/') . '/';
+            $url = str_replace($preUrl, '', $url);
         }
         return $url;
     }

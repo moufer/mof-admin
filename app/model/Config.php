@@ -22,10 +22,7 @@ class Config extends \mof\Model
             'input-dict',
             'select-multiple',
             'checkbox',
-            'keyvalue',
-            'upload:image',
-            'upload:file',
-            'upload:media' => $value ? json_encode($value, JSON_UNESCAPED_UNICODE) : '',
+            'keyvalue' => $value ? json_encode($value, JSON_UNESCAPED_UNICODE) : '',
             default => $value,
         };
     }
@@ -35,26 +32,12 @@ class Config extends \mof\Model
         //获取参数类型
         $type = $data['type'] ?? 'text';
         //根据参数类型进行转换
-        $value = match ($type) {
+        return match ($type) {
             'input-dict' => empty($value) ? (object)[] : json_decode($value, true),
             'select-multiple' => empty($value) ? [] : json_decode($value, true),
             'checkbox',
-            'keyvalue',
-            'upload:image',
-            'upload:file',
-            'upload:media' => $value && $value !== '[]' ? json_decode($value, true) : '',
+            'keyvalue' => $value && $value !== '[]' ? json_decode($value, true) : '',
             default => $value,
         };
-        //上传类型处理
-        if ($value && is_array($value) && str_starts_with($type, 'upload')) {
-            $value = array_map(fn($item) => empty($item['path']) ? false : [
-                'name' => $item['name'] ?? basename($item['path']),
-                'url'  => Mof::storageUrl($item['path']),
-                'path' => $item['path']
-            ], $value);
-            //过滤
-            $value = array_filter($value);
-        }
-        return $value;
     }
 }

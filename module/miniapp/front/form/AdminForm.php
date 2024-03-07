@@ -12,7 +12,7 @@ class AdminForm extends UserForm
 {
     protected array $validate = [
         'param' => [
-            'username', 'password', 'name', 'avatar/a', 'email', 'status/d',
+            'username', 'password', 'name', 'avatar', 'email', 'status/d',
             'miniapp_ids/a',
         ],
         'rule'  => AdminValidate::class

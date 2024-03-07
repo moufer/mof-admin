@@ -72,7 +72,7 @@ class Searcher
                 ? $this->model->getSearchFields() : false;
             if ($searchFields) {
                 foreach ($searchFields as $field => $option) {
-                    if (empty($this->params[$field])) continue;        //没有提供这个参数
+                    if (!isset($this->params[$field])) continue;        //没有提供这个参数
                     $val = $this->params[$field];                      //参数值
                     $method = 'search' . Str::studly($field) . 'Attr'; //先查找是否存在专有搜索器
                     if (method_exists($this->model, $method)) {

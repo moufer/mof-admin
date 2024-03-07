@@ -24,7 +24,7 @@ class PermForm extends Form
         return [
             [
                 "prop"  => "title",
-                "label" => "名称",
+                "label" => "权限名称",
                 "value" => $values['title'] ?? '',
                 "rules" => [
                     ["required" => true],
