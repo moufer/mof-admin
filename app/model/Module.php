@@ -9,6 +9,8 @@ use think\Model;
 
 class Module extends \mof\Model
 {
+    protected $name = 'system_module';
+
     protected $createTime = 'install_at';
     protected $updateTime = false;
 
@@ -75,79 +77,17 @@ class Module extends \mof\Model
     }
 
     /**
-     * 安装权限规则
-     * @param array $moduleInfo
-     * @return void
-     * @throws \Exception
+     * 模块列表kv
+     * @return array
      */
-    public static function installPerms(array $moduleInfo): void
+    public static function modulesList(): array
     {
-        $model = new static;
-        $model->startTrans();
-        try {
-            //先卸载旧菜单(不调用模型事件)
-            self::uninstallPerms($moduleInfo['name']);
-            //先新建权限组
-            $group = Perm::create([
-                'type'     => 'group',
-                'category' => $moduleInfo['parent'] ?? 'admin', //所属分类，默认为admin
-                'module'   => $moduleInfo['name'],
-                'title'    => $moduleInfo['title'],
-                'icon'     => $moduleInfo['perm_icon'] ?? '',
-            ]);
-            if (!empty($moduleInfo['perms'])) {
-                foreach ($moduleInfo['perms'] as $perm) {
-                    //从数组 $perm 中获取键名为perm、title、url、icon的值，组成一个新数组
-                    $data = array_intersect_key($perm, array_flip(['perm', 'title', 'url', 'icon', 'sort']));
-                    $data['pid'] = $group->id;
-                    $data['type'] = 'menu';
-                    $data['module'] = $moduleInfo['name'];
-                    $data['status'] = 1;
-                    //新建根权限
-                    $prem = Perm::create($data);
-                    //新建action类型权限
-                    if (isset($perm['actions']) && is_array($perm['actions'])) {
-                        $actions = array_map(function ($action) use ($prem) {
-                            return $prem->createAction($action);
-                        }, $perm['actions']);
-                    }
-                }
-            }
-            $model->commit();
-        } catch (\Exception $e) {
-            $model->rollback();
-            throw $e;
+        $data = array_values(Module::sgPermModules());
+        $result = [];
+        foreach ($data as $item) {
+            $result[$item['name']] = $item['title'];
         }
-    }
-
-    /**
-     * 卸载权限规则
-     * @param string $name 模块名
-     * @return void
-     */
-    public static function uninstallPerms(string $name): void
-    {
-        Perm::where('module', $name)->delete();
-    }
-
-    /**
-     * 禁用模块权限规则
-     * @param string $name 模块名
-     * @return void
-     */
-    public static function disablePerms(string $name): void
-    {
-        Perm::where('module', $name)->update(['status' => 0]);
-    }
-
-    /**
-     * 启用模块权限规则
-     * @param string $name 模块名
-     * @return void
-     */
-    public static function enablePerms(string $name): void
-    {
-        Perm::where('module', $name)->update(['status' => 1]);
+        return $result;
     }
 
     /**

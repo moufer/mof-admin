@@ -17,20 +17,14 @@ class Menu extends Command
         // 指令配置
         //选项配置
         // --name dashboard --title 仪表盘 --type url --action add,del,edit,index,multi
-        $this->setName('menu')
-            ->addArgument(
-                'action', Argument::OPTIONAL, 'create or delete')
-            ->addOption(
-                'name', null, Option::VALUE_REQUIRED, 'name', '')
-            ->addOption(
-                'title', null, Option::VALUE_OPTIONAL, 'title', '')
-            ->addOption(
-                'type', null, Option::VALUE_OPTIONAL, 'type', '')
-            ->addOption(
-                'action', null, Option::VALUE_OPTIONAL, 'action',
-                'add,del,edit,index,multi')
-            ->addOption('parent', null, Option::VALUE_OPTIONAL, 'parent name', '')
-            ->setDescription('the menu command');
+        $this->setName('mof-admin:menu')
+            ->setDescription('添加后台菜单')
+            ->addArgument('action', Argument::OPTIONAL, 'create or delete')
+            ->addOption('name', null, Option::VALUE_REQUIRED, 'name', '')
+            ->addOption('title', null, Option::VALUE_OPTIONAL, 'title', '')
+            ->addOption('type', null, Option::VALUE_OPTIONAL, 'type', '')
+            ->addOption('action', null, Option::VALUE_OPTIONAL, 'action', 'add,del,edit,index,multi')
+            ->addOption('parent', null, Option::VALUE_OPTIONAL, 'parent name', '');
     }
 
     protected function execute(Input $input, Output $output): void

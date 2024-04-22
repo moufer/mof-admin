@@ -18,9 +18,12 @@ class Mof
      */
     public static function storageUrl($path, string $provider = ''): string
     {
-        if(empty(trim($path))) return '';
+        if (empty(trim($path))) return '';
         empty($provider) && $provider = config('filesystem.default');
         $path = str_replace('\\', '/', $path);
+        if (str_starts_with($path, 'http')) {
+            return $path;
+        }
         try {
             $url = app('filesystem')->disk($provider)->url($path);
         } catch (\Exception $e) {

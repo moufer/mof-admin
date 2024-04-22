@@ -6,6 +6,7 @@ use app\model\Module;
 use app\model\Perm;
 use mof\front\Form;
 use mof\Model;
+use mof\utils\DictArray;
 use mof\utils\ElementData;
 
 class RoleForm extends Form
@@ -31,7 +32,7 @@ class RoleForm extends Form
                 "label"   => "分类",
                 "type"    => "select",
                 "value"   => $values['category'] ?? '',
-                "options" => $this->getSgModules()->toSelectOptions('title', 'name'),
+                "options" => $this->getSgModules()->toSelectOptions(),
             ],
             [
                 "prop"  => "name",
@@ -71,8 +72,8 @@ class RoleForm extends Form
     private function getPermSwitchData()
     {
         return $this->getSgModules()->map(fn($tab) => [
-            '_expr' => 'category=' . $tab['name'],
-            'data'  => Perm::getAll('category=' . $tab['name'], true),
+            '_expr' => 'category=' . $tab['value'],
+            'data'  => Perm::getAll('category=' . $tab['value'], true),
         ]);
     }
 
@@ -80,7 +81,7 @@ class RoleForm extends Form
     {
         global $elSgModules;
         if (!$elSgModules) {
-            $elSgModules = ElementData::make(array_values(Module::sgPermModules()));
+            $elSgModules = DictArray::make(Module::modulesList())->toElementData();
         }
         return $elSgModules;
     }

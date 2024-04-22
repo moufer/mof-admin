@@ -16,6 +16,8 @@ use think\model\relation\MorphTo;
  */
 class Storage extends Model
 {
+    protected $name = 'system_storage';
+
     protected $append = ['url'];
 
     protected static array $userMorph = [
@@ -24,6 +26,7 @@ class Storage extends Model
 
     protected array $searchFields = [
         'id'        => 'integer',
+        'user_type' => 'string',
         'user_id'   => 'integer',
         'file_type' => 'string',
         'mime'      => 'string',

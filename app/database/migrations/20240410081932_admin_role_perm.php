@@ -2,7 +2,7 @@
 
 use think\migration\Migrator;
 
-class MiniappAdmin extends Migrator
+class AdminRolePerm extends Migrator
 {
     /**
      * Change Method.
@@ -27,18 +27,23 @@ class MiniappAdmin extends Migrator
      */
     public function up()
     {
-        $table = $this->table('miniapp_admin_relation', ['engine' => 'InnoDB']);
-        $table->addColumn('admin_id', 'integer', ['limit' => 11, 'default' => 0, 'comment' => '管理员ID'])
-            ->addColumn('miniapp_id', 'integer', ['limit' => 11, 'default' => 0, 'comment' => '小程序ID'])
-            ->addColumn('module', 'string', ['limit' => 50, 'default' => '', 'comment' => '关联模块标识'])
-            ->addColumn('create_at', 'datetime', ['comment' => '创建时间'])
-            ->addIndex('admin_id')
+        $table = $this->table('system_role_perm', [
+            'engine'      => 'InnoDB',
+            'collation'   => 'utf8mb4_general_ci',
+            'comment'     => '角色菜单',
+            'id'          => 'id',
+            'signed'      => false,
+            'primary_key' => ['id']
+        ]);
+
+        $table->addColumn('role_id', 'integer', ['limit' => 11, 'default' => 0, 'comment' => '角色Id', 'null' => false])
+            ->addColumn('perm_id', 'integer', ['limit' => 11, 'default' => 0, 'comment' => '菜单Id', 'null' => false])
             ->create();
     }
 
     public function down()
     {
-        $table = $this->table('miniapp');
+        $table = $this->table('system_role_perm');
         $table->exists() && $table->drop()->save();
     }
 }

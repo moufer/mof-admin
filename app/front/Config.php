@@ -17,24 +17,6 @@ class Config extends \mof\front\Config
                 "value" => $values['site_name'] ?? "",
                 "intro" => "请填写站点名称。"
             ], [
-                "label"     => "站点LOGO",
-                "prop"      => "site_logo",
-                "type"      => "upload:image",
-                "value"     => $values['site_logo'] ?? "",
-                "intro"     => "请上传站点LOGO。",
-            ], [
-                "label"     => "站点协议",
-                "prop"      => "site_protocol",
-                "type"      => "upload:file",
-                "value"     => $values['site_protocol'] ?? "",
-                "intro"     => "请上传站点协议。",
-            ], [
-                "label"     => "站点视频",
-                "prop"      => "site_video",
-                "type"      => "upload:video",
-                "value"     => $values['site_video'] ?? "",
-                "intro"     => "请上传站点视频。",
-            ], [
                 "label" => "备案号",
                 "prop"  => "site_icp",
                 "type"  => "input",
@@ -123,7 +105,7 @@ class Config extends \mof\front\Config
                 "label"   => "上传平台",
                 "prop"    => "storage_provider",
                 "type"    => "select",
-                "intro"   => "选择附件上传平台，相关配置请到 config/storage.php 文件中配置。",
+                "intro"   => "选择附件上传平台，相关配置请到 config/filesystem.php 文件中配置。",
                 "value"   => $values['storage_driver'] ?? "public",
                 "options" => [
                     ["label" => "本地", "value" => "public"],

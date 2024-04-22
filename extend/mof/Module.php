@@ -46,7 +46,7 @@ class Module
         $dirs = scandir(root_path('module'));
         $modules = [];
         //要忽略的目录
-        $ignore = ['.', '..'];
+        $ignore = ['.', '..', '.DS_Store'];
         foreach ($dirs as $dir) {
             if (in_array($dir, $ignore) || !is_dir(static::path($dir))) {
                 continue;
@@ -165,7 +165,22 @@ class Module
      */
     public static function getModuleSeedPath(string $module): string
     {
-        return base_path('module') . $module . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'seeds';
+        return static::path($module) . 'database' . DIRECTORY_SEPARATOR . 'seeds';
+    }
+
+    /**
+     * 获取模块资源目录
+     * @param string $module 模块标识
+     * @param bool $isPublicDir 是否返回public目录
+     * @return string
+     */
+    public static function getModuleResourcesPath(string $module, bool $isPublicDir = false): string
+    {
+        if ($isPublicDir) {
+            return app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR . 'resource'
+                . DIRECTORY_SEPARATOR . $module;
+        }
+        return static::path($module) . 'resource';
     }
 
     /**
@@ -201,8 +216,8 @@ class Module
         $result = [];
         $modules = self::getEnabledModules();
         foreach ($modules as $module) {
-            $serviceFile = static::path($module) . 'service.php';
-            $className = static::namespace($module) . 'Service';
+            $serviceFile = static::path($module) . 'library' . DIRECTORY_SEPARATOR . 'Service.php';
+            $className = static::namespace($module) . 'library\\Service';
             if (file_exists($serviceFile) && class_exists($className)) {
                 $result[] = $className;
             }

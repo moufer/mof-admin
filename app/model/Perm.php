@@ -10,6 +10,8 @@ use think\facade\Db;
 
 class Perm extends Model
 {
+    protected $name = 'system_perm';
+
     protected array $searchFields = [
         'id'        => 'integer',
         'category'  => 'string',
@@ -19,6 +21,16 @@ class Perm extends Model
         'status'    => ['integer', 'zero' => true],
         'create_at' => ['datetime', 'op' => 'between'],
     ];
+
+    public static function onAfterInsert(\think\Model $model): void
+    {
+        //设置pid_path
+        $model->setAttr(
+            'pid_path',
+            $model->getParents($model->getAttr('pid'), true)
+        );
+        $model->save();
+    }
 
     public static function onAfterUpdate(Perm $model): void
     {
@@ -96,33 +108,6 @@ class Perm extends Model
     }
 
     /**
-     * 新建当前菜单的action
-     * @param string $action
-     * @return false|static
-     */
-    public function createAction(string $action): bool|static
-    {
-        $action = $this->getActionInfo($action);
-        if (!$action || !isset($action['action'])) {
-            return false;
-        }
-        //action行为插入到Perm表中
-        $model = new static();
-        $model->save([
-            'pid'      => $this->getAttr('id'), //父级id
-            'pid_path' => $this->getParents($this->getAttr('id'), true), //父级id路径
-            'type'     => 'action', //类型
-            'module'   => $this->getAttr('module'),  //所属模块
-            'perm'     => $this->getAttr('perm') . '@' . $action['action'], //权限标识
-            'title'    => $action['title'] ?? $action['action'],
-            'url'      => '',
-            'status'   => 1,
-            'sort'     => 0,
-        ]);
-        return $model;
-    }
-
-    /**
      * 当前节点的所有父级节点id，格式：1-2-3
      */
     public function getParents($pid, $appendSelf = false): string
@@ -186,7 +171,7 @@ class Perm extends Model
         } else if ($value === '') {
             $value = 0;
         }
-        $this->setAttr('pid_path', $this->getParents($value, true));
+        //$this->setAttr('pid_path', $this->getParents($value, true));
         return $value;
     }
 
@@ -217,22 +202,4 @@ class Perm extends Model
         return str_replace(' ', '_', $value);
     }
 
-    /**
-     * 获取内置的action信息
-     * @param string $action
-     * @return array
-     */
-    protected function getActionInfo(string $action): array
-    {
-        $actions = [
-            'index'  => ['title' => '列表', 'action' => 'index'],
-            'save'   => ['title' => '添加', 'action' => 'save'],
-            'read'   => ['title' => '详情', 'action' => 'read'],
-            'update' => ['title' => '编辑', 'action' => 'update'],
-            'delete' => ['title' => '删除', 'action' => 'delete'],
-            'multi'  => ['title' => '批量操作', 'action' => 'multi'],
-        ];
-        //TODO 批量删除
-        return $actions[$action] ?? ["action" => $action];
-    }
 }

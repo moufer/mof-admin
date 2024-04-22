@@ -17,6 +17,8 @@ use think\model\relation\HasMany;
  */
 class Role extends Model
 {
+    protected $name = 'system_role';
+
     protected array $searchFields = [
         'id'       => 'integer',
         'category' => 'string',

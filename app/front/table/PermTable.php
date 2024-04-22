@@ -4,6 +4,7 @@ namespace app\front\table;
 
 use app\model\Module;
 use mof\front\Table;
+use mof\utils\DictArray;
 use mof\utils\ElementData;
 
 class PermTable extends Table
@@ -21,10 +22,20 @@ class PermTable extends Table
     protected function init(): void
     {
         parent::init();
-        $this->elSgModules = ElementData::make(array_values(Module::sgPermModules()));
-        $this->tabs = $this->elSgModules->toTabs('title');
-        $this->activeTab = $this->elSgModules->data()[0]['name'];
+        $this->elSgModules = DictArray::make(Module::modulesList())->toElementData();
+        $this->tabs = $this->elSgModules->toTabs('label','value');
+        $this->activeTab = $this->elSgModules->data()[0]['value'];
         $this->tabProp = 'category';
+    }
+
+    protected function getPermModules(): array
+    {
+        $data = array_values(Module::sgPermModules());
+        $result = [];
+        foreach ($data as $item) {
+            $result[$item['name']] = $item['title'];
+        }
+        return $result;
     }
 
     public function columnTitle(): array

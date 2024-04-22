@@ -2,6 +2,7 @@
 
 namespace app\logic;
 
+use app\library\InstallPerm;
 use app\model\Module;
 use mof\command\MigrateRollback;
 use mof\command\MigrateRun;
@@ -10,6 +11,9 @@ use mof\exception\LogicException;
 use mof\InstallModule;
 use mof\Logic;
 use mof\Model;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
 class ModuleLogic extends Logic
 {
@@ -81,21 +85,19 @@ class ModuleLogic extends Logic
      */
     public function install($name): Model|\think\Model
     {
-        $module = $this->model->getByName($name);
-        if ($module) {
+        if ($this->model->getByName($name)) {
             throw new LogicException('模块已安装');
         }
-        if (!\mof\Module::verifyIntegrity($name)) {
-            throw new LogicException('模块不存在或文件不完整');
-        }
+
         $info = \mof\Module::info($name);
         if (!$info || $info['name'] !== $name) {
             throw new LogicException('模块信息不存在或模块名称不一致');
         }
 
-        $install = new InstallModule($name);
-        $install->install(); //安装模块（数据库）
+        //安装模块（数据库）
+        (new InstallModule($info))->install();
 
+        //写入模块表
         $module = $this->model->create([
             'name'       => $name,
             'title'      => $info['title'] ?? '', //模块名称
@@ -105,9 +107,6 @@ class ModuleLogic extends Logic
             'install_at' => date('Y-m-d H:i:s'), //安装时间
             'sg_perm'    => $info['sg_perm'] ?? 0, //使用独立的权限分类
         ]);
-
-        //安装模块权限
-        \app\model\Module::installPerms($info);
 
         //触发安装模块事件
         event('ModuleInstallAfter', $module);
@@ -119,21 +118,22 @@ class ModuleLogic extends Logic
     /**
      * @param $name
      * @return bool
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function uninstall($name): bool
     {
         if (!$this->model = $this->model->getByName($name)) {
             throw new LogicException('模块未安装');
-        }
-        if ($this->model->name === 'admin') {
+        } else if ($this->model->name === 'admin') {
             throw new LogicException('禁止卸载核心模块');
         }
 
-        $install = new InstallModule($name);
-        $install->uninstall();
+        //卸载数据库
+        InstallModule::make($name)->uninstall();
 
-        //卸载模块权限
-        \app\model\Module::uninstallPerms($name);
+        //从模块表删除
         $this->model->delete();
 
         //触发卸载模块事件
@@ -145,6 +145,9 @@ class ModuleLogic extends Logic
     /**
      * @param $name
      * @return bool
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function disable($name): bool
     {
@@ -154,10 +157,11 @@ class ModuleLogic extends Logic
         if ($module->name === 'admin') {
             throw new LogicException('禁止停用核心模块');
         }
+        //禁用
+        InstallModule::make($name)->disable();
+
         $module->save(['status' => 0]);
 
-        //禁用权限规则
-        \app\model\Module::disablePerms($name);
         //触发停用模块事件
         event('ModuleDisableAfter', $module);
 
@@ -168,6 +172,7 @@ class ModuleLogic extends Logic
     /**
      * @param $name
      * @return bool
+     * @throws DbException
      */
     public function enable($name): bool
     {
@@ -181,10 +186,11 @@ class ModuleLogic extends Logic
         if (!$module = $this->model->getByName($name)) {
             throw new LogicException('模块未安装');
         }
+        //启用
+        InstallModule::make($name)->enable();
+
         $module->save(['status' => 1]);
 
-        //禁用权限规则
-        \app\model\Module::enablePerms($name);
         //触发启用模块事件
         event('ModuleEnableAfter', $module);
 

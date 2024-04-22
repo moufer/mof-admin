@@ -2,6 +2,7 @@
 
 namespace app\event;
 
+use app\model\AdminLoginLog;
 use think\facade\Db;
 
 /**
@@ -25,7 +26,7 @@ class LoginLog
             'user_agent' => app('request')->header('user-agent'),
             'login_at'   => date('Y-m-d H:i:s', request()->time())
         ];
-        Db::name('admin_login_log')->insert($data);
+        AdminLoginLog::insert($data);
     }
 
     /**

@@ -6,6 +6,8 @@ use mof\Mof;
 
 class Config extends \mof\Model
 {
+    protected $name = 'system_config';
+
     protected $type = [
         'extra' => 'json'
     ];
@@ -16,8 +18,8 @@ class Config extends \mof\Model
         $type = $data['type'] ?? 'text';
         //根据参数类型进行转换
         return match ($type) {
-            'number' => (int)$value,
-            'float' => (float)$value,
+            'input-number',
+            'number' => trim($value),
             'switch' => $value ? 1 : 0,
             'input-dict',
             'select-multiple',
@@ -33,11 +35,15 @@ class Config extends \mof\Model
         $type = $data['type'] ?? 'text';
         //根据参数类型进行转换
         return match ($type) {
-            'input-dict' => empty($value) ? (object)[] : json_decode($value, true),
+            'input-number',
+            'number' => floatval($value),
+            'switch' => (bool)$value,
+            'input-dict',
             'select-multiple' => empty($value) ? [] : json_decode($value, true),
             'checkbox',
-            'keyvalue' => $value && $value !== '[]' ? json_decode($value, true) : '',
+            'keyvalue' => $value ? json_decode($value, true) : [],
             default => $value,
         };
     }
+
 }

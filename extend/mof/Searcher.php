@@ -55,6 +55,11 @@ class Searcher
         return $this;
     }
 
+    public function getParams(): array
+    {
+        return $this->params;
+    }
+
     public function auto(): static
     {
         if ($this->autoCallback) {
@@ -65,16 +70,22 @@ class Searcher
 
     public function build(): BaseQuery
     {
+        //关联
+        $query = null;
+        if (!empty($this->with)) {
+            $query = $this->model->with($this->with);
+        }
+
         /** @var Query $query */
-        $query = $this->model->where(function ($query) {
+        $query = ($query ?: $this->model)->where(function ($query) {
             //获取允许参与搜索的字段
             $searchFields = method_exists($this->model, 'getSearchFields')
                 ? $this->model->getSearchFields() : false;
             if ($searchFields) {
                 foreach ($searchFields as $field => $option) {
                     if (!isset($this->params[$field])) continue;        //没有提供这个参数
-                    $val = $this->params[$field];                      //参数值
-                    $method = 'search' . Str::studly($field) . 'Attr'; //先查找是否存在专有搜索器
+                    $val = $this->params[$field];                       //参数值
+                    $method = 'search' . Str::studly($field) . 'Attr';  //先查找是否存在专有搜索器
                     if (method_exists($this->model, $method)) {
                         $this->model->$method($query, $val, $this->params);
                     } else {
@@ -85,14 +96,13 @@ class Searcher
             }
         });
 
-        //关联
-        if (!empty($this->with)) {
-            $query->with($this->with);
-        }
-
         //排序
         if (!empty($this->order)) {
-            $query->order($this->order);
+            if ($this->order === ['rand']) {
+                $query->orderRaw('rand()');
+            } else {
+                $query->order($this->order);
+            }
         }
 
         //字段

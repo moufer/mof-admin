@@ -1,13 +1,118 @@
 {
   "name": "admin",
   "title": "后台管理",
-  "description": "mof开发框架后台管理",
+  "description": "mofAdmin后台管理模块",
   "author": "官方",
   "version": "1.0.0",
   "keywords": [
     "admin",
-    "mof"
+    "official"
   ],
   "is_kernel": true,
-  "requires": []
+  "requires": [],
+  "perms": [
+    {
+      "type": "menu",
+      "title": "仪表盘",
+      "perm": "Dashboard",
+      "url": "admin/dashboard",
+      "sort": 0,
+      "icon": "Odometer",
+      "actions": [
+        "index"
+      ]
+    },
+    {
+      "type": "group",
+      "title": "常规设置",
+      "perm": "",
+      "url": "",
+      "sort": 1,
+      "icon": "Operation",
+      "children": [
+        {
+          "type": "menu",
+          "title": "系统设置",
+          "perm": "Config",
+          "url": "admin/config",
+          "sort": 2,
+          "icon": "Setting",
+          "actions": [
+            "index",
+            "submit@提交"
+          ]
+        },
+        {
+          "type": "menu",
+          "title": "附件管理",
+          "perm": "storage",
+          "url": "admin/storage",
+          "sort": 3,
+          "icon": "Paperclip",
+          "actions": [
+            "*"
+          ]
+        },
+        {
+          "type": "menu",
+          "title": "模块管理",
+          "perm": "Module",
+          "url": "admin/module",
+          "sort": 4,
+          "icon": "Grid",
+          "actions": [
+            "index",
+            "install@安装",
+            "uninstall@卸载",
+            "enable@启用",
+            "disable@禁用",
+            "remove@删除"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "权限管理",
+      "perm": "",
+      "url": "",
+      "sort": 2,
+      "icon": "Connection",
+      "children": [
+        {
+          "type": "menu",
+          "title": "管理员管理",
+          "perm": "User",
+          "url": "admin/user",
+          "sort": 1,
+          "icon": "Connection",
+          "actions": [
+            "*"
+          ]
+        },
+        {
+          "type": "menu",
+          "title": "角色管理",
+          "perm": "Role",
+          "url": "admin/role",
+          "sort": 2,
+          "icon": "MagicStick",
+          "actions": [
+            "*"
+          ]
+        },
+        {
+          "type": "menu",
+          "title": "权限管理",
+          "perm": "Perm",
+          "url": "admin/perm",
+          "sort": 3,
+          "icon": "Connection",
+          "actions": [
+            "*"
+          ]
+        }
+      ]
+    }
+  ]
 }

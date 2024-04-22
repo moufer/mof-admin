@@ -18,6 +18,8 @@ use think\model\relation\BelongsTo;
  */
 class Admin extends Model implements UserInterface
 {
+    protected $name = 'system_admin';
+
     protected $type = [
         'avatar' => 'storage'
     ];
@@ -42,6 +44,11 @@ class Admin extends Model implements UserInterface
             ['value' => 1, 'label' => '正常'],
             ['value' => 0, 'label' => '禁用'],
         ];
+    }
+
+    public function getUserType(): string
+    {
+        return 'admin';
     }
 
     public function getId(): int

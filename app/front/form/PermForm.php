@@ -6,6 +6,7 @@ use app\model\Module;
 use app\validate\PermValidate;
 use mof\front\Form;
 use mof\Model;
+use mof\utils\DictArray;
 use mof\utils\ElementData;
 
 class PermForm extends Form
@@ -112,7 +113,7 @@ class PermForm extends Form
     {
         global $instance;
         if (!$instance) {
-            $instance = ElementData::make(array_values(Module::sgPermModules()));
+            $instance = DictArray::make(Module::modulesList())->toElementData();
         }
         return $instance;
     }

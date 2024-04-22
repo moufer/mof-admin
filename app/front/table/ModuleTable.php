@@ -6,12 +6,12 @@ use mof\front\Table;
 
 class ModuleTable extends Table
 {
-    protected string|int $pk             = 'name';
-    protected bool       $showSearch     = false;
-    protected bool       $showPagination = false;
-    protected bool       $tableSelection = false;
-    protected array      $toolbarButtons = ['refresh', 'add', 'search'];
-    protected string     $sortField      = 'order';
+    protected string $pk             = 'name';
+    protected bool   $showSearch     = false;
+    protected bool   $showPagination = false;
+    protected bool   $tableSelection = false;
+    protected array  $toolbarButtons = ['refresh', 'add', 'search'];
+    protected string $sortField      = 'order';
 
     public function operation(): array
     {
@@ -20,23 +20,24 @@ class ModuleTable extends Table
         return $result;
     }
 
-    public function columnName(): array
-    {
-        return [
-            "prop"    => "name",
-            "label"   => "模块标识",
-            "visible" => false
-        ];
-    }
-
     public function columnTitle(): array
     {
         return [
             "prop"   => "title",
             "label"  => "模块名称",
-            "width"  => 200,
+            "width"  => 150,
             "align"  => "left",
             "search" => true,
+        ];
+    }
+
+    public function columnName(): array
+    {
+        return [
+            "prop"    => "name",
+            "label"   => "标识",
+            "visible" => true,
+            "width"   => 150,
         ];
     }
 
@@ -45,6 +46,7 @@ class ModuleTable extends Table
         return [
             "prop"  => "version",
             "label" => "版本号",
+            "width"  => 120,
         ];
     }
 

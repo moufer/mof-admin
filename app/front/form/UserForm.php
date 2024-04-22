@@ -35,7 +35,7 @@ class UserForm extends Form
             [
                 "prop"  => "avatar",
                 "label" => "头像",
-                'type' => 'upload:image',
+                'type'  => 'upload:image',
                 "value" => $values['avatar'] ?? '',
             ],
             [
@@ -88,7 +88,9 @@ class UserForm extends Form
     private function getRolesOptions(): array
     {
         $rows = Role::where('status', '=', 1)
-            ->order('id', 'asc')->select()->toArray();
+            ->order('id', 'asc')
+            ->select()
+            ->toArray();
 
         $sgPermModules = Module::sgPermModules();
         foreach ($rows as $key => $item) {

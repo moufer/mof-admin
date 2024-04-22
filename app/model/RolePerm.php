@@ -9,6 +9,8 @@ use think\model\relation\BelongsTo;
  */
 class RolePerm extends \mof\Model
 {
+    protected $name = 'system_role_perm';
+
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class, 'role_id');

@@ -2,17 +2,20 @@
 
 namespace app\library;
 
-class Service extends \think\Service
+use mof\ModuleService;
+
+class Service extends ModuleService
 {
-    public function register(): void
-    {
-        $this->app->event->listenEvents([
-            'HttpRun'    => [
-                \app\event\GetConfig::class
-            ],
-            'AdminLogin' => [
-                \app\event\LoginLog::class
-            ]
-        ]);
-    }
+    protected array $events = [
+        'HttpRun'    => [
+            \app\event\GetConfig::class
+        ],
+        'AdminLogin' => [
+            \app\event\LoginLog::class
+        ]
+    ];
+
+    protected array $commands = [
+        \app\command\Install::class
+    ];
 }

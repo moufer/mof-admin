@@ -4,8 +4,5 @@
 // +----------------------------------------------------------------------
 return [
     // 指令定义
-    'commands' => [
-        'create_admin_user' => 'app\command\CreateAdminUser',
-        'menu'              => 'app\command\Menu',
-    ],
+    'commands' => [],
 ];

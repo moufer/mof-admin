@@ -13,7 +13,7 @@ class CreateAdminUser extends Command
     protected function configure(): void
     {
         // 指令配置
-        $this->setName('create_admin_user')
+         $this->setName('mof-admin:create-admin-user')
             ->addArgument('user', Argument::OPTIONAL, "your username")
             ->addArgument('password', Argument::OPTIONAL, "your password")
             ->setDescription('create admin user');
