@@ -19,10 +19,10 @@ class WechatPayApplication
         $config = [
             'app_id'        => $miniapp->appid,
             'mch_id'        => $miniapp->pay['mch_id'],
-            'private_key'   => $miniapp->pay['private_key_path'],
-            'certificate'   => $miniapp->pay['certificate_path'],
+            'private_key'   => $miniapp->pay['private_key'],
+            'certificate'   => $miniapp->pay['certificate'],
             'secret_key'    => $miniapp->pay['secret_key'],
-            'v2_secret_key' => $miniapp->pay['v2_secret_key'],
+            //'v2_secret_key' => $miniapp->pay['v2_secret_key'],
         ];
 
         if (!isset(self::$apps[$config['mch_id']])) {

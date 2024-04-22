@@ -1,6 +1,6 @@
 <?php
 
-namespace module\miniapp;
+namespace module\miniapp\library;
 
 use module\miniapp\event\GetPerms;
 

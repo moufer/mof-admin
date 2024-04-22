@@ -2,6 +2,7 @@
 
 namespace module\miniapp\library;
 
+use http\Url;
 use module\miniapp\model\MiniApp;
 use mof\exception\LogicException;
 use mof\Module;
@@ -126,7 +127,7 @@ class WechatMiniAppPackage
      */
     public function setValues($data): void
     {
-        foreach (['app_name', 'app_url', 'plugins'] as $key) {
+        foreach (['siteroot', 'plugins'] as $key) {
             if (isset($data[$key])) {
                 $this->configJs[$key] = $data[$key];
             }
@@ -154,15 +155,15 @@ class WechatMiniAppPackage
             $excludeFiles = array_map(
                 fn($name) => str_replace('/', DIRECTORY_SEPARATOR, $name),
                 [
-                    '/config.js',
+                    '/siteinfo.js',
                     '/app.json',
                     '/project.config.json',
                 ]
             );
             // 递归添加文件和子文件夹到压缩文件
             $this->addFolderToZip($this->path, $zip, '', $excludeFiles);
-            //加入自定义的app.json, config.js文件
-            $zip->addFromString('config.js', $this->generateConfigJs());
+            //加入自定义的app.json, siteinfo.js文件
+            $zip->addFromString('siteinfo.js', $this->generateConfigJs());
             $zip->addFromString('app.json', $this->generateAppJson());
             $zip->addFromString('project.config.json', $this->generateProjectConfigJson());
             $zip->close();
@@ -175,7 +176,7 @@ class WechatMiniAppPackage
     protected function generateConfigJs(): string
     {
         $string = json_encode($this->configJs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        return 'export default ' . $string . ';';
+        return 'module.exports = ' . $string . ';';
     }
 
     protected function generateAppJson(): string
@@ -208,22 +209,26 @@ class WechatMiniAppPackage
     }
 
     /**
-     * 载入config.js
+     * 载入siteinfo.js
      * @return void
      */
     protected function loadConfigJsFile(): void
     {
+        $domain = rtrim(url()->domain(true)->build(), '/');
         $data = [];
         try {
-            $content = $this->getFileContent('config.js');
-            $cleanedCode = str_replace('export default', '', $content);
+            $content = str_replace(' ', '', $this->getFileContent('siteinfo.js'));
+            $cleanedCode = str_replace('module.exports=', '', $content);
             //过滤换行
             $cleanedCode = str_replace("\r\n", '', $cleanedCode);
             $data = json_decode($cleanedCode, true);
-        } catch (\Exception $e) {
-            $data['app_url'] = $this->miniapp->api_root;
+        } catch (\Exception) {
         }
         $data['id'] = $this->miniapp->id;
+        $data['module'] = $this->miniapp->module;
+        $data['siteroot'] = $domain;
+        $data['serverUrl'] = $domain . "/{$this->miniapp->module}/{$this->miniapp->id}/wechat";
+        $data['staticUrl'] = $domain . "/static/module/{$this->miniapp->module}";
         $this->configJs = $data;
     }
 

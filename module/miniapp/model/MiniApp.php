@@ -2,16 +2,22 @@
 
 namespace module\miniapp\model;
 
+use app\model\Config;
 use app\model\Module;
 use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use EasyWeChat\MiniApp\Application as MiniAppApplication;
 use EasyWeChat\Pay\Application as PayApplication;
 use module\miniapp\model\searcher\MiniAppSearcher;
+use think\Collection;
+use think\model\concern\SoftDelete;
+use think\model\relation\HasMany;
+use think\model\relation\HasOne;
 
 /**
  * 小程序应用
  * @package module\miniapp\model
- * @property Module $module 模块
+ * @property Module $module_info 模块
+ * @property Collection $module_config 模块配置
  * @property string $title 小程序名称
  * @property string $api_root API接口
  * @property MiniAppApplication $sdk 小程序应用
@@ -20,18 +26,37 @@ use module\miniapp\model\searcher\MiniAppSearcher;
 class MiniApp extends \mof\Model
 {
     use MiniAppSearcher;
+    //use SoftDelete;
 
     protected $name = 'miniapp';
 
+    //protected string $deleteTime = 'delete_at';
+
     protected $type = [
         'config'     => 'json',
+        'pay'        => 'json',
         'avatar_img' => 'storage',
         'qrcode_img' => 'storage',
     ];
 
-    public function moduleInfo(): \think\model\relation\HasOne
+    /**
+     * 模块详情
+     * @return HasOne
+     */
+    public function moduleInfo(): HasOne
     {
         return $this->hasOne(Module::class, 'name', 'module');
+    }
+
+    /**
+     * 获取模块配置信息
+     * @return HasMany
+     */
+    public function moduleConfig(): HasMany
+    {
+        return $this->hasMany(Config::class, 'extend_id')
+            ->where('extend_type', 'miniapp')
+            ->where('module', $this->module);
     }
 
     /**
@@ -105,10 +130,11 @@ class MiniApp extends \mof\Model
      */
     public function getApiRootAttr($value, $data): string
     {
-        return url("api/{$this->module}")
+        return url("{$this->module}/{$this->id}")
             ->https()
             ->domain(true)
             ->suffix(false)
             ->build();
     }
+
 }

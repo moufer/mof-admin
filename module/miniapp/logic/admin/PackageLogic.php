@@ -1,8 +1,9 @@
 <?php
 
-namespace module\miniapp\logic;
+namespace module\miniapp\logic\admin;
 
 use app\library\Auth;
+use http\Url;
 use module\miniapp\library\WechatMiniAppPackage;
 use module\miniapp\model\MiniApp;
 use module\miniapp\model\Package;
@@ -30,8 +31,7 @@ class PackageLogic extends Logic
     public function form(): array
     {
         //设置默认数值
-        $values['app_name'] = $this->miniapp->title;
-        $values['app_url'] = $this->miniapp->api_root;
+        $values['siteroot'] = rtrim(url()->domain(true)->build(), '/');
         $values['plugins'] = [];
         return $this->getFormConfig($values);
     }
@@ -60,14 +60,14 @@ class PackageLogic extends Logic
         $key = md5(uniqid());
         //记录写入数据库
         try {
-            $model = new Package();
-            $model->save([
-                'key'      => $key,
-                'ma_id'    => $this->miniapp->id,
-                'admin_id' => $this->auth->getId(),
-                'module'   => $this->miniapp->module,
-                'filename' => basename($filePath),
-                'filesize' => filesize($filePath),
+            Package::create([
+                'key'        => $key,
+                'miniapp_id' => $this->miniapp->id,
+                'admin_id'   => $this->auth->getId(),
+                'module'     => $this->miniapp->module,
+                'filename'   => basename($filePath),
+                'filesize'   => filesize($filePath),
+                'package_at' => date('Y-m-d H:i:s'),
             ]);
         } catch (\Exception $e) {
             //删除已打包的文件
@@ -97,9 +97,9 @@ class PackageLogic extends Logic
     {
         //查找打包记录
         $packageModel = Package::where([
-            'key'      => $key,
-            'ma_id'    => $this->miniapp->id,
-            'admin_id' => $this->auth->getId(),
+            'key'        => $key,
+            'miniapp_id' => $this->miniapp->id,
+            'admin_id'   => $this->auth->getId(),
         ])->find();
 
         if (!$packageModel) {
@@ -119,15 +119,23 @@ class PackageLogic extends Logic
             throw new LogicException('下载已过期');
         }
 
+        if (!function_exists('finfo_open')) {
+            throw new LogicException('PHP未安装 fileinfo 扩展');
+        }
+
         //已下载更新
         $packageModel->save([
             'downloaded'  => 1,
             'download_at' => date('Y-m-d H:i:s')
         ]);
 
-        //下载
-        $name = $this->miniapp->module . '_wxapp.zip';
-        return download($filePath, $name);
+        try {
+            //下载
+            $name = $this->miniapp->module . '_wxapp.zip';
+            return download($filePath, $name);
+        } catch (\Exception $e) {
+            throw new LogicException('下载失败');
+        }
     }
 
     /**
@@ -139,9 +147,9 @@ class PackageLogic extends Logic
     public function downloaded(string $key): void
     {
         $package = Package::where([
-            'key'      => $key,
-            'ma_id'    => $this->miniapp->id,
-            'admin_id' => $this->auth->getId(),
+            'key'        => $key,
+            'miniapp_id' => $this->miniapp->id,
+            'admin_id'   => $this->auth->getId(),
         ])->find();
 
         if ($package) {
@@ -166,20 +174,10 @@ class PackageLogic extends Logic
         $package = new WechatMiniAppPackage($this->miniapp);
         return [
             [
-                "label" => "小程序名称",
-                "prop"  => "app_name",
-                "type"  => "input",
-                "value" => $values['app_name'] ?? '',
-                "rules" => [
-                    ["required" => true],
-                ],
-                "intro" => "请填写小程序名称。"
-            ],
-            [
                 "label" => "请求网址",
-                "prop"  => "app_url",
+                "prop"  => "siteroot",
                 "type"  => "input",
-                "value" => $values['app_url'] ?? 'https://',
+                "value" => $values['siteroot'] ?? 'https://',
                 "rules" => [
                     ["required" => true],
                     ["type" => "url"],

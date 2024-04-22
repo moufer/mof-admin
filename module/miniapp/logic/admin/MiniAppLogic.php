@@ -1,17 +1,29 @@
 <?php
 
-namespace module\miniapp\logic;
+namespace module\miniapp\logic\admin;
 
 use app\library\Auth;
+use app\model\Config;
+use module\miniapp\model\AdminRelation;
+use module\miniapp\model\MiniApp;
+use module\miniapp\model\Package;
+use module\miniapp\model\Statistics;
+use module\miniapp\model\User;
 use mof\annotation\Inject;
 use mof\Logic;
 use mof\Model;
+use mof\Module;
 use mof\utils\Arr;
+use think\db\exception\DbException;
+use think\facade\Db;
 
 class MiniAppLogic extends Logic
 {
     #[Inject]
     protected Auth $auth;
+
+    #[Inject(MiniApp::class)]
+    protected $model;
 
     public function read($id): Model
     {
@@ -35,14 +47,63 @@ class MiniAppLogic extends Logic
         return $model;
     }
 
+    public function save($params): Model
+    {
+        $this->model->startTrans();
+        try {
+            $model = parent::save($params);
+            //触发事件
+            event('MiniAppCreate', $model);
+            $this->model->commit();
+            return $model;
+        } catch (\Exception $e) {
+            $this->model->rollback();
+            throw $e;
+        }
+    }
+
     public function delete($id): bool
     {
-        $model = parent::read($id);
+        $this->model->startTrans();
+        try {
+            $model = parent::read($id);
+            //删除相关数据
+            $result = $model->delete();
+            $this->deleteAfter($model);
+            $this->model->commit();
+            return $result;
+        } catch (\Exception $e) {
+            $this->model->rollback();
+            throw $e;
+        }
+    }
+
+    /**
+     * 删除后置操作
+     * @param Model $miniapp
+     * @return void
+     * @throws DbException
+     */
+    protected function deleteAfter(Model $miniapp): void
+    {
+        $tables = [
+            'admin_relation', 'package', 'user', 'statistics'
+        ];
+
+        foreach ($tables as $table) {
+            $table = 'miniapp_' . $table;
+            Db::name($table)->where('miniapp_id', $miniapp->id)->delete();
+        }
+
+        //删除参数配置
+        Config::where([
+            'module'      => $miniapp->module,
+            'extend_id'   => $miniapp->id,
+            'extend_type' => 'miniapp'
+        ])->delete();
 
         //触发事件
-        event('MiniAppDeleteAfter', $model);
-
-        return $model->delete();
+        event('MiniAppDelete', $miniapp);
     }
 
 }

@@ -4,7 +4,7 @@ namespace module\miniapp\controller\backend;
 
 use app\library\Controller;
 use module\miniapp\front\form\AdminForm;
-use module\miniapp\logic\AdminLogic;
+use module\miniapp\logic\admin\AdminLogic;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\response\Json;

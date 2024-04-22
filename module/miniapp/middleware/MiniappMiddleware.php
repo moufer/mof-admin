@@ -3,8 +3,8 @@
 namespace module\miniapp\middleware;
 
 use module\miniapp\model\MiniApp;
-use Closure;
 use mof\ApiResponse;
+use Closure;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
@@ -38,6 +38,9 @@ class MiniappMiddleware
 
         //挂载到容器内，控制器和逻辑层可以通过inject注解注入
         app()->instance(get_class($miniapp), $miniapp);
+
+        //触发事件
+        app()->event->trigger('MiniappLoad', $miniapp);
 
         return $next($request);
     }

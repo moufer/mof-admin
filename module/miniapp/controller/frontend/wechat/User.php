@@ -1,15 +1,15 @@
 <?php
 
-namespace module\miniapp\controller\frontend;
+namespace module\miniapp\controller\frontend\wechat;
 
+use module\article\logic\UserLogic;
 use module\miniapp\library\MiniappFrontendController;
-use module\miniapp\logic\UserLogic;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\db\exception\DbException;
 use think\response\Json;
 
-class WechatUser extends MiniappFrontendController
+class User extends MiniappFrontendController
 {
     #[Inject]
     protected UserLogic $logic;

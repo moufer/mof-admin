@@ -13,6 +13,11 @@ class User extends Model implements UserInterface
     protected $createTime = 'create_at';
     protected $updateTime = 'update_at';
 
+    public function getUserType(): string
+    {
+        return 'miniapp';
+    }
+
     public function getId(): int
     {
         return $this->getAttr('id');

@@ -3,7 +3,7 @@
 namespace module\miniapp\controller\backend;
 
 use module\miniapp\library\MiniappController;
-use module\miniapp\logic\PackageLogic;
+use module\miniapp\logic\admin\PackageLogic;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\db\exception\DbException;
@@ -38,7 +38,7 @@ class Package extends MiniappController
     public function submit(): Json
     {
         $data = $this->request->withValidate([
-            'app_name|小程序名称', 'app_url|通信地址'
+            'siteroot|通信地址'
         ])->param();
         return ApiResponse::success($this->logic->submit($data));
     }

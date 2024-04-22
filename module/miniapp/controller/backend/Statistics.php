@@ -3,7 +3,7 @@
 namespace module\miniapp\controller\backend;
 
 use module\miniapp\library\MiniappController;
-use module\miniapp\logic\StatisticsLogic;
+use module\miniapp\logic\admin\StatisticsLogic;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\response\Json;

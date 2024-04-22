@@ -2,12 +2,11 @@
   "name": "miniapp",
   "title": "小程序平台",
   "description": "小程序平台管理",
-  "author": "mof官方",
+  "author": "官方",
   "version": "1.0.0",
   "keywords": [
     "miniapp",
-    "wechat",
-    "mof"
+    "official"
   ],
   "order": 10,
   "is_kernel": false,
@@ -15,17 +14,93 @@
   "requires": [],
   "perms": [
     {
-      "title": "小程序管理",
-      "perm": "Manage",
-      "url": "miniapp/manage",
+      "type": "group",
+      "title": "小程序平台",
+      "perm": "Miniapp",
+      "url": "",
+      "sort": 1,
+      "icon": "",
+      "children": [
+        {
+          "type": "menu",
+          "title": "小程序管理",
+          "perm": "Manage",
+          "url": "miniapp/manage",
+          "sort": 1,
+          "icon": "CopyDocument",
+          "actions": [
+            "*"
+          ]
+        },
+        {
+          "type": "menu",
+          "title": "平台管理员",
+          "perm": "Admin",
+          "url": "miniapp/admin",
+          "sort": 2,
+          "icon": "Avatar",
+          "actions": [
+            "*"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "category": "miniapp",
+      "title": "通用管理",
+      "perm": "General",
+      "url": "",
       "sort": 0,
-      "icon": "fa wechat",
-      "actions": [
-        "index",
-        "save",
-        "update",
-        "read",
-        "delete"
+      "icon": "Setting",
+      "children": [
+        {
+          "type": "menu",
+          "title": "访问统计",
+          "perm": "Statistics",
+          "url": "miniapp/statistics",
+          "sort": 1,
+          "icon": "",
+          "actions": [
+            "index"
+          ]
+        },
+        {
+          "type": "menu",
+          "title": "入口页面",
+          "perm": "Entrance",
+          "url": "miniapp/entrance",
+          "sort": 2,
+          "icon": "",
+          "actions": [
+            "index"
+          ]
+        },
+        {
+          "type": "menu",
+          "title": "支付参数",
+          "perm": "Pay",
+          "url": "miniapp/pay",
+          "sort": 3,
+          "icon": "",
+          "actions": [
+            "form@表单",
+            "submit@提交"
+          ]
+        },
+        {
+          "type": "menu",
+          "title": "打包上传",
+          "perm": "Package",
+          "url": "miniapp/package",
+          "sort": 4,
+          "icon": "",
+          "actions": [
+            "form@表单",
+            "submit@提交",
+            "download@下载"
+          ]
+        }
       ]
     }
   ]

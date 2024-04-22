@@ -1,6 +1,6 @@
 <?php
 
-namespace module\miniapp\logic;
+namespace module\miniapp\logic\admin;
 
 use EasyWeChat\Kernel\Exceptions\BadResponseException;
 use module\miniapp\enumeration\WechatMiniappApiEnum;
@@ -38,7 +38,7 @@ class StatisticsLogic extends Logic
         $beginDate = date('Ymd', $beginStamp);
         $endDate = date('Ymd', $endStamp);
 
-        $rows = Statistics::where('ma_id', $this->miniapp->id)
+        $rows = Statistics::where('miniapp_id', $this->miniapp->id)
             ->whereTime('def_date', 'between', [$beginDate, $endDate])
             ->order('def_date', 'desc')
             ->column('*', 'def_date');
@@ -63,11 +63,11 @@ class StatisticsLogic extends Logic
                     //写入 statistics 表
                     $data = array_reduce($columns,
                         fn($carry, $item) => $carry + [$item => $result[$key][$item]], []);
-                    $data['ma_id'] = $this->miniapp->id;
+                    $data['miniapp_id'] = $this->miniapp->id;
                     $data['def_date'] = $key;
                     //保存到数据库
                     Statistics::create($data);
-                } catch (\RuntimeException $e) {
+                } catch (\Exception $e) {
                     if ($e->getCode() !== 61503) {
                         throw new LogicException($e->getMessage() . "({$e->getCode()})");
                     } else {

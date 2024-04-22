@@ -9,6 +9,6 @@ use mof\annotation\Inject;
 class MiniappController extends Controller
 {
     #[Inject]
-    protected MiniApp $miniapp; //获取在中间件中已挂在的小程序模型
+    protected MiniApp $miniapp; //获取在中间件中已挂载的小程序模型
 
 }

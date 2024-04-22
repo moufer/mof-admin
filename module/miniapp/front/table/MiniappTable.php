@@ -5,7 +5,6 @@ namespace module\miniapp\front\table;
 use app\model\Module;
 use mof\front\Table;
 use mof\utils\ElementData;
-use mof\utils\FormComponentOptions;
 
 class MiniappTable extends Table
 {
@@ -113,7 +112,7 @@ class MiniappTable extends Table
         ];
     }
 
-    protected function columnCreateAt(): array
+    public function columnCreateAt(): array
     {
         return [
             "order"  => 8,

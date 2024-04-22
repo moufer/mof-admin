@@ -1,19 +1,18 @@
 <?php
 
-namespace module\miniapp\logic;
+namespace module\miniapp\logic\admin;
 
 use module\miniapp\model\Admin;
 use module\miniapp\model\AdminRelation;
 use module\miniapp\model\MiniApp;
+use mof\annotation\Inject;
 use mof\Model;
 use mof\Searcher;
 use think\Paginator;
 
 class AdminLogic extends \app\logic\AdminLogic
 {
-    /**
-     * @var Admin 模型
-     */
+    #[Inject(Admin::class)]
     protected $model;
 
     public function paginate(Searcher $searcher, bool $simple = false): Paginator

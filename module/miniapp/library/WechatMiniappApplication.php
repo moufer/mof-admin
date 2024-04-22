@@ -4,6 +4,9 @@ namespace module\miniapp\library;
 
 use EasyWeChat\MiniApp\Application;
 use InvalidArgumentException;
+use module\miniapp\library\wechat\AppCode;
+use module\miniapp\library\wechat\Code\Code;
+use module\miniapp\library\wechat\Mobile;
 use module\miniapp\model\MiniApp;
 use mof\exception\LogicException;
 
@@ -38,6 +41,16 @@ class WechatMiniappApplication
         } catch (\EasyWeChat\Kernel\Exceptions\InvalidArgumentException $e) {
             throw new LogicException($e->getMessage());
         }
+    }
+
+    public function appCode(): AppCode
+    {
+        return new AppCode($this->handler());
+    }
+
+    public function mobile(): Mobile
+    {
+        return new Mobile($this->handler());
     }
 
     public function handler(): Application

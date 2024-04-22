@@ -7,6 +7,12 @@ use think\facade\Route;
 use module\miniapp\middleware\MiniappMiddleware;
 use app\middleware\AuthTokenMiddleware;
 
+//公共接口
+Route::group('common', function () {
+    Route::group('utils', function () {
+        Route::get('transferImg', '\module\miniapp\controller\frontend\common\Utils@transferImg');
+    });
+});
 
 //后端接口
 Route::group('backend', function () {
@@ -33,6 +39,8 @@ Route::group('backend', function () {
         Route::post('config/<module>', '\module\miniapp\controller\backend\Config@submit');
         Route::get('statistics$', '\module\miniapp\controller\backend\Statistics@index');
         Route::get('entrance$', '\module\miniapp\controller\backend\Entrance@index');
+        Route::get('pay/form$', '\module\miniapp\controller\backend\Pay@form');
+        Route::post('pay/submit$', '\module\miniapp\controller\backend\Pay@submit');
         Route::get('package/form$', '\module\miniapp\controller\backend\Package@form');
         Route::post('package/submit$', '\module\miniapp\controller\backend\Package@submit');
         Route::get('package/download$', '\module\miniapp\controller\backend\Package@download');
@@ -45,7 +53,10 @@ Route::group('backend', function () {
 ]);
 
 //前端接口
-Route::group('<id>', function () {
+Route::group('<miniappId>', function () {
+
+    //获取应用参数
+    Route::get('config', '\module\miniapp\controller\frontend\Config@index');
 
     Route::group('wechat', function () {
         //API消息推送
@@ -55,8 +66,5 @@ Route::group('<id>', function () {
     });
 
 })->middleware(MiniappMiddleware::class);
-
-
-
 
 

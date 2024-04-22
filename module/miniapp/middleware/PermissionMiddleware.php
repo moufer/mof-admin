@@ -26,8 +26,8 @@ class PermissionMiddleware
         }
 
         list($module, $controller, $action) = $this->parseRule($request->rule()->getName());
-        if ($module !== 'miniapp') {
-            return ApiResponse::error('无效的访问接口');
+        if ($module !== 'miniapp' && !env('app_debug')) {
+            return ApiResponse::error('无效的访问接口~');
         } else if ($controller === 'Index') {
             return $next($request); //首页不检测权限
         }
