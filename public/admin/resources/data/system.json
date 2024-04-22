@@ -1,0 +1,177 @@
+[{
+  "label": "基础设置",
+  "flag": "base",
+  "options": [{
+    "label": "站点名称",
+    "prop": "site_name",
+    "type": "input",
+    "value": "",
+    "intro": "请填写站点名称"
+  }, {
+    "label": "站点LOGO",
+    "prop": "site_logo",
+    "type": "uploadimage",
+    "value": [{
+      "name": "food.jpeg",
+      "url": "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+    }],
+    "intro": "请上传站点LOGO"
+  }, {
+    "label": "备案号",
+    "prop": "site_icp",
+    "type": "input",
+    "value": "",
+    "intro": "请填写备案号"
+  }, {
+    "label": "禁止IP",
+    "prop": "site_banip",
+    "type": "textarea",
+    "value": "",
+    "intro": "禁止登录的IP。一行一条记录"
+  }, {
+    "label": "关闭网站",
+    "prop": "site_close",
+    "type": "switch",
+    "value": false,
+    "intro": ""
+  }]
+}, {
+  "label": "邮件设置",
+  "flag": "mail",
+  "options": [{
+    "label": "邮件发送方式",
+    "prop": "site_email_type",
+    "type": "select",
+    "options": [{
+      "value": "",
+      "label": "请选择"
+    }, {
+      "label": "SMTP",
+      "value": "smtp"
+    }],
+    "value": "",
+    "intro": "邮件发送方式"
+  }, {
+    "label": "SMTP服务器",
+    "prop": "site_smtp_server",
+    "type": "input",
+    "value": "",
+    "intro": "SMTP服务器"
+  }, {
+    "label": "SMTP端口",
+    "prop": "site_smtp_port",
+    "type": "input",
+    "value": "",
+    "intro": "SMTP端口"
+  }, {
+    "label": "SMTP账号",
+    "prop": "site_smtp_account",
+    "type": "input",
+    "value": "",
+    "intro": "SMTP账号"
+  }, {
+    "label": "SMTP密码",
+    "prop": "site_smtp_password",
+    "type": "password",
+    "value": "",
+    "intro": "SMTP密码"
+  }, {
+    "label": "SMTP发件人邮箱",
+    "prop": "site_smtp_sender_email",
+    "type": "input",
+    "value": "",
+    "intro": "SMTP发件人邮箱"
+  }, {
+    "label": "SMTP加密方式",
+    "prop": "site_smtp_encryption",
+    "type": "select",
+    "options": [{
+      "value": "",
+      "label": "请选择"
+    }, {
+      "label": "SSL",
+      "value": "ssl"
+    }, {
+      "label": "TLS",
+      "value": "tls"
+    }],
+    "value": "",
+    "intro": "SMTP加密方式"
+  }]
+}, {
+  "label": "上传设置",
+  "flag": "upload",
+  "options":[
+    {
+      "label": "上传驱动",
+      "prop": "site_upload_driver",
+      "type": "select",
+      "options": [
+        {
+          "label": "本地",
+          "value": "local"
+        }
+      ],
+      "value": "local",
+      "intro": "选择上传驱动"
+    },
+    {
+      "label": "附件域名",
+      "prop": "site_upload_domain",
+      "type": "input",
+      "value": "",
+      "intro": "选择上传本地时，请留空。附件域名格式如 https://cdn.domain.com"
+    },
+    {
+      "label": "允许上传的图片格式",
+      "prop": "site_upload_image_ext",
+      "type": "input",
+      "value": "jpg png jpeg",
+      "intro": "允许上传的图片文件类型"
+    },
+    {
+      "label": "允许上传的媒体格式",
+      "prop": "site_upload_media_ext",
+      "type": "input",
+      "value": "mp3 mp4 mov avi",
+      "intro": "允许上传的多媒体文件类型"
+    },
+    {
+      "label": "允许上传的附件格式",
+      "prop": "site_upload_file_ext",
+      "type": "input",
+      "value": "doc docx xls xlsx ppt pptx zip rar gz bz2",
+      "intro": "允许上传的其他文件类型"
+    }
+  ]
+}, {
+  "label": "字典设置",
+  "flag": "dict",
+  "options": [{
+    "label": "轮播图",
+    "prop": "dict_swiper",
+    "type": "uploadimages",
+    "value": [],
+    "intro": "首页轮播图图片数组"
+  }, {
+    "label": "用户协议",
+    "prop": "dict_user_agreement",
+    "type": "uploadfile",
+    "accept": "application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "value": [],
+    "intro": "上传用户协议文件"
+  }, {
+    "label": "用户协议附件",
+    "prop": "dict_user_agreement_files",
+    "type": "uploadfiles",
+    "accept": "application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "value": [],
+    "intro": "上传用户协议附件，可上传多分附件"
+  }, {
+    "label": "键值对",
+    "prop": "dict_key_value",
+    "type": "keyvalue",
+    "value": [],
+    "intro": "键值对"
+  }]
+}]

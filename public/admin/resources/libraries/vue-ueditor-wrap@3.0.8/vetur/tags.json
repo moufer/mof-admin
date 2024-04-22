@@ -1,0 +1,17 @@
+{
+  "vue-ueditor-wrap": {
+    "attributes": [
+      "v-model",
+      "config",
+      "editor-id",
+      "name",
+      "mode",
+      "observer-options",
+      "observer-debounce-time",
+      "forceInit",
+      "destroy",
+      "editor-dependencies",
+      "editor-dependencies-checker"
+    ]
+  }
+}

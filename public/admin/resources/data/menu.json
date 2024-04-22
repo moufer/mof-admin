@@ -1,0 +1,72 @@
+[{
+  "title": "仪表盘",
+  "icon": "Odometer",
+  "type": "link",
+  "flag": "dashboard"
+}, {
+  "title": "常规设置",
+  "icon": "Setting",
+  "type": "group",
+  "flag": "general",
+  "items": [{
+    "title": "系统设置",
+    "icon": "SetUp",
+    "type": "link",
+    "flag": "general/config"
+  }, {
+    "title": "附件管理",
+    "icon": "Paperclip",
+    "type": "link",
+    "flag": "general/attachment"
+  }, {
+    "title": "插件管理",
+    "icon": "",
+    "type": "link",
+    "flag": "general/plugin"
+  }, {
+    "title": "应用管理",
+    "icon": "Compass",
+    "type": "link",
+    "flag": "general/app"
+  }]
+}, {
+  "title": "权限管理",
+  "icon": "Connection",
+  "type": "group",
+  "flag": "auth",
+  "items": [{
+    "title": "管理员管理",
+    "icon": "User",
+    "type": "link",
+    "flag": "auth/admin"
+  }, {
+    "title": "角色组",
+    "icon": "MagicStick",
+    "type": "link",
+    "flag": "auth/role"
+  }, {
+    "title": "菜单规则",
+    "icon": "Memo",
+    "type": "link",
+    "flag": "auth/menu"
+  }, {
+    "title": "其他",
+    "icon": "",
+    "type": "link",
+    "flag": "auth/other"
+  }]
+}, {
+  "title": "组件测试",
+  "icon": "Position",
+  "type": "group",
+  "flag": "component",
+  "items": [{
+    "title": "键值组件",
+    "type": "link",
+    "flag": "component/key_value"
+  },{
+    "title": "数据管理组件",
+    "type": "link",
+    "flag": "component/data_operation"
+  }]
+}]

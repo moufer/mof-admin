@@ -1,0 +1,46 @@
+{
+  "vue-ueditor-wrap/v-model": {
+    "type": "string",
+    "description": "当前富文本编辑器内容, 默认值: "
+  },
+  "vue-ueditor-wrap/config": {
+    "type": "object",
+    "description": "[UEditor 配置](http://fex.baidu.com/ueditor/#start-config), 默认值: "
+  },
+  "vue-ueditor-wrap/editor-id": {
+    "type": "string",
+    "description": "富文本编辑器 ID, 默认值: `editor_` + 随机八位小写字母"
+  },
+  "vue-ueditor-wrap/name": {
+    "type": "string",
+    "description": "类似 input 框的 name 属性，[常用于表单中](http://fex.baidu.com/ueditor/#start-submit), 默认值: "
+  },
+  "vue-ueditor-wrap/mode": {
+    "type": "string",
+    "description": "监听内容变化的方式，可选值为 `observer`, `listener`, 默认值: `observer`"
+  },
+  "vue-ueditor-wrap/observer-options": {
+    "type": "object",
+    "description": "[MutationObserver 的参数 ](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserverInit), 默认值: 见文档网站"
+  },
+  "vue-ueditor-wrap/observer-debounce-time": {
+    "type": "number",
+    "description": "MutationObserver 的回调函数防抖间隔, 默认值: 50"
+  },
+  "vue-ueditor-wrap/forceInit": {
+    "type": "boolean",
+    "description": "跳过环境检测，直接初始化, 默认值: false"
+  },
+  "vue-ueditor-wrap/destroy": {
+    "type": "boolean",
+    "description": "是否在组建销毁时销毁 UEditor 实例, 默认值: true"
+  },
+  "vue-ueditor-wrap/editor-dependencies": {
+    "type": "string[]",
+    "description": "指定使用 UEditor 所需要加载的 JS 和 CSS, 默认值: "
+  },
+  "vue-ueditor-wrap/editor-dependencies-checker": {
+    "type": "()=>boolean",
+    "description": "检测依赖的静态资源是否加载完成的方法, 默认值: "
+  }
+}

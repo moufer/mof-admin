@@ -1,0 +1,13 @@
+{
+  "imports": {
+    "lib/": "/resources/libraries/",
+    "comp/": "/components/",
+    "comm/": "/resources/common/",
+    "vue": "/resources/libraries/vue@3.3.4/vue.esm-browser.js",
+    "element-plus": "/resources/libraries/element-plus@2.4.0/index.full.mjs",
+    "vue-router": "/resources/libraries/vue-router@4.2.5/vue-router.esm-browser.js",
+    "moment": "/resources/libraries/moment@2.29.4/dist/moment.js",
+    "lodash": "/resources/libraries/lodash/dist/lodash-esm.js",
+    "wovoui-icons": "/resources/libraries/wovoui-icons@1.1.9/index.es.mjs"
+  }
+}

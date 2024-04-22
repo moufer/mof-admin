@@ -1,0 +1,231 @@
+:focus-visible {
+  outline: none;
+}
+
+.mf-page {
+  margin: 0;
+  padding: 10px 15px 30px 15px;
+  overflow: auto;
+}
+
+.el-form .form-item-helper {
+  color: #909399;
+  display: block;
+  width: 100%;
+}
+
+.el-form .form-item-helper code {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #c7254e;
+  background-color: #f9f2f4;
+  border-radius: 4px;
+}
+
+.el-form .el-upload-list__item {
+  transition:none;
+}
+
+.el-tabs__header {
+  margin-bottom: 20px;
+}
+
+/* 图片上传组件里图片缩略图的尺寸 */
+.el-upload-list--picture-card {
+	--el-upload-list-picture-card-size:120px;
+}
+/* 图片上传组件里上传图片按钮的尺寸 */
+.el-upload--picture-card {
+	--el-upload-picture-card-size:120px;
+}
+
+.picture-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.picture-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.picture-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: var(--el-upload-list-picture-card-size);
+  height: var(--el-upload-list-picture-card-size);
+  text-align: center;
+}
+
+.picture-uploader .picture-uploader-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.keyValue {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.keyValue .el-col {}
+
+.keyValue .el-row {
+  margin-bottom: 5px;
+}
+
+.table-body .table-search .el-date-editor.el-input, .el-date-editor.el-input__wrapper {
+  width: 220px;
+}
+
+.table-toolbar {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.table-toolbar>div {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.table-body {
+  margin-bottom: 10px;
+}
+
+.table-toolbar .left {}
+
+.table-toolbar .right {
+  justify-content: flex-end;
+}
+
+.table-toolbar .el-button~.el-button, 
+.table-toolbar .el-button+.el-button, 
+.table-toolbar .el-dropdown {
+  margin-left: 5px;
+}
+
+.table-pagination {
+  margin-top:10px;
+}
+
+/** 图片选择器 */
+
+.mf-image-selector {
+  width: 100%;
+}
+
+.mf-image-selector-header {
+  display: flex;
+  width: 100%;
+}
+
+.mf-image-selector-header .el-input {
+  margin-right: 5px;
+  width: 100%;
+}
+
+.mf-image-selector-preview {
+  margin-right: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.mf-image-selector-item {
+  margin-top: 8px;
+  margin-right: 8px;
+  text-align: center;
+  line-height: 35px;
+}
+
+.mf-image-selector-preview-item {
+  width: 120px;
+  height: 100px;
+  border-radius: 5px;
+  border: 1px solid var(--el-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mf-image-selector-preview-item.__img {
+}
+
+.mf-image-selector-preview-item.__media {
+}
+
+.mf-image-selector-preview-item.__file {
+}
+
+.mf-image-selector-item .el-image {
+  width: 110px;
+  height: 90px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.mf-image-selector-item__close {
+  width: 100%;
+  max-height: 100px;
+}
+
+/** 附件选择对话框 **/
+
+.mf-storage-dialog-items{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.mf-storage-dialog-item {
+  width: 130px;
+  height: 150px;
+  text-align: center;
+  margin: 0 7px 10px;
+}
+
+.mf-storage-dialog-item-img {
+  width: 130px;
+  height: 120px;
+  border: 2px solid #FFF;
+  background: #F5F6FA;
+  display: flex;
+  align-items: center;
+  justify-content:center;
+  cursor: pointer;
+}
+
+.mf-storage-dialog-item-img:hover {
+  background: #D0DDFE;
+}
+
+.mf-storage-dialog-item-img.select {
+  background: #D0DDFE;
+  border: 2px solid #83a4f7;
+}
+
+.mf-storage-dialog-item-img img {
+  max-width: 110px;
+  max-height: 100px;
+}
+
+.mf-storage-dialog-footer {
+  display: flex;
+  justify-content:space-between;
+}
+
+/** mf-ueditor **/
+.edui-default {
+  line-height: 100%;
+}
