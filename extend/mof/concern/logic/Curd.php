@@ -78,10 +78,12 @@ trait Curd
      * 添加数据
      * @param $params
      * @return Model
+     * @throws DbException
      */
     public function save($params): Model
     {
-        $model = $this->model->newInstance();
+        $class = get_class($this->model);
+        $model = new $class();
         $model->data($params, true);
         $this->access && $this->checkAccess($model);
         $model->save();

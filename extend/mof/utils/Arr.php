@@ -72,5 +72,32 @@ class Arr
         return $result;
     }
 
+    /**
+     * 一维数组转多维数组
+     * 键名里包含.的键名转换为多维数组
+     * @return void
+     */
+    public static function coverToMultidimensional($array)
+    {
+        $result = [];
 
+        foreach ($array as $key => $value) {
+            $keys = explode(".", $key);
+            $current = &$result;
+
+            foreach ($keys as $index => $keyPart) {
+                if (!isset($current[$keyPart])) {
+                    $current[$keyPart] = [];
+                }
+
+                if ($index === count($keys) - 1) {
+                    $current[$keyPart] = $value;
+                }
+
+                $current = &$current[$keyPart];
+            }
+        }
+
+        return $result;
+    }
 }

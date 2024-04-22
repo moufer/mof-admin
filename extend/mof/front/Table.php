@@ -35,8 +35,8 @@ abstract class Table
     /** @var array|string[] 操作条按钮 */
     protected array $toolbarButtons = ['refresh', 'add', 'delete', 'status', 'search'];
 
-    /** @var string|int 主键名称 */
-    protected string|int $pk = 'id';
+    /** @var string 主键名称 */
+    protected string $pk = 'id';
     /** @var bool 允许多选 */
     protected bool $tableSelection = true;
     /** @var array 表格列 */

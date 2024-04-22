@@ -12,17 +12,12 @@ class ElementData
     protected array  $data     = [];
     protected string $uniqueId = '';
 
-    public static function make(Collection|array $data): static
+    public static function make(Collection|DictArray|array $data): static
     {
         if ($data instanceof Collection) {
             $data = $data->toArray();
-        } else if (!is_numeric(array_keys($data)[0])) {
-            //k-v数组转换成[key=>'',value=>'']
-            $_data = $data;
-            $data = [];
-            foreach ($_data as $value => $label) {
-                $data[] = ['label' => $label, 'value' => $value];
-            }
+        } else if ($data instanceof DictArray) {
+            $data = $data->convertLabelValue();
         }
         return new static($data);
     }

@@ -15,6 +15,12 @@ interface AuthInterface
     public function getUser(): UserInterface;
 
     /**
+     * @param UserInterface $user
+     * @return void
+     */
+    public function setUser(UserInterface $user): void;
+
+    /**
      * @return TokenInterface
      */
     public function getToken(): TokenInterface;

@@ -114,6 +114,11 @@ class Form
         return [];
     }
 
+    /**
+     * 完善元素配置信息
+     * @param array $elements
+     * @return void
+     */
     protected function improveElements(array &$elements): void
     {
         //添加未设置的排序字段
