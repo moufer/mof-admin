@@ -1,56 +1,49 @@
-ThinkPHP 6.0
+MofAdmin
 ===============
 
-> 运行环境要求PHP7.2+，兼容PHP8.1
-
-[官方应用服务市场](https://market.topthink.com) | [`ThinkAPI`——官方统一API服务](https://docs.topthink.com/think-api)
-
-ThinkPHPV6.0版本由[亿速云](https://www.yisu.com/)独家赞助发布。
+> 运行环境要求PHP8.1+ThinkPHP8.0+MySQL5.7
 
 ## 主要新特性
 
-* 采用`PHP7`强类型（严格模式）
-* 支持更多的`PSR`规范
-* 原生多应用支持
-* 更强大和易用的查询
-* 全新的事件系统
-* 模型事件和数据库事件统一纳入事件系统
-* 模板引擎分离出核心
-* 内部功能中间件化
-* SESSION/Cookie机制改进
-* 对Swoole以及协程支持改进
-* 对IDE更加友好
-* 统一和精简大量用法
+* 基于PHP8.1+ThinkPHP8开发
+* 本项目采用前后端分离，支持前后端分离开发模式
+* 后端基于PHP8.1+ThinkPHP8开发
+* 前端基于Vue3+ElementPlus**非构建模式**开发
 
 ## 安装
 
+### 下载代码
 ~~~
-composer create-project topthink/think tp 6.0.*
+git clone https://gitee.com/moufer/mof-admin.git
 ~~~
-
-如果需要更新框架使用
+### 安装依赖包
 ~~~
-composer update topthink/framework
+composer install
 ~~~
+### 配置数据库
+~~~
+1、复制 .env.sample.php 到 .env
+2、修改 .env 文件中的数据库和redis配置
+~~~
+### 安装系统
+进入系统所在目录，执行
+~~~
+php think mof:install
+~~~
+进入命令行提示完成安装并新建管理员账号。
+### 进入系统
+访问 http://你的域名/admin/index.html，使用管理员账号登录。
 
-## 文档
+## 开发文档
 
-[完全开发手册](https://www.kancloud.cn/manual/thinkphp6_0/content)
-
-## 参与开发
-
-请参阅 [ThinkPHP 核心框架包](https://github.com/top-think/framework)。
+## 使用文档
 
 ## 版权信息
 
-ThinkPHP遵循Apache2开源协议发布，并提供免费使用。
+MofAdmin遵循Apache2开源协议发布，并提供免费使用。
 
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-版权所有Copyright © 2006-2021 by ThinkPHP (http://thinkphp.cn)
+版权所有Copyright © 2006-2024 by MouferStudio (http://www.modoer.cn)
 
 All rights reserved。
-
-ThinkPHP® 商标和著作权所有者为上海顶想信息科技有限公司。
-
-更多细节参阅 [LICENSE.txt](LICENSE.txt)

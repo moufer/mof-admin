@@ -1,63 +1,62 @@
 {
-    "name": "topthink/think",
-    "description": "the new thinkphp framework",
-    "type": "project",
-    "keywords": [
-        "framework",
-        "thinkphp",
-        "ORM"
-    ],
-    "homepage": "https://www.thinkphp.cn/",
-    "license": "Apache-2.0",
-    "authors": [
-        {
-            "name": "liu21st",
-            "email": "liu21st@gmail.com"
-        },
-        {
-            "name": "yunwuxin",
-            "email": "448901948@qq.com"
-        }
-    ],
-    "require": {
-        "php": ">=8.1",
-        "ext-json": "*",
-        "ext-zip": "*",
-        "symfony/cache": "6.0.*",
-        "topthink/framework": "^8.0.0",
-        "topthink/think-orm": "^3.0",
-        "topthink/think-migration": "^3.0",
-        "topthink/think-filesystem": "~1.0",
-        "topthink/think-view": "^1.0",
-        "moufer/think-image": "dev-master",
-        "firebase/php-jwt": "^6.4",
-        "overtrue/flysystem-cos": "^2.0.0",
-        "xxtime/flysystem-aliyun-oss": "^1.4",
-        "liz/flysystem-qiniu": "^1.10",
-        "w7corp/easywechat": "^6.7",
-        "imangazaliev/didom": "^2.0"
-    },
-    "require-dev": {
-        "symfony/var-dumper": "^5.4|^6.0",
-        "topthink/think-trace": "^1.0",
-        "phpunit/phpunit": "^10.3"
-    },
-    "autoload": {
-        "psr-4": {
-            "app\\": "app",
-            "module\\": "module"
-        },
-        "psr-0": {
-            "": "extend/"
-        }
-    },
-    "config": {
-        "preferred-install": "dist"
-    },
-    "scripts": {
-        "post-autoload-dump": [
-            "@php think service:discover",
-            "@php think vendor:publish"
-        ]
+  "name": "moufer/mofadmin",
+  "description": "A backend development system based on ThinkPHP.",
+  "type": "project",
+  "keywords": [
+    "mofadmin",
+    "thinkphp",
+    "vue"
+  ],
+  "homepage": "https://www.modoer.cn/",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "moufer",
+      "email": "moufer@163.com"
     }
+  ],
+  "require": {
+    "php": ">=8.1",
+    "ext-json": "*",
+    "ext-zip": "*",
+    "ext-iconv": "*",
+    "symfony/cache": "^6.0.19",
+    "topthink/framework": "^8.0.0",
+    "topthink/think-orm": "^3.0",
+    "topthink/think-migration": "^3.0",
+    "topthink/think-filesystem": "~1.0",
+    "topthink/think-view": "^1.0",
+    "moufer/think-image": "dev-master",
+    "firebase/php-jwt": "^6.4",
+    "overtrue/flysystem-cos": "^2.0.0",
+    "xxtime/flysystem-aliyun-oss": "^1.4",
+    "liz/flysystem-qiniu": "^1.10",
+    "w7corp/easywechat": "^6.7",
+    "imangazaliev/didom": "^2.0",
+    "justmd5/pinduoduo-sdk": "^1.8",
+    "symfony/http-foundation": "^6.4"
+  },
+  "require-dev": {
+    "symfony/var-dumper": "^5.4|^6.0",
+    "topthink/think-trace": "^1.0",
+    "phpunit/phpunit": "^10.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "app\\": "app",
+      "module\\": "module"
+    },
+    "psr-0": {
+      "": "extend/"
+    }
+  },
+  "config": {
+    "preferred-install": "dist"
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "@php think service:discover",
+      "@php think vendor:publish"
+    ]
+  }
 }
