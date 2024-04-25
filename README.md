@@ -1,43 +1,62 @@
-MofAdmin
+MofAdmin后台开发框架
 ===============
-
-> 运行环境要求PHP8.1+ThinkPHP8.0+MySQL5.7
 
 ## 主要新特性
 
-* 基于PHP8.1+ThinkPHP8开发
 * 本项目采用前后端分离，支持前后端分离开发模式
 * 后端基于PHP8.1+ThinkPHP8开发
 * 前端基于Vue3+ElementPlus**非构建模式**开发
 
 ## 安装
 
+### 环境要求
+* PHP 8.1+ 
+* MySQL 5.7+
+* Redis
+* Nginx/Apache
+* Composer
+
+### 准备工作
+* 在服务器上安装PHP、MySQL、Redis、Nginx、Composer
+* 配置好MySQL和Redis
+* 配置好Nginx
+* 配置好Composer
+
 ### 下载代码
 ~~~
 git clone https://gitee.com/moufer/mof-admin.git
 ~~~
+
 ### 安装依赖包
+进入项目根目录，执行
 ~~~
 composer install
 ~~~
+
 ### 配置数据库
 ~~~
-1、复制 .env.sample.php 到 .env
-2、修改 .env 文件中的数据库和redis配置
+1、复制 .env.sample 命名为 .env
+2、配置 .env 文件中的MySQL和redis的链接信息
 ~~~
+
 ### 安装系统
-进入系统所在目录，执行
+进入项目根目录，执行
 ~~~
 php think mof:install
 ~~~
 进入命令行提示完成安装并新建管理员账号。
-### 进入系统
-访问 http://你的域名/admin/index.html，使用管理员账号登录。
+
+### 配置域名
+配置好Nginx的配置文件，将mof-admin目录下的public目录作为网站根目录。
+
+### 访问系统
+后台是使用VUE非构建模式开发，所以不需要重新构建，直接访问即可。
+访问链接 http://你的域名/admin/index.html，使用管理员账号登录。
 
 ## 开发文档
-
+待完善
 ## 使用文档
-
+待完善
 ## 版权信息
 
 MofAdmin遵循Apache2开源协议发布，并提供免费使用。
