@@ -85,7 +85,7 @@ export default {
             };
             this.uploadProps['show-file-list'] = false;
             if (typeof this.uploadProps['action'] === 'undefined') {
-                this.uploadProps['action'] = serverUrl('/admin/upload/' + this.fileType.action);
+                this.uploadProps['action'] = serverUrl('/system/upload/' + this.fileType.action);
             }
             if (typeof this.uploadProps['headers'] === 'undefined') {
                 this.uploadProps['headers'] = {
@@ -98,7 +98,7 @@ export default {
         },
 
         getData() {
-            let url = serverUrl('/admin/storage/selector');
+            let url = serverUrl('/system/storage/selector');
             let params = new URLSearchParams();
             params.append('params[file_type]', this.fileType.type === '*' ? '' : this.fileType.type);
             params.append('params[title]', this.keyword);

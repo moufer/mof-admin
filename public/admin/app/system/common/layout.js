@@ -51,12 +51,11 @@ export default {
       changeCollapsed
     }
   },
-
   template: /*html*/`
     <el-container class="body-container">
       <el-header>
-        <div class="logo-box">LOGO</div>
-        <div class="navs-bar">导航容器</div>
+        <div class="logo-box">MofAdmin</div>
+        <div class="navs-bar"></div>
         <div class="status-bar">
           <div class="avatar-box">
             <img class="avatar-img" :src="user.avatar" />
@@ -79,7 +78,7 @@ export default {
       </el-header>
       <el-container class="iframe-container">
         <el-aside>
-          <mf-menu ref="menu" name="admin" :menus="rawPerms" @change-path="changePagePath"
+          <mf-menu ref="menu" name="system" :menus="rawPerms" @change-path="changePagePath"
           @change-collapse="changeCollapsed"></mf-menu>
         </el-aside>
         <el-main>

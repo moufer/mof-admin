@@ -4,7 +4,7 @@ export default {
         MfDataManage
     },
     template: /*html*/`<div class="mf-dynamic">
-    <mf-data-manage ref="manageRef" table-name="admin:storage"></mf-data-manage>
+    <mf-data-manage ref="manageRef" table-name="system:storage"></mf-data-manage>
 </div>
     `,
 }

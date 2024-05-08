@@ -20,6 +20,11 @@ bin-release/
 vendor/
 module/article/
 module/shortvideo/
+
+public/admin/yarn.lock
+public/admin/package.json
+public/admin/package-lock.json
+public/admin/rollup.config.js
 public/admin/node_modules/
 public/admin/app/article/
 public/admin/app/shortvideo/

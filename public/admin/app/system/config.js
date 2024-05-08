@@ -9,11 +9,11 @@ export default {
     props: {
         submitUrl: {
             type: String,
-            default: '/admin/config/admin'
+            default: '/system/config/system'
         },
         module: {
             type: String,
-            default: 'admin'
+            default: 'system'
         },
         tabOptions: {
             type: Object,
@@ -23,8 +23,8 @@ export default {
     setup(props, { emit }) {
         const instance = getCurrentInstance();
         const http = inject('http');
-        const module = props.module || 'admin';
-        const submitUrl = props.submitUrl || `/admin/config/${module}`;
+        const module = props.module || 'system';
+        const submitUrl = props.submitUrl || `/system/config/${module}`;
 
         const tabs = ref([]);
         const formData = reactive({});

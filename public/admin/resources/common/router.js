@@ -6,22 +6,22 @@ const mofRouter = function (module, extraRoutes = []) {
         name: 'login',
         path: '/login',
         meta: { title: '登录' },
-        component: () => import(`/app/admin/login.js`),
+        component: () => import(`../../app/system/login.js`),
     }, {
         name: 'frame',
         path: '/',
         meta: { title: '磨锋管理系统' },
-        component: () => import(`/app/${module}/common/layout.js`),
+        component: () => import(`../../app/${module}/common/layout.js`),
         children: [{
             name: '404',
             path: '404',
             meta: { title: '页面不存在' },
-            component: () => import(`/app/common/404.js`)
+            component: () => import(`../../app/common/404.js`)
         }, {
             name: 'permission',
             path: 'permission',
             meta: { title: '权限不足' },
-            component: () => import(`/app/common/permission.js`)
+            component: () => import(`../../app/common/permission.js`)
         }]
     }];
 
@@ -52,11 +52,11 @@ const mofRouter = function (module, extraRoutes = []) {
     router.firstRoute = function () {
         const routes = this.getRoutes();
         console.log('routes', routes);
-        //遍历routes，找path是/admin/开头的
+        //遍历routes，找path是/system/开头的
         let result = null;
         for (let i = 0; i < routes.length; i++) {
             const route = routes[i];
-            if (route.meta.default || route.path.indexOf('/admin/') >= 0) {
+            if (route.meta.default || route.path.indexOf('/system/') >= 0) {
                 result = route;
                 break;
             }

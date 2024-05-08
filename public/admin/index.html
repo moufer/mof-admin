@@ -40,9 +40,9 @@
 
     import { createApp, provide, ref, reactive } from 'vue';
     import ElementPlus, { ElMessage } from 'element-plus';
-    import zhCn from '/resources/libraries/element-plus@2.6.0/locale/zh-cn.mjs';
+    import zhCn from './resources/libraries/element-plus@2.6.0/locale/zh-cn.mjs';
     import { createPinia } from 'pinia';
-    import * as ElementPlusIconsVue from '/resources/libraries/element-plus-icons-vue@2.1.0/index.js';
+    import * as ElementPlusIconsVue from './resources/libraries/element-plus-icons-vue@2.1.0/index.js';
     import { mofRouter } from 'comm/router.js';
 
     import http from 'comm/http.js';
@@ -50,13 +50,13 @@
     import { useUserStore } from 'comm/userStore.js';
     import { useRouteStore } from 'comm/routeStore.js';
 
-    const router = mofRouter('admin');
+    const router = mofRouter('system');
     const pinia = createPinia();
 
     const app = createApp({
       setup() {
         const useRouter = ref(false);
-        const loginModule = 'admin';
+        const loginModule = 'system';
 
         //依赖注入
         provide('http', http);
@@ -64,7 +64,7 @@
 
         const entrance = () => {
           //获取用户信息和权限信息
-          http.get('/admin/passport/info?module=admin').then(res => {
+          http.get('/system/passport/info?module=system').then(res => {
             //设置路由
             useRouter.value = true;
 
@@ -76,6 +76,7 @@
               pagePath = window.location.hash.substring(1);
             }
             if (!router.hasRoutePath(pagePath)) {
+              console.log(router.firstRoute());
               pagePath = router.firstRoute().path;
             }
             router.push(pagePath);

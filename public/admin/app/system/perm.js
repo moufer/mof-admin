@@ -18,6 +18,6 @@ export default {
         },
     },
     template: /*html*/`<div class="mf-perm">
-    <mf-data-manage ref="manageRef" table-name="admin:perm" @table-data-change="change"></mf-data-manage>
+    <mf-data-manage ref="manageRef" table-name="system:perm" @table-data-change="change"></mf-data-manage>
 </div>`,
 }

@@ -58,7 +58,7 @@ export default {
                 ...{
                     UEDITOR_HOME_URL: clientUrl('/resources/libraries/ueditor-plus/'),
                     UEDITOR_CORS_URL: clientUrl('/resources/libraries/ueditor-plus/'),
-                    serverUrl: serverUrl('/admin/ueditor/index'),
+                    serverUrl: serverUrl('/system/ueditor/index'),
                     zIndex
                 }
             };

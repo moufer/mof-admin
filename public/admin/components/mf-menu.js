@@ -3,7 +3,7 @@ export default {
     props: {
         name: {
             type: String,
-            default: 'admin'
+            default: 'system'
         },
         menus: {
             type: Array,

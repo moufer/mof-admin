@@ -22,6 +22,6 @@ export default {
         }
     },
     template: /*html*/`<div class="mf-page-user">
-    <mf-data-manage ref="manageRef" table-name="admin:user" @table-data-change="change"></mf-data-manage>
+    <mf-data-manage ref="manageRef" table-name="system:user" @table-data-change="change"></mf-data-manage>
 </div>`,
 }

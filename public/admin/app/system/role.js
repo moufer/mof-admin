@@ -5,6 +5,6 @@ export default {
         MfDataManage
     },
     template: /*html*/`<div class="mf-dynamic">
-    <mf-data-manage ref="manageRef" table-name="admin:role"></mf-data-manage>
+    <mf-data-manage ref="manageRef" table-name="system:role"></mf-data-manage>
 </div>`,
 }

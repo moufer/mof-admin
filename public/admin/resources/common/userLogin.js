@@ -16,7 +16,7 @@ const loginFail = function (err) {
 
 const logout = function (forward = '') {
     return new Promise((resolve, reject) => {
-        http.post('/admin/passport/logout').then(res => {
+        http.post('/system/passport/logout').then(res => {
             clear();
             resolve();
         })
@@ -30,7 +30,7 @@ const isLogin = function () {
         if (token && isLogin === 'true') {
             resolve(true);
         } else if (token) {
-            http.get('/admin/passport/token').then(res => {
+            http.get('/system/passport/token').then(res => {
                 resolve(true);
             }).catch(err => {
                 clear();

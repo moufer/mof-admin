@@ -53,21 +53,32 @@ export default {
             xhr.onload = () => {
                 if (xhr.status === 200) {
                     const blob = xhr.response;
-                    const downloadUrl = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
+                    if (blob.type == 'application/json') {
+                        const reader = new FileReader();
+                        reader.readAsText(blob, 'utf-8');
+                        reader.onload = () => {
+                            const json = JSON.parse(reader.result);
+                            this.$message.error(json.errmsg);
+                        }
+                    } else if (blob.type !== 'application/octet-stream') {
+                        this.$message.success('下载失败');
+                    } else {
+                        const downloadUrl = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
 
-                    link.href = downloadUrl;
-                    link.download = fileName;
-                    link.style.display = 'none';
+                        link.href = downloadUrl;
+                        link.download = fileName;
+                        link.style.display = 'none';
 
-                    document.body.appendChild(link);
-                    link.click();
+                        document.body.appendChild(link);
+                        link.click();
 
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(downloadUrl);
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(downloadUrl);
 
-                    this.http.post(this.apiRoot + '/package/downloaded', { key });
-                    this.$message.success('打包完成');
+                        this.http.post(this.apiRoot + '/package/downloaded', { key });
+                        this.$message.success('打包完成');
+                    }
                 } else {
                     this.$message.error('文件下载失败:'.xhr.status);
                 }

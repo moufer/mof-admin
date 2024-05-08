@@ -60,7 +60,7 @@ export default {
             editorConfig.MENU_CONF = {};
             //图片上传
             editorConfig.MENU_CONF['uploadImage'] = {
-                server: serverUrl('/admin/upload/image'),
+                server: serverUrl('/system/upload/image'),
                 ...uploadCfg,
                 customInsert: (res, insertFn) => {
                     if (res.errcode === 0) {
@@ -72,7 +72,7 @@ export default {
             };
             //视频上传
             editorConfig.MENU_CONF['uploadVideo'] = {
-                server: serverUrl('/admin/upload/media'),
+                server: serverUrl('/system/upload/media'),
                 ...uploadCfg,
                 customInsert: (res, insertFn) => {
                     if (res.errcode === 0) {

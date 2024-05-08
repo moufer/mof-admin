@@ -33,7 +33,7 @@ export default {
           });
 
           // 发送登录请求
-          http.post('/admin/passport/login', formValues)
+          http.post('/system/passport/login', formValues)
             .then(res => {
               //emit('onsuccess', res);
               loginSuccess(res);

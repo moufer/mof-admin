@@ -42,7 +42,7 @@ export default {
     },
     methods: {
         enable(name) {
-            this.http.post(`/admin/module/enable/${name}`).then(() => {
+            this.http.post(`/system/module/enable/${name}`).then(() => {
                 this.$refs.manageRef.refresh();
                 this.$message.success('启用成功');
                 this.change();
@@ -54,7 +54,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.http.post(`/admin/module/disable/${name}`).then(res => {
+                this.http.post(`/system/module/disable/${name}`).then(res => {
                     this.$refs.manageRef.refresh();
                     this.$message.success('禁用成功');
                     this.change();
@@ -72,7 +72,7 @@ export default {
                     lock: true,
                     text: '正在安装，请稍候...',
                 });
-                this.http.post(`/admin/module/install/${name}`).then(() => {
+                this.http.post(`/system/module/install/${name}`).then(() => {
                     this.$loading().close();
                     this.$refs.manageRef.refresh();
                     this.$message.success('安装成功');
@@ -94,7 +94,7 @@ export default {
                 inputErrorMessage: '验证失败',
                 type: 'warning'
             }).then((value) => {
-                this.http.post(`/admin/module/uninstall/${name}`).then(() => {
+                this.http.post(`/system/module/uninstall/${name}`).then(() => {
                     this.$refs.manageRef.refresh();
                     this.$message.success('卸载成功');
                     this.change();
@@ -107,6 +107,6 @@ export default {
         }
     },
     template: /*html*/`<div class="page-module">
-    <mf-data-manage ref="manageRef" table-name="admin:module" :table-column-operations="operations"></mf-data-manage>
+    <mf-data-manage ref="manageRef" table-name="system:module" :table-column-operations="operations"></mf-data-manage>
 </div>`,
 }

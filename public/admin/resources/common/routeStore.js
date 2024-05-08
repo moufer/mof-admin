@@ -75,7 +75,7 @@ export const useRouteStore = defineStore('route', () => {
                 router.addRoute('frame', {
                     path: perm.url,
                     meta: { title: perm.title, id: perm.id, pid: perm.pid },
-                    component: () => import(`/app/${perm.url}.js`)
+                    component: () => import(`../../app/${perm.url}.js`)
                 });
             } else if (perm.type === 'group' && perm.children.length > 0) {
                 addRoutes(perm.children, params);

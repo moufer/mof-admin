@@ -108,7 +108,7 @@ export default {
 
         //获取表格配置
         getTableConfig() {
-            let url = this.tableConfigUrl || '/admin/table/{tableName}';
+            let url = this.tableConfigUrl || '/system/table/{tableName}';
             return this.http.get(url.replace('{tableName}', this.tableName));
         },
 
