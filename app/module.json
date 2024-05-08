@@ -1,11 +1,11 @@
 {
-  "name": "admin",
-  "title": "后台管理",
-  "description": "mofAdmin后台管理模块",
+  "name": "system",
+  "title": "后台系统",
+  "description": "MofAdmin后台管理模块",
   "author": "官方",
   "version": "1.0.0",
   "keywords": [
-    "admin",
+    "system",
     "official"
   ],
   "is_kernel": true,
@@ -15,7 +15,7 @@
       "type": "menu",
       "title": "仪表盘",
       "perm": "Dashboard",
-      "url": "admin/dashboard",
+      "url": "system/dashboard",
       "sort": 0,
       "icon": "Odometer",
       "actions": [
@@ -34,7 +34,7 @@
           "type": "menu",
           "title": "系统设置",
           "perm": "Config",
-          "url": "admin/config",
+          "url": "system/config",
           "sort": 2,
           "icon": "Setting",
           "actions": [
@@ -45,8 +45,8 @@
         {
           "type": "menu",
           "title": "附件管理",
-          "perm": "storage",
-          "url": "admin/storage",
+          "perm": "Storage",
+          "url": "system/storage",
           "sort": 3,
           "icon": "Paperclip",
           "actions": [
@@ -57,7 +57,7 @@
           "type": "menu",
           "title": "模块管理",
           "perm": "Module",
-          "url": "admin/module",
+          "url": "system/module",
           "sort": 4,
           "icon": "Grid",
           "actions": [
@@ -83,7 +83,7 @@
           "type": "menu",
           "title": "管理员管理",
           "perm": "User",
-          "url": "admin/user",
+          "url": "system/user",
           "sort": 1,
           "icon": "Connection",
           "actions": [
@@ -94,7 +94,7 @@
           "type": "menu",
           "title": "角色管理",
           "perm": "Role",
-          "url": "admin/role",
+          "url": "system/role",
           "sort": 2,
           "icon": "MagicStick",
           "actions": [
@@ -105,7 +105,7 @@
           "type": "menu",
           "title": "权限管理",
           "perm": "Perm",
-          "url": "admin/perm",
+          "url": "system/perm",
           "sort": 3,
           "icon": "Connection",
           "actions": [

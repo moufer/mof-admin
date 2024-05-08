@@ -120,7 +120,7 @@ class PermForm extends Form
 
     private function getCategoryOptions()
     {
-        return $this->getElSgModules()->toSelectOptions('title', 'name');
+        return $this->getElSgModules()->toSelectOptions();
     }
 
     private function getModuleOptions()

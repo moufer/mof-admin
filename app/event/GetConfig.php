@@ -13,13 +13,13 @@ class GetConfig
         $config = app('cache')->get($cacheKey);
         if (!$config) {
             $config = [];
-            $rows = (new Config)->where(['module' => 'admin'])->select();
+            $rows = (new Config)->where(['module' => 'system'])->select();
             $rows->each(function ($row) use (&$config) {
                 $config[$row['name']] = $row['value'];
             });
             app('cache')->set($cacheKey, $config);
         }
         //写入配置
-        app('config')->set($config, 'admin');
+        app('config')->set($config, 'system');
     }
 }

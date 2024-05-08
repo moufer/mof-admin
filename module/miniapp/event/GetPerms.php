@@ -45,7 +45,7 @@ class GetPerms
         if (!$admin->is_super_admin) {
             if ('miniapp' === $admin->module) {
                 $modules = AdminRelation::where(['admin_id' => $admin->id])->column('module');
-                $modules = array_merge($modules, ['admin']);
+                $modules = array_merge($modules, ['system']);
                 $where[] = ['module', 'in', $modules];
             } else {
                 return $admin->role->getPerms('miniapp');

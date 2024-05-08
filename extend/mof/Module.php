@@ -3,8 +3,6 @@
 namespace mof;
 
 use mof\front\Config;
-use mof\front\Form;
-use mof\utils\ConfigOptions;
 use think\facade\Route;
 
 class Module
@@ -17,7 +15,7 @@ class Module
      */
     public static function path($name): string
     {
-        if ('admin' == $name) {
+        if ('system' == $name) {
             return app_path();
         }
         return root_path('module') . $name . DIRECTORY_SEPARATOR;
@@ -30,7 +28,7 @@ class Module
      */
     public static function namespace($name): string
     {
-        if ('admin' == $name) {
+        if ('system' == $name) {
             return '\\app\\';
         }
         return '\\module\\' . $name . '\\';
@@ -112,13 +110,13 @@ class Module
      */
     public static function verifyIntegrity($name): bool
     {
-        $module = self::info($name);
-        if (!$module) {
+        if (!self::info($name)) {
             return false;
         }
         $files = [
             'controller',
             'module.json',
+            'route.php',
         ];
         foreach ($files as $file) {
             $file = static::path($name) . $file;
@@ -169,18 +167,20 @@ class Module
     }
 
     /**
-     * 获取模块资源目录
+     * 获取模块对外访问目录
      * @param string $module 模块标识
-     * @param bool $isPublicDir 是否返回public目录
+     * @param string $type
+     * @param bool $isProjectPublicDir 是否返回public目录
      * @return string
      */
-    public static function getModuleResourcesPath(string $module, bool $isPublicDir = false): string
+    public static function getModulePublicPath(string $module, string $type = 'resource', bool $isProjectPublicDir = false): string
     {
-        if ($isPublicDir) {
-            return app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR . 'resource'
+        if ($isProjectPublicDir) {
+            $dir = $type === 'system' ? ($type . DIRECTORY_SEPARATOR . 'app') : $type;
+            return app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR . $dir
                 . DIRECTORY_SEPARATOR . $module;
         }
-        return static::path($module) . 'resource';
+        return static::path($module) . 'public' . DIRECTORY_SEPARATOR . $type;
     }
 
     /**
@@ -200,8 +200,8 @@ class Module
         //去除数组里的键名
         $modules = array_values($modules);
         //检测是否存在admin模块
-        if (!in_array('admin', $modules)) {
-            array_unshift($modules, 'admin');
+        if (!in_array('system', $modules)) {
+            array_unshift($modules, 'system');
         }
 
         return $modules;

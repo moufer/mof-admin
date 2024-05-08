@@ -9,7 +9,7 @@ use mof\Mof;
  */
 function upload_url(string $method = 'image'): string
 {
-    return url('/admin/upload/' . $method)->domain(true)->build();
+    return url('/system/upload/' . $method)->domain(true)->build();
 }
 
 /**

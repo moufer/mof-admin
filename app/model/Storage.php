@@ -21,7 +21,7 @@ class Storage extends Model
     protected $append = ['url'];
 
     protected static array $userMorph = [
-        'user' => ['admin' => Admin::class],
+        'user' => ['system' => Admin::class],
     ];
 
     protected array $searchFields = [

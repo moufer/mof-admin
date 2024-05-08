@@ -20,7 +20,7 @@ class RoleLogic extends Logic
     public function save($params): Model
     {
         $model = parent::save($params);
-        $model->setPermission($params['perms']);
+        $model->setPermission($params['perm_ids']);
         return $model;
     }
 

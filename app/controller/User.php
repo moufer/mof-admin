@@ -21,7 +21,7 @@ class User extends Controller
     {
         return ApiResponse::success(
             $this->logic->paginate(
-                $this->request->searcher()->params(['module'=>'admin'],false)
+                $this->request->searcher()->params(['module'=>'system'],false)
             )
         );
     }
@@ -46,7 +46,7 @@ class User extends Controller
     public function save(): Json
     {
         return ApiResponse::success(
-            $this->logic->save($this->form->withFixed(['module'=>'admin'])->get())
+            $this->logic->save($this->form->withFixed(['module'=>'system'])->get())
         );
     }
 

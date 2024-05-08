@@ -48,7 +48,7 @@ class Admin extends Model implements UserInterface
 
     public function getUserType(): string
     {
-        return 'admin';
+        return 'system';
     }
 
     public function getId(): int
@@ -80,9 +80,9 @@ class Admin extends Model implements UserInterface
      * @return array
      * @throws DbException
      */
-    public function getPerms(string $module = 'admin'): array
+    public function getPerms(string $module = 'system'): array
     {
-        if ($module === 'admin') {
+        if ($module === 'system') {
             $perms = $this->role->getPerms($module);
         } else {
             //其他模块通过事件来获取

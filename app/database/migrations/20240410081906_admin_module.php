@@ -61,7 +61,7 @@ class AdminModule extends Migrator
     {
         $data = [
             [
-                'name'       => 'admin',
+                'name'       => 'system',
                 'title'      => '后台管理',
                 'version'    => '1.0.0',
                 'status'     => 1,

@@ -30,7 +30,7 @@ class Passport extends Controller
         //登录
         $auth = $this->logic->withModule($data['module'])->login($data['username'], $data['password']);
         //登录时指定了模块，使用该模块的权限
-        $module = $this->request->param('module', 'admin');
+        $module = $this->request->param('module', 'system');
         return ApiResponse::success([
             'token' => $auth->getToken()->toArray(),
             'user'  => $auth->getUser()->hidden(['password']),
@@ -59,12 +59,12 @@ class Passport extends Controller
 
     public function info(): Json
     {
-        $module = $this->request->param('module', 'admin');
+        $module = $this->request->param('module', 'system');
         $user = $this->auth->getUser()->hidden(['password']);
-        if('admin' === $module && 'admin' !== $user->module) {
+        if('system' === $module && 'system' !== $user->module) {
             return ApiResponse::error('当前用户没有系统后台权限');
         }
-        $perms = $user->module === 'admin'
+        $perms = $user->module === 'system'
             ? $this->auth->getUser()->role->getPerms()
             : [];
         $result = [
@@ -77,7 +77,7 @@ class Passport extends Controller
     public function perms(): Json
     {
         $user = $this->auth->getUser();
-        if ($user->module !== 'admin') {
+        if ($user->module !== 'system') {
             return ApiResponse::error('当前用户没有管理该模块的权限');
         }
         $perms = $this->auth->getUser()->role->getPerms();

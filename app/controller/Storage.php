@@ -41,7 +41,7 @@ class Storage extends Controller
         return ApiResponse::success(
             $this->logic->paginate(
                 $this->request->searcher([
-                    'user_type' => 'admin',
+                    'user_type' => 'system',
                     'user_id'   => $this->auth->getId()
                 ])
             )

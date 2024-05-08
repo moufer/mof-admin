@@ -87,7 +87,7 @@ class Role extends Model
      * @return array
      * @throws DbException
      */
-    public function getPerms(string $category = 'admin', array $module = null): array
+    public function getPerms(string $category = 'system', array $module = null): array
     {
         if ($this->getAttr('id') > 1) {
             $permIds = Perm::getCompletePermIds($this->role_perms->column('perm_id'));

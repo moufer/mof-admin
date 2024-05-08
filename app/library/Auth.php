@@ -18,7 +18,7 @@ class Auth implements AuthInterface
      */
     protected ?UserInterface $user = null;
 
-    protected string $aud = 'admin';
+    protected string $aud = 'system';
 
     public function __construct()
     {
@@ -110,13 +110,16 @@ class Auth implements AuthInterface
 
     /**
      * 刷新用户信息
-     * @return void
+     * @return bool
      */
-    public function refresh(): void
+    public function refresh(): bool
     {
+        if (!$this->user) return false;
+
         $this->user->refresh();
         $token = $this->token->toArray();
         Cache::set($this->token->uuid(), $this->user, $token['expires'] - time());
+        return true;
     }
 
     /**

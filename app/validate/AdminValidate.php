@@ -7,9 +7,9 @@ use mof\Validate;
 class AdminValidate extends Validate
 {
     protected $rule = [
-        'username' => 'require|alphaDash|unique:admin',
+        'username' => 'require|alphaDash|unique:system_admin',
         'name'     => 'require',
-        'email'    => 'require|email|unique:admin',
+        'email'    => 'require|email|unique:system_admin',
         'password' => 'requireCallback:requireCheckPassword|length:6,20',
         'role_id'  => 'require',
     ];

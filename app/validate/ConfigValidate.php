@@ -7,7 +7,7 @@ use mof\Validate;
 class ConfigValidate extends Validate
 {
     protected $rule = [
-        'name'  => 'require|alphaDash|unique:config',
+        'name'  => 'require|alphaDash|unique:system_config',
         'title' => 'require',
         'group' => 'require',
         'type'  => 'require|in:text,textarea,number,float,switch,kv,uploadimage,uploadfile',

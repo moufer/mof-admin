@@ -94,7 +94,7 @@ abstract class Table
         //替换接口基础地址里的{module}和{table}
         $this->serverBaseUrl = str_replace(
             ['{module}', '{table}'],
-            ['app' === $class[0] ? 'admin' : $class[1], $this->table],
+            ['app' === $class[0] ? 'system' : $class[1], $this->table],
             $this->serverBaseUrl
         );
     }

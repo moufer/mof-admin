@@ -13,10 +13,10 @@ class RoleForm extends Form
 {
     protected array $validate = [
         'param' => [
-            'category', 'name', 'status/d', 'perm_ids/a',
+            'category', 'name', 'status/d', 'perm_ids/a', 'intro'
         ],
         'rule'  => [
-            'name|名称'     => 'require|unique:role',
+            'name|名称'     => 'require|unique:system_role',
             'status|状态'   => 'require|in:0,1',
             'perms|权限'    => 'array',
             'category|分类' => 'require',

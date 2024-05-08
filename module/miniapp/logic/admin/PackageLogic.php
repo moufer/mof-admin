@@ -170,29 +170,31 @@ class PackageLogic extends Logic
      */
     private function getFormConfig(array $values): array
     {
+        $result = [];
         //源代码包
         $package = new WechatMiniAppPackage($this->miniapp);
-        return [
-            [
-                "label" => "请求网址",
-                "prop"  => "siteroot",
-                "type"  => "input",
-                "value" => $values['siteroot'] ?? 'https://',
-                "rules" => [
-                    ["required" => true],
-                    ["type" => "url"],
-                    ["pattern" => "^https:\/\/", "message" => "必须以https://开头"],
-                ],
-                "intro" => "请填写小程序通信接口地址，必须是https。如无特殊情况，请保持默认值。"
+        $result[] = [
+            "label" => "请求网址",
+            "prop"  => "siteroot",
+            "type"  => "input",
+            "value" => $values['siteroot'] ?? 'https://',
+            "rules" => [
+                ["required" => true],
+                ["type" => "url"],
+                ["pattern" => "^https:\/\/", "message" => "必须以https://开头"],
             ],
-            [
+            "intro" => "请填写小程序通信接口地址，必须是https。如无特殊情况，请保持默认值。"
+        ];
+        if ($plugins = $package->getPlugins(true)) {
+            $result[] = [
                 "label"   => "启用插件",
                 "prop"    => "plugins",
                 "type"    => "checkbox",
                 "intro"   => "选择要启用的插件，启用前请先到微信小程序后台添加小程序插件。",
                 "value"   => $values['plugins'] ?? '',
-                "options" => $package->getPlugins(true)
-            ]
-        ];
+                "options" => $plugins
+            ];
+        }
+        return $result;
     }
 }

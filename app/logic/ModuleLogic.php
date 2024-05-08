@@ -126,7 +126,7 @@ class ModuleLogic extends Logic
     {
         if (!$this->model = $this->model->getByName($name)) {
             throw new LogicException('模块未安装');
-        } else if ($this->model->name === 'admin') {
+        } else if ($this->model->name === 'system') {
             throw new LogicException('禁止卸载核心模块');
         }
 
@@ -154,7 +154,7 @@ class ModuleLogic extends Logic
         if (!$module = $this->model->getByName($name)) {
             throw new LogicException('模块未安装');
         }
-        if ($module->name === 'admin') {
+        if ($module->name === 'system') {
             throw new LogicException('禁止停用核心模块');
         }
         //禁用

@@ -2,7 +2,6 @@
 
 namespace module\miniapp\library;
 
-use http\Url;
 use module\miniapp\model\MiniApp;
 use mof\exception\LogicException;
 use mof\Module;
@@ -105,7 +104,7 @@ class WechatMiniAppPackage
                 }
             }
         }
-        if ($this->appJson['subPackages']) {
+        if (!empty($this->appJson['subPackages'])) {
             //遍历 $this->appJson['subPackages'] 判断内容是否在$plugins里也存在
             foreach ($this->appJson['subPackages'] as $key => $subPackages) {
                 foreach ($subPackages['plugins'] as $_key => $val) {

@@ -21,7 +21,7 @@ class PassportLogic extends Logic
     #[Inject]
     protected Auth $auth;
 
-    protected string $module = 'admin';
+    protected string $module = 'system';
 
     public function login($username, $password): Auth
     {

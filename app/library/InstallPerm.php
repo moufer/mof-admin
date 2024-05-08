@@ -112,7 +112,7 @@ class InstallPerm
                 $perm, array_flip(['type', 'category', 'perm', 'title', 'url', 'icon', 'sort'])
             );
             $data['pid'] = $parentPerm ? $parentPerm->id : 0;
-            $data['category'] = $data['category'] ?? ($parentPerm ? $parentPerm->category : 'admin');
+            $data['category'] = $data['category'] ?? ($parentPerm ? $parentPerm->category : 'system');
             $data['module'] = $this->moduleName;
             $data['status'] = 1;
             //新建根权限

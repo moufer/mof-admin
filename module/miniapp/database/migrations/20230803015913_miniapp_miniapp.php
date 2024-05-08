@@ -50,7 +50,7 @@ class MiniappMiniapp extends Migrator
             ->addColumn('config', 'text', ['comment' => '小程序配置'])
             ->addColumn('create_at', 'datetime', ['null' => false, 'comment' => '创建时间'])
             ->addColumn('update_at', 'datetime', ['null' => false, 'comment' => '更新时间'])
-            ->addColumn('delete_at', 'datetime', ['null' => false, 'comment' => '软删除'])
+            ->addColumn('delete_at', 'datetime', ['null' => true, 'comment' => '软删除'])
             ->addIndex('appid', ['unique' => true])
             ->create();
     }

@@ -48,7 +48,8 @@ class InstallModule
         $this->checkRequires();        //检测依赖
         $this->installConsole();       //安装数据库
         $this->installPerm->install(); //安装权限
-        $this->copyResource();         //复制资源文件
+        //复制资源文件
+        $this->copyPublicFiles();
     }
 
     /**
@@ -60,10 +61,14 @@ class InstallModule
      */
     public function uninstall(): void
     {
-        $this->checkChildren('uninstall');  //检测依赖
-        $this->removeResource();            //删除资源文件
-        $this->installPerm->uninstall();    //卸载权限
-        $this->uninstallConsole();          //删除数据
+        //检测依赖
+        $this->checkChildren('uninstall');
+        //删除资源文件
+        $this->removePublicFiles();
+        //卸载权限
+        $this->installPerm->uninstall();
+        //删除数据
+        $this->uninstallConsole();
     }
 
     /**
@@ -145,33 +150,50 @@ class InstallModule
 
     /**
      * 复制资源文件到对外访问目录中
+     * @param string $type 支持:*(默认),admin,resource
      * @return void
      */
-    public function copyResource(): void
+    public function copyPublicFiles(string $type = '*'): void
     {
-        $resourcePath = Module::getModuleResourcesPath($this->moduleInfo['name']);
-        if (is_dir($resourcePath)) {
-            //获取对外访问目录
-            $destPath = Module::getModuleResourcesPath($this->moduleInfo['name'], true);
-            //复制过去
-            Dir::copyDir($resourcePath, $destPath);
+        $types = $type === '*' ? ['system', 'resource'] : [$type];
+        foreach ($types as $type) {
+            $resourcePath = Module::getModulePublicPath($this->moduleInfo['name'], $type);
+            if (is_dir($resourcePath)) {
+                //获取对外访问目录
+                $destPath = Module::getModulePublicPath($this->moduleInfo['name'], $type, true);
+                //复制过去
+                Dir::copyDir($resourcePath, $destPath);
+            }
         }
     }
 
     /**
-     * 删除资源
+     * 删除对外访问目录中的资源文件
+     * @param string $type 支持:*(默认),admin,resource
      * @return void
      */
-    public function removeResource(): void
+    public function removePublicFiles(string $type = '*'): void
     {
-        $resourcePath = Module::getModuleResourcesPath($this->moduleInfo['name']);
-        $destPath = Module::getModuleResourcesPath($this->moduleInfo['name'], true);
-        if (is_dir($resourcePath) && is_dir($destPath)) {
-            //删除对外访问目录里的同名文件（不直接删除目录是未了避免删除用户自己添加）
-            Dir::removeRedundantFiles($resourcePath, $destPath);
+        $types = $type === '*' ? ['system', 'resource'] : [$type];
+        foreach ($types as $type) {
+            $resourcePath = Module::getModulePublicPath($this->moduleInfo['name'], $type);
+            $destPath = Module::getModulePublicPath($this->moduleInfo['name'], $type, true);
+            if (is_dir($resourcePath) && is_dir($destPath)) {
+                //删除对外访问目录里的同名文件（不直接删除目录是未了避免删除用户自己添加）
+                Dir::removeRedundantFiles($resourcePath, $destPath);
+            }
+            //删除空文件夹
+            Dir::removeEmptySubdirs($destPath);
         }
-        //删除空文件夹
-        Dir::removeEmptySubdirs($destPath);
+    }
+
+    /**
+     * 复制后台JS代码
+     * @return void
+     */
+    public function copyBeJsCode($dir = 'system')
+    {
+
     }
 
     protected function installConsole(): void

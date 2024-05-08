@@ -63,7 +63,7 @@ class PermissionMiddleware
         $path = explode('/', $name);
         $action = array_pop($path);
         $controller = array_pop($path);
-        $module = $path[0] === 'app' ? 'admin' : $path[1];
+        $module = $path[0] === 'app' ? 'system' : $path[1];
 
         return [$module, $controller, $action];
     }

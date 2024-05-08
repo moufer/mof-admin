@@ -155,17 +155,17 @@ class Install extends Command
 
     private function createTables(): string
     {
-        $buffer = $this->getConsole()->call('mof-migrate:rollback', ['admin']);
-        $buffer = $this->getConsole()->call('mof-migrate:run', ['admin']);
+        $buffer = $this->getConsole()->call('mof-migrate:rollback', ['system']);
+        $buffer = $this->getConsole()->call('mof-migrate:run', ['system']);
         return $buffer->fetch();
     }
 
     private function createData(): string
     {
         //加入权限菜单
-        InstallPerm::make('admin')->install();
+        InstallPerm::make('system')->install();
         //加入默认数据
-        $buffer = $this->getConsole()->call('mof-seed:run', ['admin']);
+        $buffer = $this->getConsole()->call('mof-seed:run', ['system']);
         return $buffer->fetch();
     }
 

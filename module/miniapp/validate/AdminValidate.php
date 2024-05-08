@@ -5,9 +5,9 @@ namespace module\miniapp\validate;
 class AdminValidate extends \app\validate\AdminValidate
 {
     protected $rule = [
-        'username' => 'require|alphaDash|unique:admin',
+        'username' => 'require|alphaDash|unique:system_admin',
         'name'     => 'require',
-        'email'    => 'require|email|unique:admin',
+        'email'    => 'require|email|unique:system_admin',
         'password' => 'requireCallback:requireCheckPassword|length:6,20',
         'miniapp_ids'  => 'require|array',
     ];

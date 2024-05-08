@@ -37,7 +37,7 @@ class Token implements TokenInterface
      * @param string $aud 面向的用户
      * @return array 令牌信息，格式：['token' => $token, 'expires' => $expires]
      */
-    public function create(string $aud = 'admin'): array
+    public function create(string $aud = 'system'): array
     {
         //生成token
         $payload = [];
@@ -57,7 +57,7 @@ class Token implements TokenInterface
      * @param string $module 模块标识
      * @throws AuthTokenException
      */
-    public function verify(string $token, string $module = 'admin'): array
+    public function verify(string $token, string $module = 'system'): array
     {
         $payload = $this->verifyJWT($token, $module);
         if (!is_object($payload)) {

@@ -36,7 +36,7 @@ class AdminRole extends Migrator
             'primary_key' => ['id']
         ]);
 
-        $table->addColumn('category', 'string', ['limit' => 60, 'default' => 'admin', 'comment' => '分类', 'null' => false])
+        $table->addColumn('category', 'string', ['limit' => 60, 'default' => 'system', 'comment' => '分类', 'null' => false])
             ->addColumn('pid', 'integer', ['limit' => 11, 'default' => 0, 'comment' => '上级Id', 'null' => false])
             ->addColumn('name', 'string', ['limit' => 60, 'default' => '', 'comment' => '名称', 'null' => false])
             ->addColumn('intro', 'string', ['limit' => 200, 'default' => '', 'comment' => '简介', 'null' => false])
@@ -58,7 +58,7 @@ class AdminRole extends Migrator
     {
         $data = [
             [
-                'category'  => 'admin',
+                'category'  => 'system',
                 'pid'       => 0,
                 'name'      => '超级管理员',
                 'intro'     => '拥有系统所有权利权限',

@@ -37,9 +37,9 @@ interface AuthInterface
     public function logout(): bool;
 
     /**
-     * @return void
+     * @return bool
      */
-    public function refresh(): void;
+    public function refresh(): bool;
 
     /**
      * @param string $token
