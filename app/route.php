@@ -4,6 +4,10 @@ use app\middleware\AuthTokenMiddleware;
 use app\middleware\PermissionMiddleware;
 use think\facade\Route;
 
+Route::group('client', function () {
+    Route::get('config', '\app\controller\Client@config');
+});
+
 //用户登录
 Route::post('passport/login', '\app\controller\Passport@login');
 Route::group('passport', function () {
