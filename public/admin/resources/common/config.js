@@ -1,8 +1,17 @@
-export default {
-    //服务端地址
-    serverURL: 'https://mof-api.dpyouhui.com',
-    //客户端地址
-    clientURL: 'http://127.0.0.1:5500',
-    //附件存储地址
-    storageURL: 'https://mof-api.dpyouhui.com/storage',
+import http from 'comm/http.js';
+import { useConfigStore } from 'comm/configStore.js';
+
+const getConfig = () => {
+    return new Promise((resolve, reject) => {
+        http.get('/system/client/config').then(res => {
+            useConfigStore().setConfig(res.data);
+            resolve(res.data);
+        }).catch(err => {
+            reject(err);
+        });
+    })
 }
+
+export {
+    getConfig
+};

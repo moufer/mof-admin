@@ -36,7 +36,7 @@ export default {
     }
   },
   created() {
-    this.configUrl = `/admin/table/{tableName}?id=${this.miniapp.id}`
+    this.configUrl = `/system/table/{tableName}?id=${this.miniapp.id}`
     console.log('this.configUrl', this.miniapp);
   },
   template: /*html*/`

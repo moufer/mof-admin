@@ -21,10 +21,13 @@ vendor/
 module/article/
 module/shortvideo/
 
+public/resource/article
+public/resource/shortvideo/
+
+public/admin/node_modules/
+public/admin/app/article/
+public/admin/app/shortvideo/
 public/admin/yarn.lock
 public/admin/package.json
 public/admin/package-lock.json
 public/admin/rollup.config.js
-public/admin/node_modules/
-public/admin/app/article/
-public/admin/app/shortvideo/

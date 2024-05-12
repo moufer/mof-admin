@@ -1,10 +1,9 @@
-import config from 'comm/config.js';
 import axios from 'lib/axios@1.5.1/axios.ems.js';
 import { ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
 
 const http = axios.create({
-    baseURL: config.serverURL,
+    baseURL: window.serverUrl,
 });
 http.interceptors.request.use(function (cfg) {
     // 判断是否存在token，如果存在将每个页面header都添加token
@@ -39,7 +38,7 @@ http.interceptors.response.use(function (res) {
                 const router = useRouter();
                 console.log('useRouter()', router);
                 router.push('/login');
-                //window.location.href = config.clientURL + '/login.html';//跳转到登录框
+                //window.location.href = window.clientUrl + '/login.html';//跳转到登录框
             }, 1000)
         }
     } else if (err.response.status === 403) {

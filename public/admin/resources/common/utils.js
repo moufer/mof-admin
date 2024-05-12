@@ -1,4 +1,4 @@
-import config from 'comm/config.js';
+import { useConfigStore } from 'comm/configStore.js';
 
 /**
  * 服务器端链接地址
@@ -14,7 +14,7 @@ const serverUrl = (url, params = []) => {
     if (params.length > 0) {
         url += '?' + buildQueryString(params);
     }
-    return config.serverURL + '/' + url;
+    return window.serverUrl + '/' + url;
 }
 
 /**
@@ -31,7 +31,7 @@ const clientUrl = (url, params = []) => {
     if (params.length > 0) {
         url += '?' + buildQueryString(params);
     }
-    return config.clientURL + '/' + url;
+    return window.clientUrl + '/' + url;
 }
 
 /**
@@ -41,10 +41,12 @@ const clientUrl = (url, params = []) => {
  * @returns 
  */
 const storageUrl = (url, provider = 'default') => {
+    const { config } = useConfigStore();
     if (url.charAt(0) === '/') {
         url = url.substring(1);
     }
-    return config.storageURL + '/' + url;
+    console.log('config', config)
+    return config.storageUrl + '/' + url;
 }
 
 /**

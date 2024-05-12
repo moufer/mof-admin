@@ -1,5 +1,4 @@
 import MfFormRender from './mf-form-render.js';
-import { deepCopy } from 'comm/utils.js';
 export default {
     name: 'mf-data-search',
     components: { MfFormRender },

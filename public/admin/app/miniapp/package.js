@@ -1,5 +1,4 @@
 import MfFormRender from 'comp/mf-form-render.js';
-import config from 'comm/config.js';
 export default {
     components: {
         MfFormRender
@@ -44,7 +43,7 @@ export default {
         downloadPackage(key, fileName) {
             const token = localStorage.getItem('admin_token');
             const xhr = new XMLHttpRequest();
-            const url = `${config.serverURL}/${this.apiRoot}/package/download?key=${key}`;
+            const url = `${window.serverUrl}/${this.apiRoot}/package/download?key=${key}`;
 
             xhr.open('GET', url, true);
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);

@@ -1,4 +1,4 @@
-import { isEmpty, evaluateExpression, storageUrl, clientUrl, getThumbByFileType } from 'comm/utils.js';
+import { isEmpty, evaluateExpression, clientUrl, getThumbByFileType } from 'comm/utils.js';
 export default {
     name: 'mf-data-table',
     props: {

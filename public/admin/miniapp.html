@@ -9,8 +9,12 @@
 	<link rel="stylesheet" href="./resources/libraries/element-plus@2.6.0/index.css" />
 	<link rel="stylesheet" href="./resources/css/frame.css">
 	<link rel="stylesheet" href="./resources/css/page.css">
+	<link ref="stylesheet" href="./resources/libraries/wangeditor@5.1.23/editor/dist/css/style.css">
 	<link rel="stylesheet" href="./resources/css/miniapp.css">
+	<script src="./global.js"></script>
+	<!--
 	<script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+	-->
 </head>
 
 <body>
@@ -18,7 +22,6 @@
 		<router-view v-if="useRouter"></router-view>
 	</div>
 	<script>
-		// VConsole 默认会挂载到 `window.VConsole` 上
 		//var vConsole = new window.VConsole();
 	</script>
 	<script type="importmap">
@@ -39,7 +42,6 @@
       }
     }
   </script>
-
 	<script type="module">
 
 		import { createApp, provide, ref, reactive } from 'vue';
@@ -50,6 +52,7 @@
 		import { mofRouter } from 'comm/router.js';
 
 		import http from 'comm/http.js';
+		import { getConfig } from 'comm/config.js';
 		import { isLogin } from 'comm/userLogin.js';
 		import { useUserStore } from 'comm/userStore.js';
 		import { useRouteStore } from 'comm/routeStore.js';
@@ -95,35 +98,40 @@
 				provide('loginModule', loginModule);
 				provide('loginTitle', loginTitle);
 
-				//登录状态
-				isLogin('miniapp').then(res => {
-					return http.get('/system/passport/info?module=miniapp');
-				}).then(async (res) => {
-					//设置用户信息
-					useUserStore().setUser(res.data.user);
-					let pagePath = '/index';
-					//判断是否指定了小程序平台id
-					const urlParams = new URLSearchParams(window.location.search);
-					const id = urlParams.get('id');
-					if (id && /[0-9]+/.test(id)) {
-						try {
-							//获取小程序平台信息
-							setMiniapp(await http.get(`/miniapp/backend/index/${id}`));
-							pagePath = getPagePath();
-						} catch (err) {
-							err.message && ElMessage.error(err.message);
-							pagePath = '/index';
+				getConfig().then(() => {
+					//登录状态
+					isLogin('miniapp').then(res => {
+						return http.get('/system/passport/info?module=miniapp');
+					}).then(async (res) => {
+						//设置用户信息
+						useUserStore().setUser(res.data.user);
+						let pagePath = '/index';
+						//判断是否指定了小程序平台id
+						const urlParams = new URLSearchParams(window.location.search);
+						const id = urlParams.get('id');
+						if (id && /[0-9]+/.test(id)) {
+							try {
+								//获取小程序平台信息
+								setMiniapp(await http.get(`/miniapp/backend/index/${id}`));
+								pagePath = getPagePath();
+							} catch (err) {
+								err.message && ElMessage.error(err.message);
+								pagePath = '/index';
+							}
 						}
-					}
-					console.log('pagePath---', pagePath)
-					router.push(pagePath);
+						console.log('pagePath---', pagePath)
+						router.push(pagePath);
+					}).catch(err => {
+						err && console.error(err);
+						if (router.currentRoute.value.path !== '/login') {
+							router.push('/login');
+						}
+					}).finally(() => {
+						useRouter.value = true;
+					});
 				}).catch(err => {
-					err && console.error(err);
-					if (router.currentRoute.value.path !== '/login') {
-						router.push('/login');
-					}
-				}).finally(() => {
-					useRouter.value = true;
+					console.log(err);
+					err.errmsg && ElMessage.error(err.errmsg);
 				});
 
 				return {

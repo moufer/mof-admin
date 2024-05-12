@@ -54,7 +54,7 @@ export default {
   template: /*html*/`
     <el-container class="body-container">
       <el-header>
-        <div class="logo-box">MofAdmin</div>
+        <div class="logo-box">磨锋后台管理系统</div>
         <div class="navs-bar"></div>
         <div class="status-bar">
           <div class="avatar-box">
