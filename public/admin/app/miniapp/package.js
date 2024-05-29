@@ -59,8 +59,8 @@ export default {
                             const json = JSON.parse(reader.result);
                             this.$message.error(json.errmsg);
                         }
-                    } else if (blob.type !== 'application/octet-stream') {
-                        this.$message.success('下载失败');
+                    } else if (blob.type !== 'application/zip') {
+                        this.$message.error('下载失败');
                     } else {
                         const downloadUrl = URL.createObjectURL(blob);
                         const link = document.createElement('a');

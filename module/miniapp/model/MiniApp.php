@@ -26,6 +26,7 @@ use think\model\relation\HasOne;
 class MiniApp extends \mof\Model
 {
     use MiniAppSearcher;
+
     //use SoftDelete;
 
     protected $name = 'miniapp';
@@ -37,6 +38,10 @@ class MiniApp extends \mof\Model
         'pay'        => 'json',
         'avatar_img' => 'storage',
         'qrcode_img' => 'storage',
+    ];
+
+    protected array $searchFields = [
+        'miniapp_ids' => 'array',
     ];
 
     /**
