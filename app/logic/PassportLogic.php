@@ -32,19 +32,14 @@ class PassportLogic extends Logic
             $user = $this->model->where('username', $username)->find();
             if (!$user) {
                 $status = LoginStatus::NOT_FOUND;
-                throw new LogicException('用户不存在');
-            }
-
-            //验证密码
-            if (!password_verify($password, $user->password)) {
+            } else if (!password_verify($password, $user->password)) {
                 $status = LoginStatus::PASSWORD_WRONG;
-                throw new LogicException('密码错误');
+            } else if ($user->module !== $this->module) {
+                $status = LoginStatus::NOT_MODULE_ADMIN;
             }
 
-            //检测是否是模块独立权限管理员
-            if($user->module !== $this->module) {
-                $status = LoginStatus::NOT_MODULE_ADMIN;
-                throw new LogicException('不是模块独立权限管理员，请在模块控制台登录。');
+            if ($status !== LoginStatus::SUCCESS) {
+                throw new LogicException($status->label());
             }
 
             //登录

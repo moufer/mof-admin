@@ -3,7 +3,6 @@
 namespace module\miniapp\logic\admin;
 
 use app\library\Auth;
-use http\Url;
 use module\miniapp\library\WechatMiniAppPackage;
 use module\miniapp\model\MiniApp;
 use module\miniapp\model\Package;

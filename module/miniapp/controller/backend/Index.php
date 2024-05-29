@@ -68,7 +68,7 @@ class Index extends Controller
         $modules = ['miniapp'];
         if ($miniapp->module_info->status) {
             $modules[] = $miniapp->module;
-        };
+        }
         $result = Perm::where('category', 'miniapp')
             ->whereIn('module', $modules)
             ->order('sort', 'asc')

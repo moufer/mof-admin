@@ -82,7 +82,7 @@ trait Curd
      */
     public function save($params): Model
     {
-        $class = get_class($this->model);
+        $class = $this->model::class;
         $model = new $class();
         $model->data($params, true);
         $this->access && $this->checkAccess($model);

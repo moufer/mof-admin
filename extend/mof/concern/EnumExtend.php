@@ -32,8 +32,9 @@ trait EnumExtend
      * @param \ReflectionClass|null $reflectionClass
      * @return string
      */
-    private function getDescription(string $key, ?\ReflectionClass $reflectionClass = null): string
+    private function getDescription(string $key='', ?\ReflectionClass $reflectionClass = null): string
     {
+        !$key && $key = $this->name;
         !$reflectionClass && $reflectionClass = new \ReflectionClass($this);
         return $reflectionClass->getReflectionConstant($key)->getAttributes()[0]->getArguments()[0];
     }
