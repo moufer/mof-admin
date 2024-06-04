@@ -56,7 +56,7 @@ class Install extends Command
     {
         $file = app()->getRuntimePath() . 'install.lock';
         if (is_file($file)) {
-            throw new LogicException("系统已安装。如需重装，请先手动删除{$file}文件。");
+            //throw new LogicException("系统已安装。如需重装，请先手动删除{$file}文件。");
         }
     }
 
@@ -88,10 +88,19 @@ class Install extends Command
         if (!extension_loaded('pdo')) {
             $result[] = ("未安装扩展：PDO");
         }
+        //检测是否存在.env文件
+        if (!is_file(app()->getRootPath() . '.env')) {
+            $result[] = ("未检测到.env文件，请先配置.env文件");
+        }
+        //检测.env文件里的jwt.key是否配置（不是能是空或者123456）
+        $jwtKey = trim(config('jwt.key'));
+        if (empty($jwtKey)) {
+            $result[] = ("jwt.key配置错误(不能为空)，请检查.env文件");
+        }
         if ($result) {
             $output->error('环境检测失败，请检查环境配置');
             foreach ($result as $index => $error) {
-                $output->error(($index + 1) . '.' . $error);
+                $output->error(($index + 1) . '、' . $error);
             }
             exit();
         } else {
