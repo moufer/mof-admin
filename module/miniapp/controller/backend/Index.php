@@ -22,7 +22,7 @@ class Index extends Controller
             //找管理员关联的小程序
             $miniappIds = AdminRelation::where(['admin_id' => $this->auth->getUser()->id])
                 ->column('miniapp_id');
-            $params['miniapp_ids'] = $miniappIds ?: [0];
+            $params['miniapp_ids'] = $miniappIds ?: [];
         }
 
         $paginate = (new Searcher())->model(MiniApp::class)
