@@ -13,8 +13,3 @@ use think\facade\Route;
 
 // 404
 Route::miss(fn() => abort(404, '页面不存在'));
-
-Route::group('test', function () {
-    Route::any('permUpdate', '\app\controller\Test@permUpdate');
-    Route::any('event', '\app\controller\Test@event');
-});
