@@ -69,17 +69,16 @@ class SeedCreate extends Create
     {
         if (!is_dir($path)) {
             //根据文件夹路径一层一层创建
-            $i = strpos($path, DIRECTORY_SEPARATOR . $module);
-            $rootPath = substr($path, 0, $i + strlen($module) + 1);
-            $migratePath = substr($path, $i + strlen($module) + 1);
+            $modulePath = Module::path($module);
+            $migratePath = str_replace($modulePath, '', $path);
 
-            if (!is_dir($rootPath)) {
+            if (!is_dir($modulePath)) {
                 throw new InvalidArgumentException(
                     sprintf('模块 "%s" 不存在，请先创建模块', $module)
                 );
             }
 
-            $dir = $rootPath;
+            $dir = $modulePath;
             foreach (explode(DIRECTORY_SEPARATOR, $migratePath) as $d) {
                 $dir .= DIRECTORY_SEPARATOR . $d;
                 if (!is_dir($dir)) {

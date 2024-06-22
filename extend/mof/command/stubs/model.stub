@@ -1,0 +1,12 @@
+<?php
+/**
+ * Date: {%date%}
+ */
+
+namespace module\{%module%}\model;
+
+class {%name%} extends \mof\Model
+{
+    protected $name = '{%table%}';
+
+}

@@ -1,0 +1,12 @@
+<?php
+/**
+ * Date: {%date%}
+ */
+
+namespace module\{%module%}\controller;
+
+use mof\ApiController;
+
+class {%name%} extends ApiController {
+
+}

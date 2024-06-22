@@ -2,9 +2,12 @@
 
 namespace mof;
 
+use mof\command\ControllerCreate;
 use mof\command\MigrateCreate;
 use mof\command\MigrateRollback;
 use mof\command\MigrateRun;
+use mof\command\ModelCreate;
+use mof\command\ModuleCreate;
 use mof\command\SeedCreate;
 use mof\command\SeedRun;
 
@@ -63,6 +66,9 @@ class Mof
     public static function getCommands(): array
     {
         return [
+            ModuleCreate::class,
+            ControllerCreate::class,
+            ModelCreate::class,
             MigrateCreate::class,
             MigrateRun::class,
             MigrateRollback::class,
