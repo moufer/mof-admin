@@ -16,6 +16,8 @@ use think\console\Output;
 
 class ModuleCreate extends Command
 {
+    protected string $module;
+
     protected function configure(): void
     {
         $this->setName('mof-module:create')
@@ -28,13 +30,14 @@ class ModuleCreate extends Command
     {
         $module = $input->getArgument('name');
         $title = $input->getArgument('title');
-        $this->create($module, empty($title) ? $module : $title);
+        $files = $this->create($module, empty($title) ? $module : $title);
         $output->writeln("<info>Module created successfully.</info>");
+        array_map(fn($file) => $output->writeln("<info>$file</info>"), $files);
     }
 
-    private function create($name, $title = ''): void
+    private function create($name, $title = ''): array
     {
-        $moduleNames = ['admin', 'system', 'mof'];
+        $moduleNames = ['admin', 'system', 'console', 'api', 'mof', 'moufer'];
         if (in_array($name, $moduleNames)) {
             throw new LogicException(sprintf("%s 为内置关键字，禁止创建", $name));
         }
@@ -46,26 +49,49 @@ class ModuleCreate extends Command
             throw new LogicException(sprintf("创建目录失败：%s", $modulePath));
         }
 
-        //创建module.json文件
-        $jsonFilePath = $modulePath . '/module.json';
-        $data = [
-            'name'        => $name,
-            'version'     => '1.0.0',
-            "title"       => $title,
-            'description' => '模块描述',
-            'author'      => '模块作者',
-            'keywords'    => [],
-            'is_kernel'   => false,
-            'requires'    => [],
-            'parent'      => '',
-            'perms'       => []
-        ];
+        $this->module = $name;
 
-        $content = json_encode($data, JSON_UNESCAPED_UNICODE);
-        if (!file_put_contents($jsonFilePath, $content)) {
-            throw new LogicException(sprintf("创建module.json文件失败：%s", $jsonFilePath));
+        //写入module.json
+        $newFiles[] = $this->createModuleJson($modulePath, [
+            'name'  => $name,
+            "title" => $title,
+        ]);
+        $newFiles[] = $this->createRoute($modulePath);
+
+        return $newFiles;
+    }
+
+    private function createModuleJson($modulePath, array $data): string
+    {
+        //获取模版
+        $file = __DIR__ . '/stubs/module.json';
+        $defaultInfo = json_decode(file_get_contents($file), true);
+
+        //写入
+        $content = json_encode(array_merge($defaultInfo, $data), JSON_UNESCAPED_UNICODE);
+        $filePath = $modulePath . 'module.json';
+        if (!file_put_contents($filePath, $content)) {
+            throw new LogicException(sprintf("创建module.json文件失败：%s", $filePath));
+        }
+        return $filePath;
+    }
+
+    private function createRoute($modulePath): string
+    {
+        //获取模版
+        $file = __DIR__ . '/stubs/route.stub';
+        $template = file_get_contents($file);
+
+        $match = [
+            '{%module%}' => $this->module,
+        ];
+        $filePath = $modulePath . 'route.php';
+        $content = str_replace(array_keys($match), array_values($match), $template);
+        if (!file_put_contents($filePath, $content)) {
+            throw new LogicException(sprintf("创建route.php文件失败：%s", $modulePath . '/route.php'));
         }
 
+        return $filePath;
     }
 
 }

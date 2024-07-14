@@ -1,0 +1,13 @@
+{
+  "name": "",
+  "title": "",
+  "description": "描述",
+  "author": "作者",
+  "version": "1.0.0",
+  "keywords": [
+  ],
+  "order": 99,
+  "is_kernel": false,
+  "requires": [],
+  "perms": []
+}
