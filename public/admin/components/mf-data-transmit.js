@@ -1,3 +1,5 @@
+import {buildQueryString} from 'utils';
+
 export default {
     name: 'mf-data-transmit',
     inject: ['http'],
@@ -49,12 +51,19 @@ export default {
                 });
             });
         },
-        add() {
+        add(params = null) {
             let url = this.baseUrl + this.actions.add;
+            //如果params有值，则作为url的参数
+            if (params) {
+                url += (url.indexOf('?') > -1 ? '&' : '?') + buildQueryString(params)
+            }
             return this.http.get(url);
         },
-        edit(id) {
+        edit(id, params = null) {
             let url = this.baseUrl + this.actions.edit.replace('{id}', id);
+            if (params) {
+                url += (url.indexOf('?') > -1 ? '&' : '?') + buildQueryString(params)
+            }
             return this.http.get(url);
         },
         //读取一条记录

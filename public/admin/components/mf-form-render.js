@@ -44,11 +44,11 @@ export default {
         }
         //组件名
         component.value = upperFirst(camelCase('mf_' + type));
-        //console.log(props.item.prop, component.value)
 
         //属性
         formItemAttrs.label = props.item.label;
         formItemAttrs.prop = props.item.prop;
+        formItemAttrs.tip = props.item.tip;
 
         //根据场景找帮助信息
         let helperName = 'intro';
@@ -77,9 +77,21 @@ export default {
         }
     },
     template:/*html*/`
-    <el-form-item v-bind="formItemAttrs" :class="{'form-item-sub':formItemAttrs.label.length===0}">
-        <component v-if="component.length > 0" :is="component" :item="item" v-model="computedItemValue" />
-        <div class="form-item-helper" v-if="helper.length > 0" v-show="showHelper" v-html="helper"></div>
+    <el-form-item :class="{'form-item-sub':formItemAttrs.label.length===0}">
+        <template #label>
+            <div style="display:flex;align-items:center;">
+                <span style="margin-right:3px">{{formItemAttrs.label}}</span>
+                <el-tooltip v-if="formItemAttrs.tip"
+                    :show-after="100"
+                    :content="formItemAttrs.tip"
+                    raw-content
+                ><el-icon><InfoFilled /></el-icon></el-tooltip>
+            </div>
+        </template>
+        <template #default>
+            <component v-if="component.length > 0" :is="component" :item="item" v-model="computedItemValue" />
+            <div class="form-item-helper" v-if="helper.length > 0" v-show="showHelper" v-html="helper"></div>
+        </template>
     </el-form-item>
     `
 }

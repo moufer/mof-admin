@@ -31,7 +31,7 @@ class Form
     public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->formValidate = FormValidate::make($this->validate);
+        $this->initValidate();
         $this->initialize();
     }
 
@@ -55,6 +55,11 @@ class Form
      */
     public function initialize()
     {
+    }
+
+    protected function initValidate(): void
+    {
+        $this->formValidate = FormValidate::make($this->validate);
     }
 
     /**
@@ -85,7 +90,7 @@ class Form
     protected function dialogAttrs(\mof\Model $model = null): array
     {
         return [
-            'title'      => $model ? '编辑' : '新增',
+            'title'      => ($model && !empty($model[$model->getPk()])) ? '编辑' : '新增',
             'width'      => 650,
             'top'        => '10vh',
             'lockScroll' => false,

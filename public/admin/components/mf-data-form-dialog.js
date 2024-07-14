@@ -80,7 +80,7 @@ export default {
         //编辑
         editDialog(pkId, dialog, form, items, options = {}) {
             dialog.title = dialog.title || options.title || '编辑';
-            dialog.width = dialog.width || options.title || 650;
+            dialog.width = dialog.width || options.width || 650;
             this.visible = true;
             this.action = 'edit';
             this.dialog = dialog;
@@ -222,7 +222,6 @@ export default {
         //一层对象转换成多层
         _convertObject(obj) {
             const result = {};
-
             for (let key in obj) {
                 if (obj.hasOwnProperty(key)) {
                     if (key.includes('.')) {
@@ -234,7 +233,6 @@ export default {
                     }
                 }
             }
-
             return result;
         }
     },

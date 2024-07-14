@@ -189,7 +189,7 @@ export default {
                 </div>
             </div>
         </div>
-        <el-dialog v-model="playDialogVisible" width="600" title="播放" style="text-algin: center">
+        <el-dialog v-model="playDialogVisible" width="600" title="播放" style="text-align: center">
             <audio :src="playUrl" controls v-if="subType === 'audio'" style="width:100%;"></audio>
             <video :src="playUrl" controls v-if="subType === 'video'" style="max-height:600px;"></video>
         </el-dialog>

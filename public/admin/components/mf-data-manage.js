@@ -171,8 +171,8 @@ export default {
         },
 
         //新增对话框
-        add() {
-            this.$refs.transmit.add().then(res => {
+        add(params = null) {
+            this.$refs.transmit.add(params).then(res => {
                 this.$refs.dialog.addDialog(res.data.dialog, res.data.form, res.data.elements);
             }).catch(err => {
                 err.errmsg && ElMessage.error(err.errmsg);
@@ -180,10 +180,10 @@ export default {
         },
 
         //编辑对话框
-        edit(id) {
+        edit(id, params = null) {
             //提示加载中
             //let loading = ElementPlus.ElLoading.service({ text: '加载中' });
-            this.$refs.transmit.edit(id).then(res => {
+            this.$refs.transmit.edit(id, params).then(res => {
                 // const data = res.data;
                 // const itemKeys = this.formItemsValue.map(item => item.prop);
                 // //找出交集

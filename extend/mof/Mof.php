@@ -13,6 +13,12 @@ use mof\command\SeedRun;
 
 class Mof
 {
+    public static function namespaceToDir($namespace): string
+    {
+        $dir = str_replace('\\', DIRECTORY_SEPARATOR, $namespace);
+        return app()->getRootPath() . $dir;
+    }
+
     /**
      * 获取文件访问地址
      * @param $path

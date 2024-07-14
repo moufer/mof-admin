@@ -36,21 +36,21 @@ export default {
     template: /*html*/`
     <div class="table-toolbar">
     <div class="left">
-      <el-button type="success" @click="handleCheckItem('refresh')" v-if="buttons.indexOf('refresh')>-1">
+      <el-button type="success" @click="handleCheckItem('refresh')" v-if="buttons.indexOf('refresh')>-1" title="刷新">
         <el-icon><component is="Refresh"></component></el-icon>
       </el-button>
-      <el-button type="primary" @click="handleCheckItem('add')" v-if="buttons.indexOf('add')>-1">
+      <el-button type="primary" @click="handleCheckItem('add')" v-if="buttons.indexOf('add')>-1" title="新增">
         <el-icon><component is="Plus"></component></el-icon>
       </el-button>
       <el-button type="warning" @click="handleCheckItem('edit')" :disabled="selectionCount==0"
-        v-if="buttons.indexOf('edit')>-1">
+        v-if="buttons.indexOf('edit')>-1" title="编辑">
         <el-icon><component is="Edit"></component></el-icon>
       </el-button>
       <el-button type="danger" @click="handleCheckItem('delete')" :disabled="selectionCount==0"
-        v-if="buttons.indexOf('delete')>-1">
+        v-if="buttons.indexOf('delete')>-1" title="删除">
         <el-icon><component is="Delete"></component></el-icon>
       </el-button>
-      <el-dropdown @command="handleCheckStatus" v-if="buttons.indexOf('status')>-1">
+      <el-dropdown @command="handleCheckStatus" v-if="buttons.indexOf('status')>-1" title="更新状态">
         <el-button type="warning" :disabled="selectionCount==0">
             <el-icon><component is="Open"></component></el-icon>
         </el-button>

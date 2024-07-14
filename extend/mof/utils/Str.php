@@ -13,4 +13,11 @@ class Str
         }
         return round($num / 10000, 1) . 'w+';
     }
+
+    public static function namespace(string $class): string
+    {
+        $array = array_slice(explode('\\', $class), 0, -1);
+        return implode('\\', $array);
+
+    }
 }
