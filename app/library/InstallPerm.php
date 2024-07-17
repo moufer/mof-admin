@@ -2,26 +2,20 @@
 
 namespace app\library;
 
+use app\library\perm\{PermAction, PermGroup, PermMenu};
 use app\model\Perm;
 use mof\exception\LogicException;
+use mof\Module;
+use mof\utils\AnnotationParser;
+use think\db\exception\{DataNotFoundException, DbException, ModelNotFoundException};
+use think\db\Raw;
+use think\facade\Db;
 
 /**
  * 安装权限菜单
  */
 class InstallPerm
 {
-    protected array $actions = [
-        'index'   => '列表',
-        'create'  => '增加',
-        'read'    => '详情',
-        'edit'    => '编辑',
-        'save'    => '保存',
-        'update'  => '更新',
-        'delete'  => '删除',
-        'deletes' => '批量删除',
-        'updates' => '批量更新',
-    ];
-
     /**
      * 模块名称
      * @var string
@@ -58,9 +52,11 @@ class InstallPerm
             //先卸载旧菜单(不调用模型事件)
             $this->uninstall();
 
-            //安装菜单
-            $perms = $this->moduleInfo['perms'];
-            if ($perms) $this->savePerm($perms);
+            //从控制器注解获取权限结构
+            if ($perms = $this->getControllerPerms()) {
+                //保存到数据库
+                $this->savePerm($perms);
+            }
 
             $model->commit();
         } catch (\Exception $e) {
@@ -98,32 +94,123 @@ class InstallPerm
         Perm::where('module', $this->moduleName)->update(['status' => 0]);
     }
 
+    public function reinstall(): void
+    {
+        Db::startTrans();
+        try {
+            $this->install();
+            //更新role_perm表里，通过perm_hash与perm表的hash表关联,更新perm_hash.perm_id=perm.hash
+            Db::name('system_role_perm')
+                ->alias('rp')
+                ->leftJoin('system_perm p', 'rp.perm_hash = p.hash')
+                ->where("1=1")
+                ->exp('rp.perm_id', 'p.id')
+                ->update();
+            Db::commit();
+        } catch (DbException $e) {
+            Db::rollback();
+            throw new LogicException('数据库操作失败:' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 扫描控制器，获取权限结构
+     * @return PermGroup[]|PermMenu[]|null
+     * @throws \ReflectionException
+     */
+    public function getControllerPerms(): ?array
+    {
+        //获取默认控制器所在路径
+        $scanDir = Module::path($this->moduleName) . 'controller' . DIRECTORY_SEPARATOR;
+        $namespace = Module::namespace($this->moduleName) . 'controller\\';
+        //定义了后台控制器时，获取后台控制器所在路径
+        if (!empty($this->moduleInfo['admin_controller_dir'])) {
+            $scanDir .= $this->moduleInfo['admin_controller_dir'] . DIRECTORY_SEPARATOR;
+            if (!is_dir($scanDir)) {
+                throw new LogicException(sprintf('后台控制器目录不存在:%s', $scanDir));
+            }
+            $namespace .= $this->moduleInfo['admin_controller_dir'] . '\\';
+        }
+        //扫描目录，找控制器类文件，并将文件名转化为类名
+        $files = scandir($scanDir);
+        $files = array_filter($files, fn($file) => preg_match('/^[A-Z][a-zA-Z0-9]+\.php$/', $file));
+        if (!$files) return null;
+
+        $controllers = array_map(fn($file) => $namespace . basename($file, '.php'), $files);
+        //获取控制器的权限信息
+        $perms = array_filter(
+            array_map(fn($controller) => AnnotationParser::adminPerm($controller), $controllers)
+        );
+
+        //找上级group
+        $group = [];
+        foreach ($perms as $perm) {
+            $groupName = !$perm->group ? 'main' : $perm->group;
+            $group[$groupName]['children'][] = $perm;
+        }
+
+        //获取模块的权限分组信息
+        $permGroup = $this->moduleInfo['admin_perm_group'] ?? [];
+        foreach ($group as $groupName => $groupInfo) {
+            $merge = [];
+            foreach ($permGroup as $permItem) {
+                if ($permItem['name'] === $groupName) {
+                    $merge = $permItem;
+                    break;
+                }
+            }
+            if (!$merge) $merge = [
+                'name'  => $groupName,
+                'title' => $this->moduleInfo['title'],
+            ];
+            //合并分组信息
+            $group[$groupName] = array_merge([
+                'type'     => 'group',
+                'module'   => $this->moduleName,
+                'category' => 'system',
+                'icon'     => 'Files'
+            ], $groupInfo, $merge);
+        }
+
+        //把$group['root']['children']里的数据提升到$group下级
+        if (isset($group['root'])) {
+            $group = array_merge($group, $group['root']['children']);
+            unset($group['root']);
+        }
+
+        return array_map(fn($perm) => is_array($perm) ? PermGroup::make($perm) : $perm, $group);
+    }
+
     /**
      * 保存到数据库
-     * @param array $perms
+     * @param PermGroup[]|PermMenu[] $perms
      * @param Perm|null $parentPerm
      * @return void
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     protected function savePerm(array $perms, Perm $parentPerm = null): void
     {
         foreach ($perms as $perm) {
-            //从数组 $perm 中获取键名为perm、title、url、icon的值，组成一个新数组
-            $data = array_intersect_key(
-                $perm, array_flip(['type', 'category', 'perm', 'title', 'url', 'icon', 'sort'])
-            );
+            $data = $perm->toArray();
             $data['pid'] = $parentPerm ? $parentPerm->id : 0;
-            $data['category'] = $data['category'] ?? ($parentPerm ? $parentPerm->category : 'system');
-            $data['module'] = $this->moduleName;
             $data['status'] = 1;
+
+            //查找是不是存在
+            $tblPrem = Perm::where([
+                'pid'  => $data['pid'],
+                'hash' => $data['hash'],
+            ])->find();
+
             //新建根权限
-            $prem = Perm::create($data);
+            !$tblPrem && $tblPrem = Perm::create($data);
+
             //新建action类型权限
-            if (isset($perm['actions']) && is_array($perm['actions'])) {
-                $this->createActions($prem, $perm['actions']);
-            }
-            //找下级，递归添加
-            if (!empty($perm['children']) && is_array($perm['children'])) {
-                $this->savePerm($perm['children'], $prem);
+            if ($perm->type === 'menu' && count($perm->children) > 0) {
+                $this->createActions($perm->children, $tblPrem);
+            } else if ($perm->type === 'group' && count($perm->children) > 0) {
+                $this->savePerm($perm->children, $tblPrem);
             }
         }
     }
@@ -131,53 +218,30 @@ class InstallPerm
     /**
      * 添加菜单行为组
      * @param Perm $parentPerm
-     * @param $actions
+     * @param PermAction[] $actions
      * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    protected function createActions(Perm $parentPerm, $actions): array
+    protected function createActions(array $actions, Perm $parentPerm): array
     {
-        $index = array_search('*', $actions);
-        if ($index !== false) {
-            unset($actions[$index]);
-            $actions = array_merge($actions, array_keys($this->actions));
-        }
         return array_map(function ($action) use ($parentPerm) {
-            $actionInfo = $this->getActionInfo($action);
-            return Perm::create([
-                'pid'      => $parentPerm->getAttr('id'), //父级id
-                'pid_path' => $parentPerm->getParents($parentPerm->getAttr('id'), true), //父级id路径
-                'type'     => 'action', //类型
-                'category' => $parentPerm->category,
-                'module'   => $parentPerm->getAttr('module'),  //所属模块
-                'perm'     => $parentPerm->getAttr('perm') . '@' . $actionInfo['action'], //权限标识
-                'title'    => $actionInfo['title'],
-                'url'      => '',
-                'status'   => 1,
-                'sort'     => 0,
-            ]);
+            $where = [
+                'pid'  => $parentPerm->getAttr('id'),
+                'hash' => $action->hash,
+            ];
+            //找是不是存在
+            if (!$perm = Perm::where($where)->find()) {
+                //不存在就新增
+                $perm = Perm::create(array_merge($where, $action->toArray(), [
+                    //父级id路径
+                    'pid_path' => $parentPerm->getParents($parentPerm->getAttr('id'), true),
+                    'status'   => 1,
+                ]));
+            }
+            return $perm;
         }, $actions);
-    }
-
-    /**
-     * 获取内置的action信息
-     * @param string $actionStr
-     * @return array
-     */
-    protected function getActionInfo(string $actionStr): array
-    {
-        if (strpos($actionStr, '@')) {
-            list($action, $title) = explode('@', $actionStr);
-        } else if (in_array($actionStr, array_keys($this->actions))) {
-            $action = $actionStr;
-            $title = $this->actions[$action];
-        } else {
-            $action = $title = $actionStr;
-        }
-
-        return [
-            'action' => $action,
-            'title'  => $title,
-        ];
     }
 
 }

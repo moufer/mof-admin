@@ -237,4 +237,17 @@ class Module
         if (!file_exists($file) || !class_exists($className)) return null;
         return new $className();
     }
+
+    /**
+     * 通过命名空间获取模块名称
+     * @param string $namespace
+     * @return string|null
+     */
+    public static function getNameByNameSpace(string $namespace): ?string
+    {
+        $list = explode('\\', trim($namespace,'\\'));
+        if ($list[0] === 'app') return 'system';
+        if ($list[0] === 'module') return $list[1];
+        return null;
+    }
 }

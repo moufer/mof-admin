@@ -12,96 +12,21 @@
   "is_kernel": false,
   "sg_perm": 1,
   "requires": [],
-  "perms": [
+  "admin_controller_dir": "backend",
+  "admin_perm_group": [
     {
-      "type": "group",
+      "name": "main",
       "title": "小程序平台",
-      "perm": "Miniapp",
-      "url": "",
-      "sort": 1,
-      "icon": "",
-      "children": [
-        {
-          "type": "menu",
-          "title": "小程序管理",
-          "perm": "Manage",
-          "url": "miniapp/manage",
-          "sort": 1,
-          "icon": "CopyDocument",
-          "actions": [
-            "*"
-          ]
-        },
-        {
-          "type": "menu",
-          "title": "平台管理员",
-          "perm": "Admin",
-          "url": "miniapp/admin",
-          "sort": 2,
-          "icon": "Avatar",
-          "actions": [
-            "*"
-          ]
-        }
-      ]
+      "icon": "ChatDotRound",
+      "category": "system",
+      "sort": 110
     },
     {
-      "type": "group",
-      "category": "miniapp",
+      "name": "common",
       "title": "通用管理",
-      "perm": "General",
-      "url": "",
-      "sort": 0,
       "icon": "Setting",
-      "children": [
-        {
-          "type": "menu",
-          "title": "访问统计",
-          "perm": "Statistics",
-          "url": "miniapp/statistics",
-          "sort": 1,
-          "icon": "",
-          "actions": [
-            "index"
-          ]
-        },
-        {
-          "type": "menu",
-          "title": "入口页面",
-          "perm": "Entrance",
-          "url": "miniapp/entrance",
-          "sort": 2,
-          "icon": "",
-          "actions": [
-            "index"
-          ]
-        },
-        {
-          "type": "menu",
-          "title": "支付参数",
-          "perm": "Pay",
-          "url": "miniapp/pay",
-          "sort": 3,
-          "icon": "",
-          "actions": [
-            "form@表单",
-            "submit@提交"
-          ]
-        },
-        {
-          "type": "menu",
-          "title": "打包上传",
-          "perm": "Package",
-          "url": "miniapp/package",
-          "sort": 4,
-          "icon": "",
-          "actions": [
-            "form@表单",
-            "submit@提交",
-            "download@下载"
-          ]
-        }
-      ]
+      "category": "miniapp",
+      "sort": 100
     }
   ]
 }

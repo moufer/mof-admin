@@ -6,12 +6,17 @@ use app\library\Controller;
 use app\concern\Batch;
 use app\library\Searcher;
 use app\logic\StorageLogic;
+use mof\annotation\AdminPerm;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\response\Json;
 
+#[AdminPerm(
+    title: '存储管理', url: 'system/storage', actions: '*',
+    sort: 3, icon: 'MostlyCloudy', group: 'system'
+)]
 class Storage extends Controller
 {
     #[Inject]

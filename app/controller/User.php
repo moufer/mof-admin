@@ -5,10 +5,15 @@ namespace app\controller;
 use app\front\form\UserForm;
 use app\library\Controller;
 use app\logic\AdminLogic;
+use mof\annotation\AdminPerm;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\response\Json;
 
+#[AdminPerm(
+    title: '管理员管理', url: 'system/user', actions: '*',
+    sort: 1, icon: 'Connection', group: 'perm'
+)]
 class User extends Controller
 {
     #[Inject]
@@ -21,7 +26,7 @@ class User extends Controller
     {
         return ApiResponse::success(
             $this->logic->paginate(
-                $this->request->searcher()->params(['module'=>'system'],false)
+                $this->request->searcher()->params(['module' => 'system'], false)
             )
         );
     }
@@ -46,7 +51,7 @@ class User extends Controller
     public function save(): Json
     {
         return ApiResponse::success(
-            $this->logic->save($this->form->withFixed(['module'=>'system'])->get())
+            $this->logic->save($this->form->withFixed(['module' => 'system'])->get())
         );
     }
 

@@ -5,6 +5,7 @@ namespace module\miniapp\controller\backend;
 use app\library\Controller;
 use module\miniapp\front\form\MiniappForm;
 use module\miniapp\logic\admin\MiniAppLogic;
+use mof\annotation\AdminPerm;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\response\Json;
@@ -12,6 +13,10 @@ use think\response\Json;
 /**
  * 小程序管理
  */
+#[AdminPerm(
+    title: '小程序管理', url: 'miniapp/manage', actions: '*',
+    sort: 2, icon: 'CopyDocument'
+)]
 class Manage extends Controller
 {
     #[Inject]

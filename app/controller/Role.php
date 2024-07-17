@@ -5,10 +5,15 @@ namespace app\controller;
 use app\front\form\RoleForm;
 use app\library\Controller;
 use app\logic\RoleLogic;
+use mof\annotation\AdminPerm;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\response\Json;
 
+#[AdminPerm(
+    title: '角色管理', url: 'system/role', actions: '*,!permission',
+    sort: 3, icon: 'MagicStick', group: 'perm'
+)]
 class Role extends Controller
 {
     #[Inject]

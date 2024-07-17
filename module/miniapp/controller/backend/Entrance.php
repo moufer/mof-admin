@@ -3,13 +3,16 @@
 namespace module\miniapp\controller\backend;
 
 use module\miniapp\library\MiniappController;
+use mof\annotation\AdminPerm;
+use mof\annotation\Description;
 use mof\ApiResponse;
 use mof\Module;
 use think\response\Json;
 
-/**
- * 入口页面
- */
+#[AdminPerm(
+    title: '入口页面', url: 'miniapp/entrance', actions: 'index',
+    sort: 2, icon: 'Guide', group: 'common', category: 'miniapp'
+)]
 class Entrance extends MiniappController
 {
     /**

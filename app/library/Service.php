@@ -2,6 +2,8 @@
 
 namespace app\library;
 
+use app\command\Install;
+use app\command\Perm;
 use mof\ModuleService;
 
 class Service extends ModuleService
@@ -16,6 +18,7 @@ class Service extends ModuleService
     ];
 
     protected array $commands = [
-        \app\command\Install::class
+        Install::class,
+        Perm::class
     ];
 }

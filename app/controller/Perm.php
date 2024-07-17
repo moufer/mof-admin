@@ -5,14 +5,19 @@ namespace app\controller;
 use app\front\form\PermForm;
 use app\library\Controller;
 use app\logic\PermLogic;
+use mof\annotation\AdminPerm;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use mof\utils\Arr;
 use think\response\Json;
 
+#[AdminPerm(
+    title: '权限管理', url: 'system/perm', actions: '*',
+    sort: 2, icon: 'MagicStick', group: 'perm'
+)]
 class Perm extends Controller
 {
-    #[inject]
+    #[Inject]
     protected PermLogic $logic;
 
     #[Inject]

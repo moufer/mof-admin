@@ -1,9 +1,9 @@
 <?php
 
-namespace mof;
+namespace app\library;
 
-use app\library\InstallPerm;
 use mof\exception\LogicException;
+use mof\Module;
 use mof\utils\Dir;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;

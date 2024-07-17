@@ -4,10 +4,18 @@ namespace app\controller;
 
 use app\library\Controller;
 use app\logic\ModuleLogic;
+use mof\annotation\AdminPerm;
+use mof\annotation\Description;
 use mof\annotation\Inject;
 use mof\ApiResponse;
+use think\db\exception\DbException;
 use think\response\Json;
 
+#[AdminPerm(
+    title: '模块管理', url: 'system/module',
+    actions: 'index,install,uninstall,disable,enable',
+    sort: 2, icon: 'Grid', group: 'system'
+)]
 class Module extends Controller
 {
     #[Inject]
@@ -31,6 +39,7 @@ class Module extends Controller
      * @return Json
      * @throws \Exception
      */
+    #[Description('安装')]
     public function install($name): Json
     {
         return ApiResponse::success($this->logic->install($name));
@@ -41,6 +50,7 @@ class Module extends Controller
      * @param $name
      * @return Json
      */
+    #[Description('卸载')]
     public function uninstall($name): Json
     {
         $this->logic->uninstall($name);
@@ -52,6 +62,7 @@ class Module extends Controller
      * @param $name
      * @return Json
      */
+    #[Description('停用')]
     public function disable($name): Json
     {
         $this->logic->disable($name);
@@ -62,7 +73,9 @@ class Module extends Controller
      * 启用模块
      * @param $name
      * @return Json
+     * @throws DbException
      */
+    #[Description('启用')]
     public function enable($name): Json
     {
         $this->logic->enable($name);

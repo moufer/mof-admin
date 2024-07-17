@@ -4,13 +4,15 @@ namespace module\miniapp\controller\backend;
 
 use module\miniapp\library\MiniappController;
 use module\miniapp\logic\admin\StatisticsLogic;
+use mof\annotation\AdminPerm;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\response\Json;
 
-/**
- * 小程序统计
- */
+#[AdminPerm(
+    title: '访问统计', url: 'miniapp/statistics', actions: 'index', sort: 1, icon: 'Histogram',
+    group: 'common', category: 'miniapp'
+)]
 class Statistics extends MiniappController
 {
     #[Inject]

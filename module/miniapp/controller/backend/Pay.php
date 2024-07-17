@@ -4,10 +4,16 @@ namespace module\miniapp\controller\backend;
 
 use module\miniapp\library\MiniappController;
 use module\miniapp\logic\admin\PayLogic;
+use mof\annotation\AdminPerm;
+use mof\annotation\Description;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\response\Json;
 
+#[AdminPerm(
+    title: '支付配置', url: 'miniapp/pay', actions: 'submit', sort: 3, icon: 'CreditCard',
+    group: 'common', category: 'miniapp'
+)]
 class Pay extends MiniappController
 {
     /**
@@ -26,10 +32,11 @@ class Pay extends MiniappController
     }
 
     /**
-     * 提交并打包
+     * 提交
      * @return Json
      * @throws \Exception
      */
+    #[Description('提交')]
     public function submit(): Json
     {
         $data = $this->request->withValidate([

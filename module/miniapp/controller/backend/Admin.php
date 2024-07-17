@@ -5,10 +5,15 @@ namespace module\miniapp\controller\backend;
 use app\library\Controller;
 use module\miniapp\front\form\AdminForm;
 use module\miniapp\logic\admin\AdminLogic;
+use mof\annotation\AdminPerm;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\response\Json;
 
+#[AdminPerm(
+    title: '管理员管理', url: 'miniapp/admin', actions: '*',
+    sort: 1, icon: 'Avatar'
+)]
 class Admin extends Controller
 {
     #[Inject]

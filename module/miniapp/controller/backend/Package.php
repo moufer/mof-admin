@@ -4,15 +4,18 @@ namespace module\miniapp\controller\backend;
 
 use module\miniapp\library\MiniappController;
 use module\miniapp\logic\admin\PackageLogic;
+use mof\annotation\AdminPerm;
+use mof\annotation\Description;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use think\db\exception\DbException;
 use think\response\File;
 use think\response\Json;
 
-/**
- * 小程序打包
- */
+#[AdminPerm(
+    title: '打包上传', url: 'miniapp/package', actions: 'submit,download', sort: 4, icon: 'Box',
+    group: 'common', category: 'miniapp'
+)]
 class Package extends MiniappController
 {
     /**
@@ -35,6 +38,7 @@ class Package extends MiniappController
      * @return Json
      * @throws \Exception
      */
+    #[Description('打包')]
     public function submit(): Json
     {
         $data = $this->request->withValidate([
@@ -48,6 +52,7 @@ class Package extends MiniappController
      * @return File|Json
      * @throws \Exception
      */
+    #[Description('下载')]
     public function download(): File|Json
     {
         $key = $this->request->withValidate(['key|参数'])->param('key');

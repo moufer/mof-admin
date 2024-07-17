@@ -67,10 +67,13 @@ class Role extends Model
             ->delete();
         //添加新的权限规则
         $insertData = [];
+        //获取hash
+        $hash = Perm::where('id', 'in', $permIds)->column('hash', 'id');
         foreach ($permIds as $permId) {
             $insertData[] = [
-                'role_id' => $this->getAttr('id'),
-                'perm_id' => $permId,
+                'role_id'   => $this->getAttr('id'),
+                'perm_id'   => $permId,
+                'perm_hash' => $hash[$permId]
             ];
         }
         //插入新的权限规则
