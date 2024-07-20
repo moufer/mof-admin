@@ -9,7 +9,7 @@ export default {
     props: {
         submitUrl: {
             type: String,
-            default: '/system/config/system'
+            default: ''
         },
         module: {
             type: String,

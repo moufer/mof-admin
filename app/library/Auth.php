@@ -6,7 +6,6 @@ use mof\exception\AuthTokenException;
 use mof\interface\AuthInterface;
 use mof\interface\TokenInterface;
 use mof\interface\UserInterface;
-use mof\Model;
 use mof\Token;
 use think\facade\Cache;
 
@@ -34,8 +33,12 @@ class Auth implements AuthInterface
     {
         //生成token信息
         $token = $this->token->create($this->aud);
+
         //缓存用户
-        Cache::set($this->token->uuid(), $user, $token['expires'] - time());
+        Cache::set($this->token->uuid(),
+            [$user->getId(), get_class($user)],
+            $token['expires'] - time()
+        );
 
         $this->setUser($user);
         return true;
@@ -73,8 +76,12 @@ class Auth implements AuthInterface
         //验证token有消息
         $this->token->verify($token, $this->aud);
         //通过uuid获取用户缓存
-        if (!$user = Cache::get($this->token->uuid())) {
+        if (!$cacheData = Cache::get($this->token->uuid())) {
             throw new AuthTokenException('登录已失效，请重新登录');
+        }
+        list($id, $class) = $cacheData;
+        if (!$user = $class::find($id)) {
+            throw new AuthTokenException('登录信息失效，请重新登录');
         }
         $this->user = $user;
 
@@ -118,7 +125,7 @@ class Auth implements AuthInterface
 
         $this->user->refresh();
         $token = $this->token->toArray();
-        Cache::set($this->token->uuid(), $this->user, $token['expires'] - time());
+        Cache::set($this->token->uuid(), [$this->user->getId(), get_class($this->user)], $token['expires'] - time());
         return true;
     }
 

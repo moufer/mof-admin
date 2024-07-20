@@ -21,6 +21,13 @@ class Logic
      */
     protected bool $modelIsInitialized = false;
 
+    public static function make(Model $model): static
+    {
+        $instance = new static(app());
+        $instance->model($model);
+        return $instance;
+    }
+
     public function __construct(protected App $app)
     {
         $this->inject();
@@ -34,10 +41,14 @@ class Logic
 
     /**
      * 获取模型
+     * @param null $model
      * @return Model
      */
-    public function model(): Model
+    public function model($model = null): Model
     {
+        if ($model instanceof Model) {
+            $this->model = $model;
+        }
         return $this->model;
     }
 

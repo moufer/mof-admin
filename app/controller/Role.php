@@ -12,7 +12,7 @@ use think\response\Json;
 
 #[AdminPerm(
     title: '角色管理', url: 'system/role', actions: '*,!permission',
-    sort: 3, icon: 'MagicStick', group: 'perm'
+    sort: 3, icon: 'Avatar', group: 'perm'
 )]
 class Role extends Controller
 {

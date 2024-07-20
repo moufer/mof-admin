@@ -14,7 +14,7 @@ use think\db\exception\DbException;
 use think\response\Json;
 
 #[AdminPerm(
-    title: '存储管理', url: 'system/storage', actions: '*',
+    title: '存储管理', url: 'system/storage', actions: '*,!selector',
     sort: 3, icon: 'MostlyCloudy', group: 'system'
 )]
 class Storage extends Controller

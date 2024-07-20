@@ -6,7 +6,7 @@ use mof\annotation\Description;
 use mof\utils\FormComponentOptions;
 use think\helper\Str;
 
-abstract class Config
+abstract class Config implements ConfigInterface
 {
 /**
      * 获取参数配置选项

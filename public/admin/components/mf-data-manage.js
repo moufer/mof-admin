@@ -383,6 +383,7 @@ export default {
                     break;
                 case 'status':
                     this.batch(ids, 'status', data.value);
+                    break;
                 case 'updates':
                     this.batch(ids, data.field, data.value);
                     break;

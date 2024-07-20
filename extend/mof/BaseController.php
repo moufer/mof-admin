@@ -5,6 +5,7 @@ declare (strict_types=1);
 namespace mof;
 
 use mof\annotation\Inject;
+use mof\annotation\InjectLogic;
 use think\App;
 
 abstract class BaseController
@@ -48,6 +49,8 @@ abstract class BaseController
             if ($getAttribute = ($property->getAttributes()[0] ?? false)) {
                 if ('mof\annotation\Inject' === $getAttribute->getName()) {
                     $this->{$property->name} = Inject::make($getAttribute, $property);
+                } else if('mof\annotation\InjectLogic'=== $getAttribute->getName()) {
+                    $this->{$property->name} = InjectLogic::make($getAttribute, $property);
                 }
             }
         }

@@ -3,6 +3,7 @@
 namespace mof;
 
 use mof\front\Config;
+use mof\front\ConfigInterface;
 use think\facade\Route;
 
 class Module
@@ -228,9 +229,9 @@ class Module
     /**
      * 获取配置选项
      * @param string $module
-     * @return Config|null
+     * @return ConfigInterface|null
      */
-    public static function loadConfig(string $module): ?Config
+    public static function loadConfig(string $module): ?ConfigInterface
     {
         $file = static::path($module) . 'front' . DIRECTORY_SEPARATOR . 'Config.php';
         $className = static::namespace($module) . 'front\\Config';
