@@ -27,9 +27,9 @@ class Request extends \think\Request
 
     /**
      * 验证规则或验证类名
-     * @var array|string
+     * @var array|string|\mof\Validate
      */
-    protected array|string $validate = [];
+    protected array|string|\mof\Validate $validate = [];
 
     /**
      * 验证消息
@@ -115,12 +115,12 @@ class Request extends \think\Request
 
     /**
      * 设置验证
-     * @param string|array $validate
+     * @param string|array|\mof\Validate $validate
      * @param array|null $message
      * @param bool $batch
      * @return $this
      */
-    public function withValidate(string|array $validate, array $message = null, bool $batch = false): static
+    public function withValidate(string|array|\mof\Validate $validate, array $message = null, bool $batch = false): static
     {
         if (is_array($validate)) {
             $_validate = $validate;
@@ -182,6 +182,8 @@ class Request extends \think\Request
             $v = new \mof\Validate();
             $v->rule($validate['rule']);
             $v->message($validate['message'] ?? []);
+        } else if ($validate instanceof \mof\Validate) {
+            $v = $validate;
         } else {
             $class = $validate;
             $v = new $class();

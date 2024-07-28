@@ -12,6 +12,7 @@ class Searcher
 
     protected array $order = [];
     protected array $with  = [];
+    protected array $field = [];
 
     protected array $params   = [];
     protected int   $pageSize = 10;
@@ -34,6 +35,12 @@ class Searcher
     public function with(array $with): static
     {
         $this->with = $with;
+        return $this;
+    }
+
+    public function field(array $field): static
+    {
+        $this->field = $field;
         return $this;
     }
 
@@ -106,8 +113,8 @@ class Searcher
         }
 
         //字段
-        if (!empty($this->fields)) {
-            $query->field($this->fields);
+        if (!empty($this->field)) {
+            $query->field($this->field);
         }
 
         return $query;

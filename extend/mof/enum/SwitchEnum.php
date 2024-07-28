@@ -3,11 +3,15 @@
 namespace mof\enum;
 
 use mof\annotation\Description;
+use mof\concern\EnumExtend;
 
-enum Switcher: int
+enum SwitchEnum: int
 {
+    use EnumExtend;
+
     #[Description('开启')]
-    case ON = 1;
+    case YES = 1;
+
     #[Description('关闭')]
-    case OFF = 0;
+    case NO = 0;
 }

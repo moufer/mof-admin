@@ -38,8 +38,18 @@ class DictArray
         return $result;
     }
 
+    public function findValue($key)
+    {
+        return $this->items[$key] ?? null;
+    }
+
+    public function toArray(): array
+    {
+        return $this->items;
+    }
+
     public function toElementData(): ElementData
     {
-        return ElementData::make($this->convertLabelValue());
+        return ElementData::make($this);
     }
 }

@@ -2,6 +2,9 @@
 
 namespace mof\concern;
 
+use mof\enum\StatusEnum;
+use mof\utils\DictArray;
+
 /**
  * 枚举扩展
  * Trait EnumExtend
@@ -9,33 +12,29 @@ namespace mof\concern;
  */
 trait EnumExtend
 {
-    /**
-     * 获取枚举选项
-     * @return array
-     */
-    public function options(): array
+    public static function toArray(): array
     {
         $result = [];
-        $reflectionClass = new \ReflectionClass($this);
+
+        $reflectionClass = new \ReflectionClass(static::class);
         foreach ($reflectionClass->getConstants() as $key => $value) {
-            $result[] = [
-                'label' => $this->getDescription($key, $reflectionClass),
-                'value' => $value
-            ];
+            $result[$value->value] = $reflectionClass->getReflectionConstant($key)
+                                         ?->getAttributes()[0]
+                                         ?->getArguments()[0];
         }
+
         return $result;
     }
 
-    /**
-     * 获取枚举描述
-     * @param string $key
-     * @param \ReflectionClass|null $reflectionClass
-     * @return string
-     */
-    private function getDescription(string $key='', ?\ReflectionClass $reflectionClass = null): string
+    public static function toDict(): DictArray
     {
-        !$key && $key = $this->name;
-        !$reflectionClass && $reflectionClass = new \ReflectionClass($this);
-        return $reflectionClass->getReflectionConstant($key)->getAttributes()[0]->getArguments()[0];
+        return new DictArray(static::toArray());
+    }
+
+    public function label(): ?string
+    {
+        return (new \ReflectionClass($this))->getReflectionConstant($this->name)
+                   ?->getAttributes()[0]
+                   ?->getArguments()[0];
     }
 }

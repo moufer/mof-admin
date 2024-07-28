@@ -21,8 +21,4 @@ enum LoginStatus: int
     #[Description('登录成功')]
     case SUCCESS = 1;
 
-    public function label(): string
-    {
-        return $this->getDescription($this->name);
-    }
 }
