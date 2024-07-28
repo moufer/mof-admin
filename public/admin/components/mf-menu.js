@@ -143,7 +143,7 @@ export default {
                 </el-icon>
                 <span>{{menu.title}}</span>
                 </template>
-                <el-menu-item-group v-for="(menuL2, indexL2) in menu.children">
+                <template v-for="(menuL2, indexL2) in menu.children">
                 <el-menu-item :index="menuL2.id.toString()" @click="handleClick">
                     <template #title>
                     <el-icon>
@@ -152,7 +152,7 @@ export default {
                     <span>{{menuL2.title}}</span>
                     </template>
                 </el-menu-item>
-                </el-menu-item-group>
+                </template>
             </el-sub-menu>
             <el-menu-item @click="handleClick" :index="menu.id.toString()" v-else-if="menu.type=='menu'">
                 <el-icon>
