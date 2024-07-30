@@ -8,13 +8,11 @@ export default {
         return {
             operations: {
                 label: '操作',
-                show: true,
                 width: 200,
-                mode: 'text',
+                fixed:'right',
                 buttons: [
                     {
                         label: '管理',
-                        icon: 'xxxx',
                         name: 'manage',
                         click: row => {
                             let url = `./miniapp.html?id=${row.id}#/miniapp/statistics`;

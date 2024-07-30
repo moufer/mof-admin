@@ -60,19 +60,19 @@ class PayLogic extends Logic
                 "intro" => "填写API秘钥v3"
             ],
             [
+                "label" => "商户证书序列号",
+                "prop"  => "serial_number",
+                "value" => $values['serial_number'] ?? '',
+                "intro" => "从微信支付平台获取API商户证书序列号"
+            ],
+            [
                 "label" => "商户证书密钥",
                 "prop"  => "private_key",
                 "type"  => "textarea",
                 "value" => $values['private_key'] ?? '',
-                "intro" => "填写API商户证书密钥(从apiclient_key.pem中复制)"
+                "intro" => "填写API商户证书密钥(从apiclient_key.pem中复制)",
+                "rows"  => 5
             ],
-            [
-                "label" => "商户证书",
-                "prop"  => "certificate",
-                "type"  => "textarea",
-                "value" => $values['certificate'] ?? '',
-                "intro" => "填写API商户证书内容(从apiclient_cert.pem中复制)"
-            ]
         ];
     }
 }

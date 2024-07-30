@@ -21,16 +21,7 @@ class MiniappTable extends Table
             "prop"  => "avatar_img",
             "label" => "图标",
             "type"  => "image",
-        ];
-    }
-
-    public function columnQrcodeImg(): array
-    {
-        return [
-            "prop"    => "qrcode_img",
-            "label"   => "二维码",
-            "search"  => false,
-            "visible" => false,
+            "width" => 120
         ];
     }
 
@@ -39,7 +30,7 @@ class MiniappTable extends Table
         return [
             "prop"    => "type",
             "label"   => "类型",
-            "width"   => 120,
+            "width"   => 150,
             "search"  => true,
             "type"    => "select",
             "options" => [
@@ -80,16 +71,6 @@ class MiniappTable extends Table
         ];
     }
 
-    public function columnAppSecret(): array
-    {
-        return [
-            "prop"    => "app_secret",
-            "label"   => "App secret",
-            "search"  => false,
-            "visible" => false,
-        ];
-    }
-
     public function columnOriginalId(): array
     {
         return [
@@ -109,6 +90,7 @@ class MiniappTable extends Table
             "options" => ElementData::make(Module::enabledModules('miniapp'))
                 ->toSelectOptions('title', 'name'),
             "search"  => true,
+            "width" => 150
         ];
     }
 

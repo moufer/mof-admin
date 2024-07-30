@@ -12,7 +12,7 @@ class MiniappForm extends Form
 {
     protected array $validate = [
         'param' => [
-            'type', 'title', 'appid', 'app_secret', 'original_id', 'module',
+            'type', 'title', 'appid', 'intro', 'app_secret', 'original_id', 'module',
             'avatar_img', 'qrcode_img'
         ],
         'rule'  => [
@@ -63,6 +63,8 @@ class MiniappForm extends Form
                 "prop"  => "intro",
                 "label" => "描述",
                 "value" => $model ? $model->intro : '',
+                "type" => "textarea",
+                "rows" => 2,
             ],
             [
                 "prop"  => "appid",
@@ -74,7 +76,7 @@ class MiniappForm extends Form
             ],
             [
                 "prop"  => "app_secret",
-                "label" => "App secret",
+                "label" => "App Secret",
                 "value" => $model ? $model->app_secret : '',
                 "rules" => [
                     ["required" => true],
@@ -88,13 +90,13 @@ class MiniappForm extends Form
             [
                 "prop"  => "avatar_img",
                 "label" => "图标",
-                'type' => 'upload:image',
-                "value" => $model ? $model->avatar_img :'',
+                'type'  => 'upload:image',
+                "value" => $model ? $model->avatar_img : '',
             ],
             [
                 "prop"  => "qrcode_img",
                 "label" => "二维码",
-                'type' => 'upload:image',
+                'type'  => 'upload:image',
                 "value" => $model ? $model->qrcode_img : '',
             ],
         ];

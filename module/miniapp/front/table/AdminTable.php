@@ -21,14 +21,13 @@ class AdminTable extends UserTable
         return [
             "order"     => 7,
             "prop"      => "miniapp_ids",
-            "propAlias" => "miniapp_ids",
             "label"     => "关联小程序",
-            "type"      => "select",
+            "type"      => "tag",
             "options"   => ElementData::make($rows)->toSelectOptions('title', 'id'),
             "search"    => [
                 'type'      => 'select',
-                'clearable' => true
             ],
+            "width"     => '*'
         ];
     }
 
