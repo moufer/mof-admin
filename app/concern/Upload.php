@@ -71,16 +71,18 @@ trait Upload
         }
 
         //如果是图片并且限制了最大宽高，则缩小图片到最大宽高
-        if ($type == 'image') {
+        if ($type === 'image') {
+            if(!$image = Image::open($file)) {
+                return ApiResponse::error('图片文件读取失败');
+            }
             //获取图片宽高
             $wh = config('admin.storage_image_wh', '');
             if (preg_match('/^(\d+)x(\d+)$/', $wh, $match)) {
                 $maxW = (int)$match[1];
                 $maxH = (int)$match[2];
                 if ($maxH && $maxW) {
-                    $image = Image::open($file);
-                    $image->thumb($maxW, $maxH)
-                        ->save($file->getRealPath());
+                    //图片过大，进行所小
+                    $image->thumb($maxW, $maxH)->save($file->getRealPath());
                 }
             }
         }
@@ -113,7 +115,8 @@ trait Upload
             'sha1'      => $file->hash('sha1'),
             'provider'  => $this->app->filesystem->getDefaultDriver(),
         ];
-        if ('image' == $type && isset($image)) {
+
+        if ('image' === $type && isset($image)) {
             $data['width'] = $image->width();
             $data['height'] = $image->height();
         }
