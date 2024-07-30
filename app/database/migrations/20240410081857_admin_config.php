@@ -37,6 +37,8 @@ class AdminConfig extends Migrator
             'primary_key' => ['id']
         ]);
 
+        if(!$table->exists())
+
         $table->addColumn('module', 'string', ['limit' => 60, 'comment' => '所属模块', 'null' => false])
             ->addColumn('extend_type', 'string', ['limit' => 10, 'default' => '', 'comment' => '扩展类型', 'null' => false])
             ->addColumn('extend_id', 'integer', ['limit' => 11, 'default' => 0, 'comment' => '扩展id', 'null' => false])

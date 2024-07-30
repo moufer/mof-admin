@@ -80,6 +80,11 @@ class ElementData
         return $_data[$this->uniqueId];
     }
 
+    public function toTags($labelKey = 'label'): array
+    {
+        return array_map(fn($item) => $item[$labelKey], $this->data);
+    }
+
     protected function generateCascader(array $data, int $pid = 0, array $keyAlias = []): array
     {
         $result = [];

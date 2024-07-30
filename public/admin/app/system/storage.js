@@ -3,8 +3,16 @@ export default {
     components: {
         MfDataManage
     },
-    template: /*html*/`<div class="mf-dynamic">
-    <mf-data-manage ref="manageRef" table-name="system:storage"></mf-data-manage>
-</div>
-    `,
+    data() {
+        return {
+            formatter: {
+                size: row => row.size + '字节'
+            }
+        }
+    },
+    template: /*html*/`
+    <div class="system-storage">
+        <mf-data-manage ref="manageRef" table-name="system:storage" :table-column-formatter="formatter" />
+    </div>
+`,
 }

@@ -12,7 +12,7 @@ use mof\utils\ElementData;
 class UserTable extends Table
 {
     protected bool  $showSearch     = false;
-    protected array $toolbarButtons = ['refresh', 'add', 'search'];
+    protected array $toolbarButtons = ['add', 'refresh', 'search'];
     protected bool  $tableSelection = false;
 
     protected function columnId(): array
@@ -66,7 +66,7 @@ class UserTable extends Table
         return [
             "prop"  => "email",
             "label" => "邮箱",
-            "width" => 250,
+            "width" => 150,
         ];
     }
 

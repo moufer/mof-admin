@@ -16,6 +16,11 @@ export default {
     const { router } = useRouteStore()
     const { user } = useUserStore();
 
+    console.log('rawPerms',currentRoutePath,rawPerms);
+    //检测rawPerms.value是什么格式
+    console.log('rawPerms.value',currentRoutePath.value,rawPerms.value);
+    //如果rawPerms.value是object
+
     const menuCollapsed = ref(true);
 
     const changePagePath = (path) => {
@@ -54,7 +59,7 @@ export default {
   template: /*html*/`
     <el-container class="body-container">
       <el-header>
-        <div class="logo-box">磨锋后台管理系统</div>
+        <div class="logo-box"><a href="./">磨锋后台管理系统</a></div>
         <div class="navs-bar"></div>
         <div class="status-bar">
           <div class="avatar-box">
@@ -77,9 +82,9 @@ export default {
         </div>
       </el-header>
       <el-container class="iframe-container">
-        <el-aside>
+        <el-aside v-if="rawPerms">
           <mf-menu ref="menu" name="system" :menus="rawPerms" @change-path="changePagePath"
-          @change-collapse="changeCollapsed"></mf-menu>
+            @change-collapse="changeCollapsed"></mf-menu>
         </el-aside>
         <el-main>
           <div class="mf-page">

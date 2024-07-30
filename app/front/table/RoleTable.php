@@ -5,6 +5,7 @@ namespace app\front\table;
 use app\model\Module;
 use app\model\Perm;
 use mof\front\Table;
+use mof\utils\DictArray;
 use mof\utils\ElementData;
 
 class RoleTable extends Table
@@ -18,7 +19,7 @@ class RoleTable extends Table
         parent::init();
 
         $typeList = Module::modulesList();
-        $this->elSgModules = ElementData::make($typeList);
+        $this->elSgModules = DictArray::make($typeList)->toElementData();
 
         //tabs
         $this->tabProp = 'category';
@@ -41,16 +42,13 @@ class RoleTable extends Table
 
     public function operation(): array
     {
-        return [
-            'width'   => 120,
-            'show'    => true,
-            'label'   => '操作',
-            'mode'    => 'icon',
-            'buttons' => [
-                'edit|disable:id<=1',
-                'delete|disable:id<=1'
-            ]
+        $result = parent::operation();
+        $result['width'] = 150;
+        $result['buttons'] = [
+            'edit|disable:id<=1',
+            'delete|disable:id<=1'
         ];
+        return $result;
     }
 
     protected function columnId(): array
@@ -62,25 +60,12 @@ class RoleTable extends Table
         ];
     }
 
-    public function columnCategory(): array
-    {
-        return [
-            "prop"    => "category",
-            "label"   => "分类",
-            "width"   => 120,
-            "search"  => true,
-            "visible" => false,
-            "type"    => "select",
-            "options" => $this->elSgModules->toSelectOptions('title', 'name'),
-        ];
-    }
-
     protected function columnName(): array
     {
         return [
             "prop"   => "name",
             "label"  => "角色名称",
-            "width"  => 180,
+            "width"  => 150,
             "search" => true,
         ];
     }

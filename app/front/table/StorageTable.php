@@ -21,7 +21,6 @@ class StorageTable extends Table
         return [
             "prop"   => 'id',
             "label"  => 'ID',
-            "search" => true,
         ];
     }
 

@@ -33,12 +33,6 @@ class UserForm extends Form
                 ]
             ],
             [
-                "prop"  => "avatar",
-                "label" => "头像",
-                'type'  => 'upload:image',
-                "value" => $values['avatar'] ?? '',
-            ],
-            [
                 "prop"      => "password",
                 "label"     => "密码",
                 "type"      => "password",
@@ -48,12 +42,19 @@ class UserForm extends Form
                 ] : []
             ],
             [
+                "prop"  => "avatar",
+                "label" => "头像",
+                'type'  => 'upload:image',
+                "value" => $values['avatar'] ?? '',
+            ],
+            [
                 "prop"  => "name",
                 "label" => "姓名",
                 "value" => $values['name'] ?? '',
                 "rules" => [
                     ["required" => true],
-                ]
+                ],
+                "colSpan" => 12,
             ],
             [
                 "prop"  => "email",
@@ -61,7 +62,8 @@ class UserForm extends Form
                 "value" => $values['email'] ?? '',
                 "rules" => [
                     ["required" => true],
-                ]
+                ],
+                "colSpan" => 12,
             ],
             [
                 "prop"    => "role_id",

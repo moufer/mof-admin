@@ -29,6 +29,13 @@ class SystemPerm extends Migrator
     {
         //hash,name
         $table = $this->table('system_perm');
+
+        //检测hash字段是否存在
+        if(!$table->hasColumn('hash')){
+            //清空表内容
+            $table->truncate();
+        }
+
         //添加字段hash
         $table->addColumn('hash', 'string', ['limit' => 32, 'comment' => 'hash', 'null' => false, 'after' => 'pid_path'])
             ->addColumn('name', 'string', ['limit' => 30, 'comment' => '名称', 'null' => false, 'after' => 'module'])

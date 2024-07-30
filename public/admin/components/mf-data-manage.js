@@ -27,6 +27,10 @@ export default {
         tableColumnOperations: {
             type: Object,
             default: {}
+        },
+        tableColumnFormatter: {
+            type: Object,
+            default: {}
         }
     },
     emits: ['table-selection-change', 'table-operation-click', 'toolbar-click', 'table-data-change'],
@@ -306,6 +310,16 @@ export default {
                 result = this.tableColumns.filter(item => item.visible !== false).map(item => {
                     return item;
                 });
+                //前端自定义了字段内容格式化，需要写入到表格列信息中
+                const formatterKeys = Object.keys(this.tableColumnFormatter);
+                if(formatterKeys.length > 0) {
+                    formatterKeys.forEach(key => {
+                        result.forEach(item => {
+                            const prop = item.propAlias || item.prop
+                            if(prop === key) item.formatter = this.tableColumnFormatter[key];
+                        });
+                    });
+                }
             }
             this.columns = result;
         },
@@ -420,33 +434,35 @@ export default {
         <el-tabs v-model="activeTab" type="card" @tab-click="handleTabClick" v-if="tabs.length > 0">
             <el-tab-pane v-for="tab in tabs" :label="tab.label" :name="tab.name"></el-tab-pane>
         </el-tabs>
-        <MfDataTransmit ref="transmit" :base-url="serverBaseUrl" :actions="serverActions"
-            :data-pk="pk" :query="query"></MfDataTransmit>
-        <MfDataSearch ref="search" v-model="query" v-show="showSearch" @search="search"
-            :columns="tableColumns" :items="searchItems"></MfDataSearch>
-        <MfDataToolbar ref="toolbar" :buttons="toolbarButtons" :selection-count="selectionCount"
-            @click="handleToolbarClick">
-            <template #left="scope">
-                <slot name="toolbar-left" :selection-count="scope.selectionCount"></slot>
-            </template>
-            <template #right="scope">
-                <slot name="toolbar-right" :selection-count="scope.selectionCount"></slot>
-            </template>
-        </MfDataToolbar>
-        <div class="table-body">
-            <MfDataTable ref="table" :data="data" :loading="loading" :selection="tableSelection"
-                :operation="tableOperations" :columns="columns" :total="total" :pageSizes="pageSizes"
-                v-model:page-num="pageNum" v-model:page-size="pageSize" :show-pagination="showPagination"
-                @selection-change="handelSelectionChange" @operation-click="handleOperationClick"
-                @pagination-change="handlePageChange"
-            >
-                <template #columns="scope">
-                    <slot name="table-columns" :row="scope.row"></slot>
+        <div class="table-box" :style="{borderTopWidth:tabs.length>0?'0':'1px'}">
+            <MfDataTransmit ref="transmit" :base-url="serverBaseUrl" :actions="serverActions"
+                :data-pk="pk" :query="query"></MfDataTransmit>
+            <MfDataSearch ref="search" v-model="query" v-show="showSearch" @search="search"
+                :columns="tableColumns" :items="searchItems"></MfDataSearch>
+            <MfDataToolbar ref="toolbar" :buttons="toolbarButtons" :selection-count="selectionCount"
+                @click="handleToolbarClick">
+                <template #left="scope">
+                    <slot name="toolbar-left" :selection-count="scope.selectionCount"></slot>
                 </template>
-                <template #operate="scope">
-                    <slot name="table-operate" :row="scope.row"></slot>
+                <template #right="scope">
+                    <slot name="toolbar-right" :selection-count="scope.selectionCount"></slot>
                 </template>
-            </MfDataTable>
+            </MfDataToolbar>
+            <div class="table-body">
+                <MfDataTable ref="table" :data="data" :loading="loading" :selection="tableSelection"
+                    :operation="tableOperations" :columns="columns" :total="total" :pageSizes="pageSizes"
+                    v-model:page-num="pageNum" v-model:page-size="pageSize" :show-pagination="showPagination"
+                    @selection-change="handelSelectionChange" @operation-click="handleOperationClick"
+                    @pagination-change="handlePageChange"
+                >
+                    <template #columns="scope">
+                        <slot name="table-columns" :row="scope.row"></slot>
+                    </template>
+                    <template #operate="scope">
+                        <slot name="table-operate" :row="scope.row"></slot>
+                    </template>
+                </MfDataTable>
+            </div>
         </div>
     </div>
     <slot name="form-dialog">

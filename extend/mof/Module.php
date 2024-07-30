@@ -45,7 +45,7 @@ class Module
         $dirs = scandir(root_path('module'));
         $modules = [];
         //要忽略的目录
-        $ignore = ['.', '..', '.DS_Store'];
+        $ignore = ['.', '..', '.DS_Store', '.gitignore'];
         foreach ($dirs as $dir) {
             if (in_array($dir, $ignore) || !is_dir(static::path($dir))) {
                 continue;
@@ -246,7 +246,7 @@ class Module
      */
     public static function getNameByNameSpace(string $namespace): ?string
     {
-        $list = explode('\\', trim($namespace,'\\'));
+        $list = explode('\\', trim($namespace, '\\'));
         if ($list[0] === 'app') return 'system';
         if ($list[0] === 'module') return $list[1];
         return null;

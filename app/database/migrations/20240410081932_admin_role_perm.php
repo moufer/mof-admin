@@ -36,6 +36,8 @@ class AdminRolePerm extends Migrator
             'primary_key' => ['id']
         ]);
 
+        if(!$table->exists())
+
         $table->addColumn('role_id', 'integer', ['limit' => 11, 'default' => 0, 'comment' => '角色Id', 'null' => false])
             ->addColumn('perm_id', 'integer', ['limit' => 11, 'default' => 0, 'comment' => '菜单Id', 'null' => false])
             ->create();

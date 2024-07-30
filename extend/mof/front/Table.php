@@ -33,7 +33,7 @@ abstract class Table
     protected string $activeTab = '';
 
     /** @var array|string[] 操作条按钮 */
-    protected array $toolbarButtons = ['refresh', 'add', 'delete', 'status', 'search'];
+    protected array $toolbarButtons = ['add', 'delete', 'status', 'refresh', 'search'];
 
     /** @var string 主键名称 */
     protected string $pk = 'id';
@@ -135,8 +135,9 @@ abstract class Table
     public function operation(): array
     {
         return [
-            'width'   => 120,
+            'width'   => 140,
             'show'    => true,
+            'fixed'   => 'right',
             'label'   => '操作',
             'mode'    => 'icon',
             'buttons' => ['edit', 'delete']

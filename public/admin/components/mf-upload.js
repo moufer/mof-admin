@@ -176,7 +176,7 @@ export default {
             <div class="mf-image-selector-preview">
                 <div class="mf-image-selector-item" v-for="(url,index) in mediaList">
                     <div class="mf-image-selector-preview-item" v-if="subType === 'image'">
-                        <el-image :src="fullUrl(url)" fit="contain" :preview-src-list="previewList" />
+                        <el-image referrerPolicy="no-referrer" :src="fullUrl(url)" fit="contain" :preview-src-list="previewList" />
                     </div>
                     <div class="mf-image-selector-preview-item" v-if="['audio','video'].indexOf(subType)>-1">
                         <el-image :src="'/resources/images/file-'+subType+'.png'" fit="contain" @click="showPlayBox(index)" />

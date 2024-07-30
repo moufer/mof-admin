@@ -126,7 +126,6 @@ export default {
                 //通过表达式来判断是否显示
                 return evaluateExpression(expr, row);
             }
-
             return true;
         },
         /**
@@ -167,6 +166,11 @@ export default {
                     return getThumbByFileType(row[column.prop], row[column.media_type_prop || 'other'] || 'other');
                 case 'boolean':
                     return value ? '是' : '否';
+                case 'tag':
+                    if(column.tags && column.tags.length > 0) {
+                        return column.tags.filter(item => value.indexOf(item) >= 0)
+                    }
+                    return column.options.filter(item => value.indexOf(item.value) >= 0)
                 default:
                     return value;
             }
@@ -190,8 +194,7 @@ export default {
                 </template>
                 <template #default="{row}" v-if="column.type==='icon'">
                     <el-icon style="font-size:24px;">
-                        <component :is="formatter('icon', column, row[column.propAlias||column.prop])">
-                        </component>
+                        <component :is="formatter('icon', column, row[column.propAlias||column.prop])" />
                     </el-icon>
                 </template>
                 <template #default="{row}" v-if="column.type==='media'">
@@ -205,9 +208,13 @@ export default {
                 <template #default="{row}" v-if="column.type==='boolean'">
                     {{formatter('boolean', column, row[column.propAlias||column.prop])}}
                 </template>
+                <template #default="{row}" v-if="column.type==='tag'">
+                    <el-tag round v-for="tag in formatter('tag', column, row[column.propAlias||column.prop])" 
+                        style="margin:0 1px;">{{tag.label}}</el-tag>
+                </template>
             </el-table-column>
         </slot>
-        <el-table-column v-if="operation.show" :fixed="operation.fixed||false" 
+        <el-table-column v-if="operation.show" :fixed="operation.fixed||false"  
             :label="operation.label||操作" :width="operation.width||120" :align="operation.align||'center'">
             <template #default="scope">
                 <slot name="operate" :row="scope.row" :$index="scope.$index" :column="scope.column">
@@ -216,25 +223,19 @@ export default {
                             :title="button.confirm.title||'您确定要进行此操作吗?'" 
                             @confirm="handelOperationClick(button, scope.row, scope.$index)">
                             <template #reference>
-                                <el-button plain round :circle="operation.mode==='icon'"
+                                <el-button plain 
                                     :disabled="buttonExpr(button.disable||false, scope.row, scope.$index,'disable')"
                                     :type="button.theme||'danger'" size="small" :title="button.label">
-                                    <el-icon v-if="operation.mode==='icon'">
-                                        <component :is="button.icon||'Sugar'"></component>
-                                    </el-icon>
-                                    <template v-if="operation.mode==='text'">{{button.label}}</template>
+                                    {{button.label}}
                                 </el-button>
                             </template>
                         </el-popconfirm>
                         <el-button v-else-if="buttonExpr(button.visible||true, scope.row, scope.$index)" 
-                            plain round :circle="operation.mode==='icon'" 
+                        plain 
                             :disabled="buttonExpr(button.disable||false, scope.row, scope.$index,'disable')"
                             size="small" :type="button.theme||'primary'" :title="button.label||''"
                             @click="handelOperationClick(button, scope.row, scope.$index)">
-                            <el-icon v-if="operation.mode==='icon'">
-                                <component :is="button.icon||'Sugar'"></component>
-                            </el-icon>
-                            <template v-if="operation.mode==='text'">{{button.label}}</template>
+                            {{button.label}}
                         </el-button>
                     </template>
                 </slot>

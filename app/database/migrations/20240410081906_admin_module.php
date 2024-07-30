@@ -37,18 +37,20 @@ class AdminModule extends Migrator
             'primary_key' => ['id']
         ]);
 
-        $table->addColumn('name', 'string', ['limit' => 50, 'default' => '', 'comment' => '模块Id', 'null' => false])
-            ->addColumn('title', 'string', ['limit' => 11, 'null' => true, 'comment' => '模块标题'])
-            ->addColumn('version', 'string', ['limit' => 20, 'default' => '', 'comment' => '版本号', 'null' => false])
-            ->addColumn('status', 'boolean', ['default' => 1, 'comment' => '状态:1=正常,0=禁用', 'null' => false])
-            ->addColumn('order', 'smallinteger', ['limit' => 5, 'default' => 0, 'comment' => '加载顺序', 'null' => false])
-            ->addColumn('install_at', 'datetime', ['null' => false, 'comment' => '安装时间'])
-            ->addColumn('update_at', 'datetime', ['null' => true, 'comment' => '更新时间'])
-            ->addColumn('sg_perm', 'boolean', ['default' => 0, 'comment' => '独立权限', 'null' => false])
-            ->addIndex(['name'], ['unique' => true])
-            ->create();
+        if (!$table->exists()) {
+            $table->addColumn('name', 'string', ['limit' => 50, 'default' => '', 'comment' => '模块Id', 'null' => false])
+                ->addColumn('title', 'string', ['limit' => 11, 'null' => true, 'comment' => '模块标题'])
+                ->addColumn('version', 'string', ['limit' => 20, 'default' => '', 'comment' => '版本号', 'null' => false])
+                ->addColumn('status', 'boolean', ['default' => 1, 'comment' => '状态:1=正常,0=禁用', 'null' => false])
+                ->addColumn('order', 'smallinteger', ['limit' => 5, 'default' => 0, 'comment' => '加载顺序', 'null' => false])
+                ->addColumn('install_at', 'datetime', ['null' => false, 'comment' => '安装时间'])
+                ->addColumn('update_at', 'datetime', ['null' => true, 'comment' => '更新时间'])
+                ->addColumn('sg_perm', 'boolean', ['default' => 0, 'comment' => '独立权限', 'null' => false])
+                ->addIndex(['name'], ['unique' => true])
+                ->create();
 
-        $this->addData($table);
+            $this->addData($table);
+        }
     }
 
     public function down()

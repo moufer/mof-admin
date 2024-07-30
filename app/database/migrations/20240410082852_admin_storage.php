@@ -36,6 +36,8 @@ class AdminStorage extends Migrator
             'primary_key' => ['id']
         ]);
 
+        if(!$table->exists())
+
         $table->addColumn('user_type', 'string', ['limit' => 20, 'default' => '', 'comment' => '用户类型', 'null' => false])
             ->addColumn('user_id', 'integer', ['limit' => 11, 'signed' => false, 'default' => 0, 'comment' => '上传用户', 'null' => false])
             ->addColumn('category', 'string', ['limit' => 50, 'default' => '', 'comment' => '附件分类', 'null' => false])

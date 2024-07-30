@@ -9,8 +9,9 @@ export default {
             operations: {
                 label: '操作',
                 show: true,
-                width: 150,
+                width: 140,
                 mode: 'text',
+                fixed:'right',
                 buttons: [
                     {
                         label: '启用',

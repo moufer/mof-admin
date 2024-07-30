@@ -10,7 +10,7 @@ const mofRouter = function (module, extraRoutes = []) {
     }, {
         name: 'frame',
         path: '/',
-        meta: { title: '磨锋管理系统' },
+        meta: { title: '磨锋后台管理系统' },
         component: () => import(`../../app/${module}/common/layout.js`),
         children: [{
             name: '404',

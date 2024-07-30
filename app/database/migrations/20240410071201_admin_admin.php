@@ -16,6 +16,8 @@ class AdminAdmin extends Migrator
             'primary_key' => ['id']
         ]);
 
+        if(!$table->exists())
+
         $table->addColumn('module', 'string', ['limit' => 30, 'default' => 'system', 'null' => false, 'comment' => '管理员分类'])
             ->addColumn('username', 'string', ['limit' => 30, 'default' => '', 'null' => false, 'comment' => '用户名'])
             ->addColumn('password', 'string', ['limit' => 60, 'default' => '', 'null' => false, 'comment' => '密码'])

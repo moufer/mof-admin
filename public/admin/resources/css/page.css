@@ -78,40 +78,79 @@
   margin-bottom: 5px;
 }
 
-.table-body .table-search .el-date-editor.el-input, .el-date-editor.el-input__wrapper {
+.data-manage {
+  margin-top: 5px;
+}
+
+.data-manage .el-button{
+  font-weight:normal;
+  padding: 8px 12px;
+  font-size: 13px;
+  border-radius: 3px;
+}
+
+.data-manage .el-tabs--card>.el-tabs__header .el-tabs__item.is-active {
+  background-color: var(--el-bg-color);
+}
+
+.data-manage .el-tabs__header {
+  margin-bottom:0px;
+}
+
+.data-manage .table-box {
+  padding:15px;
+  background-color:var(--el-bg-color);
+  border:1px solid var(--el-border-color-light);
+}
+
+.data-manage .table-body .table-search .el-date-editor.el-input, .el-date-editor.el-input__wrapper {
   width: 220px;
 }
 
-.table-toolbar {
-  margin-bottom: 10px;
+.data-manage .table-toolbar {
+  margin-bottom: 15px;
   display: flex;
   justify-content: space-between;
 }
 
-.table-toolbar>div {
+.data-manage .table-toolbar>div {
   display: flex;
   align-items: center;
   flex-direction: row;
 }
 
-.table-body {
-  margin-bottom: 10px;
+.data-manage .table-body {
+  margin-bottom: 0px;
 }
 
-.table-toolbar .left {}
+.data-manage .el-table .cell {
+  line-height: 24px;
+}
 
-.table-toolbar .right {
+.data-manage .table-toolbar .left {}
+
+.data-manage .table-toolbar .right {
   justify-content: flex-end;
 }
 
-.table-toolbar .el-button~.el-button, 
-.table-toolbar .el-button+.el-button, 
+.table-toolbar .el-button~.el-button,
+.table-toolbar .el-button+.el-button,
 .table-toolbar .el-dropdown {
   margin-left: 5px;
 }
 
+.table-body .el-table__row .el-button {
+  padding: 0 8px;
+}
+
+.table-body .el-table__row .el-button~.el-button,
+.table-body .el-table__row .el-button+.el-button,
+.table-body .el-table__row .el-dropdown{
+  margin-left: 8px;
+}
+
 .table-pagination {
-  margin-top:10px;
+  margin-top:15px;
 }
 
 /** 图片选择器 */

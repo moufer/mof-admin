@@ -10,26 +10,8 @@ class ModuleTable extends Table
     protected bool   $showSearch     = false;
     protected bool   $showPagination = false;
     protected bool   $tableSelection = false;
-    protected array  $toolbarButtons = ['refresh', 'add', 'search'];
+    protected array  $toolbarButtons = ['refresh','search'];
     protected string $sortField      = 'order';
-
-    public function operation(): array
-    {
-        $result = parent::operation();
-        $result['width'] = 150;
-        return $result;
-    }
-
-    public function columnTitle(): array
-    {
-        return [
-            "prop"   => "title",
-            "label"  => "模块名称",
-            "width"  => 150,
-            "align"  => "left",
-            "search" => true,
-        ];
-    }
 
     public function columnName(): array
     {
@@ -37,7 +19,17 @@ class ModuleTable extends Table
             "prop"    => "name",
             "label"   => "标识",
             "visible" => true,
-            "width"   => 150,
+            "width"   => 120,
+        ];
+    }
+
+    public function columnTitle(): array
+    {
+        return [
+            "prop"   => "title",
+            "label"  => "名称",
+            "width"  => 150,
+            "search" => true,
         ];
     }
 
@@ -46,7 +38,7 @@ class ModuleTable extends Table
         return [
             "prop"  => "version",
             "label" => "版本号",
-            "width"  => 120,
+            "width" => 100,
         ];
     }
 
@@ -55,7 +47,7 @@ class ModuleTable extends Table
         return [
             "prop"   => "author",
             "label"  => "作者",
-            "width"  => 150,
+            "width"  => 140,
             "search" => true,
         ];
     }

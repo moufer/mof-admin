@@ -36,6 +36,8 @@ class AdminRole extends Migrator
             'primary_key' => ['id']
         ]);
 
+        if(!$table->exists())
+
         $table->addColumn('category', 'string', ['limit' => 60, 'default' => 'system', 'comment' => '分类', 'null' => false])
             ->addColumn('pid', 'integer', ['limit' => 11, 'default' => 0, 'comment' => '上级Id', 'null' => false])
             ->addColumn('name', 'string', ['limit' => 60, 'default' => '', 'comment' => '名称', 'null' => false])

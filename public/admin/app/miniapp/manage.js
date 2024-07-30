@@ -9,12 +9,12 @@ export default {
             operations: {
                 label: '操作',
                 show: true,
-                width: 200,
-                mode: 'text',
+                fixed:'right',
+                width: 180,
                 buttons: [
                     {
                         label: '管理',
-                        icon: 'xxxx',
+                        theme: 'success',
                         name: 'manage',
                         click: row => {
                             let url = `./miniapp.html?id=${row.id}#/miniapp/statistics`;

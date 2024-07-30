@@ -35,6 +35,8 @@ class AdminToken extends Migrator
             'primary_key' => ['uuid']
         ]);
 
+        if(!$table->exists())
+
         $table->addColumn('uuid', 'string', ['limit' => 60, 'default' => '', 'comment' => 'hash', 'null' => false])
             ->addColumn('uid', 'integer', ['limit' => 10, 'null' => false, 'comment' => '用户ID'])
             ->addColumn('expire_at', 'integer', ['limit' => 11, 'comment' => '到期时间', 'null' => false])

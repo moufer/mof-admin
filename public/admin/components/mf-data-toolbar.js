@@ -7,7 +7,7 @@ export default {
         },
         buttons: {
             type: Array,
-            default: () => ['refresh', 'add', 'delete', 'status', 'search']
+            default: () => ['add', 'delete', 'status', 'refresh', 'search']
         },
         statusTypes: {
             type: Array,
@@ -39,21 +39,14 @@ export default {
       <el-button type="success" @click="handleCheckItem('refresh')" v-if="buttons.indexOf('refresh')>-1" title="刷新">
         <el-icon><component is="Refresh"></component></el-icon>
       </el-button>
-      <el-button type="primary" @click="handleCheckItem('add')" v-if="buttons.indexOf('add')>-1" title="新增">
-        <el-icon><component is="Plus"></component></el-icon>
-      </el-button>
-      <el-button type="warning" @click="handleCheckItem('edit')" :disabled="selectionCount==0"
-        v-if="buttons.indexOf('edit')>-1" title="编辑">
-        <el-icon><component is="Edit"></component></el-icon>
-      </el-button>
-      <el-button type="danger" @click="handleCheckItem('delete')" :disabled="selectionCount==0"
-        v-if="buttons.indexOf('delete')>-1" title="删除">
-        <el-icon><component is="Delete"></component></el-icon>
-      </el-button>
+      <el-button icon="Plus" type="primary" @click="handleCheckItem('add')" 
+        v-if="buttons.indexOf('add')>-1" title="添加">添加</el-button>
+      <el-button icon="Edit" type="warning" @click="handleCheckItem('edit')" :disabled="selectionCount==0"
+        v-if="buttons.indexOf('edit')>-1" title="编辑">编辑</el-button>
+      <el-button icon="Delete" type="danger" @click="handleCheckItem('delete')" :disabled="selectionCount==0"
+        v-if="buttons.indexOf('delete')>-1" title="删除">删除</el-button>
       <el-dropdown @command="handleCheckStatus" v-if="buttons.indexOf('status')>-1" title="更新状态">
-        <el-button type="warning" :disabled="selectionCount==0">
-            <el-icon><component is="Open"></component></el-icon>
-        </el-button>
+        <el-button icon="Open" type="warning" :disabled="selectionCount==0">状态</el-button>
             <template #dropdown>
                 <el-dropdown-menu>
                     <el-dropdown-item :command="status.value" v-for="status in statusTypes">
@@ -69,7 +62,7 @@ export default {
     </div>
     <div class="right">
       <slot name="right" :selection-count="selectionCount"></slot>
-      <el-button type="info" @click="handleCheckItem('search')" v-if="buttons.indexOf('search')>-1">
+      <el-button plain type="info" @click="handleCheckItem('search')" v-if="buttons.indexOf('search')>-1">
         <el-icon><component is="Search"></component></el-icon>
       </el-button>
     </div>

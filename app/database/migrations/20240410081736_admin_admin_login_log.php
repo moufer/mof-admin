@@ -37,6 +37,8 @@ class AdminAdminLoginLog extends Migrator
             'primary_key' => ['id']
         ]);
 
+        if(!$table->exists())
+
         $table->addColumn('username', 'string', ['limit' => 50, 'default' => '', 'comment' => '用户姓名', 'null' => false])
             ->addColumn('status', 'boolean', ['default' => 0, 'comment' => '登录状态：0-失败，1-成功', 'null' => false])
             ->addColumn('ip', 'string', ['limit' => 50, 'default' => '', 'comment' => '登录IP地址', 'null' => false])

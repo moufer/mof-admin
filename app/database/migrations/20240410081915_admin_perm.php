@@ -37,6 +37,8 @@ class AdminPerm extends Migrator
             'primary_key' => ['id']
         ]);
 
+        if(!$table->exists())
+
         $table->addColumn('pid', 'integer', ['limit' => 11, 'default' => 0, 'comment' => '上级Id', 'null' => false])
             ->addColumn('pid_path', 'string', ['limit' => 60, 'default' => '', 'comment' => '上级路径', 'null' => false])
             ->addColumn('type', 'enum', ['values' => ['group', 'menu', 'action'], 'default' => 'menu', 'comment' => '类型:group=组,link=链接', 'null' => false])
