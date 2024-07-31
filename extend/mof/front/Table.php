@@ -74,6 +74,9 @@ abstract class Table
         'type.media'    => ['width' => 120, 'align' => 'center'],
     ];
 
+    /** @var array 组件配置 */
+    protected array $manageOptions = [];
+
     /**
      * @var array Query参数数组
      */
@@ -133,6 +136,15 @@ abstract class Table
     }
 
     /**
+     * DataManage组件选项
+     * @return array
+     */
+    protected function manageOptions(): array
+    {
+        return [];
+    }
+
+    /**
      * 操作列配置
      * @return array
      */
@@ -160,6 +172,8 @@ abstract class Table
         }
 
         return [
+            "manageOptions" => (object)$this->manageOptions(),
+
             "serverBaseUrl" => $this->serverBaseUrl,
             "serverActions" => $this->serverActions,
 

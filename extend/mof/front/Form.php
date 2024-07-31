@@ -23,6 +23,11 @@ class Form
     protected FormValidate $formValidate;
 
     /**
+     * @var array
+     */
+    protected array $defaultValues = [];
+
+    /**
      * 验证信息
      * 格式 [params=>params,allow=>allow,only=>only,rule=>rule,message=>message]
      */
@@ -85,6 +90,29 @@ class Form
             'form'     => $form,
             'elements' => $elements
         ];
+    }
+
+    /**
+     * 设置表单默认值
+     * @param string|array $key
+     * @param $value
+     * @param bool $override
+     * @return Form
+     */
+    public function withDefaultValue(string|array $key, $value = null, bool $override = false): static
+    {
+        if (is_string($key) && str_starts_with($key, '.')) {
+            $name = substr($key, 1);
+            if (method_exists($this->request, $name)) {
+                $key = $this->request->$name();
+            }
+        }
+        if (is_array($key)) {
+            $this->defaultValues = $override ? $key : array_merge($this->defaultValues, $key);
+        } else {
+            $this->defaultValues[$key] = $value;
+        }
+        return $this;
     }
 
     protected function dialogAttrs(\mof\Model $model = null): array

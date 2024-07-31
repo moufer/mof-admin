@@ -36,6 +36,8 @@ export default {
     emits: ['table-selection-change', 'table-operation-click', 'toolbar-click', 'table-data-change'],
     data() {
         return {
+            manageOptions:{}, //组件选项
+
             serverBaseUrl: '',//服务器地址
             serverActions: {},//服务器接口
 
@@ -119,6 +121,18 @@ export default {
             return this.http.get(url.replace('{tableName}', this.tableName));
         },
 
+        //获取搜索参数
+        getQueryParams() {
+            let query = {};
+            //过滤掉this.query里值为null和undefined的属性
+            for (let key in this.query) {
+                if (this.query[key] !== null && typeof this.query[key] !== 'undefined') {
+                    query[key] = this.query[key];
+                }
+            }
+            return query;
+        },
+
         //重新加载表格字段
         reloadTableColumns() {
             this.getTableConfig().then(data => {
@@ -133,23 +147,18 @@ export default {
 
         //获取数据
         load() {
-            let query = {};
-            //过滤掉this.query里值为null和undefined的属性
-            for (let key in this.query) {
-                if (this.query[key] !== null && typeof this.query[key] !== 'undefined') {
-                    query[key] = this.query[key];
-                }
-            }
             //排序
-            let order = {
+            const order = {
                 field: this.sortField === '_PK_' ? this.pk : this.sortField,
                 sort: this.sort
             }
             //分页
-            let page = {
+            const page = {
                 pageNum: this.pageNum,
                 pageSize: this.pageSize
             }
+            //搜索参数
+            const query = this.getQueryParams();
 
             //根据query变化tableColumns的显示情况
             this.visibleTableColumns(query);
@@ -182,6 +191,15 @@ export default {
 
         //新增对话框
         add(params = null) {
+            //新增请求是，携带当前table的查询参数
+            if(this.manageOptions.addActionAppendQuery) {
+                //搜索参数
+                const query = this.getQueryParams();
+                if(!isEmpty(query)) {
+                    if(!params) params = {}
+                    params = { ...query, ...params }
+                }
+            }
             this.$refs.transmit.add(params).then(res => {
                 this.$refs.dialog.addDialog(res.data.dialog, res.data.form, res.data.elements);
             }).catch(err => {
@@ -414,7 +432,6 @@ export default {
 
         //点击工具栏按钮
         handleToolbarClick(name, data) {
-            console.log('handleToolbarClick', name, data);
             let ids = [];
             let rows = this.$refs.table.getSelection();
             if (rows.length > 0) {

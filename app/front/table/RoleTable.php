@@ -50,6 +50,13 @@ class RoleTable extends Table
         return $result;
     }
 
+    protected function manageOptions(): array
+    {
+        return [
+            'addActionAppendQuery' => true,
+        ];
+    }
+
     protected function columnId(): array
     {
         return [

@@ -31,7 +31,7 @@ class Role extends Controller
 
     public function create(): Json
     {
-        return ApiResponse::success($this->form->build());
+        return ApiResponse::success($this->form->withDefaultValue('.get')->build());
     }
 
     public function edit($id): Json

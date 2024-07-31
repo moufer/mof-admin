@@ -31,7 +31,7 @@ class RoleForm extends Form
                 "prop"    => "category",
                 "label"   => "分类",
                 "type"    => "select",
-                "value"   => $values['category'] ?? '',
+                "value"   => $values['category'] ?? $this->defaultValues['category'] ?? '',
                 "options" => $this->getSgModules()->toSelectOptions(),
             ],
             [
