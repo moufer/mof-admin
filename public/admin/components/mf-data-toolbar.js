@@ -36,9 +36,7 @@ export default {
     template: /*html*/`
     <div class="table-toolbar">
     <div class="left">
-      <el-button type="success" @click="handleCheckItem('refresh')" v-if="buttons.indexOf('refresh')>-1" title="刷新">
-        <el-icon><component is="Refresh"></component></el-icon>
-      </el-button>
+      <el-button type="success" @click="handleCheckItem('refresh')" icon="Refresh" />
       <el-button icon="Plus" type="primary" @click="handleCheckItem('add')" 
         v-if="buttons.indexOf('add')>-1" title="添加">添加</el-button>
       <el-button icon="Edit" type="warning" @click="handleCheckItem('edit')" :disabled="selectionCount==0"
@@ -62,9 +60,8 @@ export default {
     </div>
     <div class="right">
       <slot name="right" :selection-count="selectionCount"></slot>
-      <el-button plain type="info" @click="handleCheckItem('search')" v-if="buttons.indexOf('search')>-1">
-        <el-icon><component is="Search"></component></el-icon>
-      </el-button>
+      <el-button plain type="info" @click="handleCheckItem('search')" icon="Search" title="搜索"
+        v-if="buttons.indexOf('search')>-1" />
     </div>
   </div>
     `

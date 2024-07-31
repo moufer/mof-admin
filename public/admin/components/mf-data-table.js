@@ -46,6 +46,7 @@ export default {
                     label: '操作',
                     width: 150,
                     buttons: [
+                        'detail',
                         'edit',
                         'delete'
                     ]
@@ -233,7 +234,7 @@ export default {
                             </template>
                         </el-popconfirm>
                         <el-button v-else-if="buttonExpr(button.visible||true, scope.row, scope.$index)" 
-                        plain 
+                            plain 
                             :disabled="buttonExpr(button.disable||false, scope.row, scope.$index,'disable')"
                             size="small" :type="button.theme||'primary'" :title="button.label||''"
                             @click="handelOperationClick(button, scope.row, scope.$index)">

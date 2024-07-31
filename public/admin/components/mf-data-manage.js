@@ -4,7 +4,7 @@ import MfDataToolbar from './mf-data-toolbar.js';
 import MfDataTable from './mf-data-table.js';
 import MfDataFormDialog from './mf-data-form-dialog.js';
 import { ElMessage } from 'element-plus';
-import { isEmpty,evaluateExpression } from 'comm/utils.js';
+import { isEmpty, evaluateExpression } from 'comm/utils.js';
 
 export default {
     components: {
@@ -70,6 +70,9 @@ export default {
 
             formItems: [],//表单项目
             formItemsValue: [],//表单项目
+
+            detailDialogVisible: false, //详情对话框显示
+            detailData: null, //详情内容
         }
     },
     created() {
@@ -231,6 +234,29 @@ export default {
             });
         },
 
+        //详情
+        detail(id, row)
+        {
+            //提示加载中
+            //let loading = ElementPlus.ElLoading.service({ text: '加载中' });
+            this.$refs.transmit.read(id).then(res => {
+                let data = [];
+                Object.keys(res.data).forEach(key => {
+                    const column = this.tableColumns.filter(item => key === item.prop || key === item.propAlias)
+                    data.push({
+                        column: key, label: column[0]?.label, value: res.data[key]
+                    });
+                });
+                this.detailData = data;
+                this.detailDialogVisible = true;
+            }).catch(err => {
+                err.errmsg && ElMessage.error(err.errmsg);
+            }).finally(() => {
+                //关闭加载中提示
+                //loading.close();
+            });
+        },
+
         //提交表单
         submit(action, data, pkId) {
             if ('edit' === action) {
@@ -271,6 +297,11 @@ export default {
                         attrs[arr[0]] = arr[1];
                     });
                     switch (btnInfo[0]) {
+                        case 'detail':
+                            this.tableOperations.buttons[index] = {
+                                label: '详情', icon: 'Tickets', name: 'detail',
+                            };
+                            break;
                         case 'edit':
                             this.tableOperations.buttons[index] = {
                                 label: '编辑', icon: 'Edit', name: 'edit',
@@ -356,8 +387,6 @@ export default {
 
         //根据查询条件来显示表格列
         visibleTableColumns(query) {
-            //遍历
-            console.log('visibleTableColumns', query)
             this.tableColumns.forEach(column => {
                 //根据表达式来
                 column.visible = column.visibleExpr ? evaluateExpression(column.visibleExpr, query) : true;
@@ -429,6 +458,9 @@ export default {
                 button.click(row, index, this);
             } else {
                 switch (name) {
+                    case 'detail':
+                        this.detail(row[this.pk], row);
+                        break;
                     case 'edit':
                         this.edit(row[this.pk]);
                         break;
@@ -480,6 +512,20 @@ export default {
     </div>
     <slot name="form-dialog">
         <MfDataFormDialog ref="dialog" @submit="submit" />
+    </slot>
+    <slot name="detail-dialog">
+        <el-dialog v-model="detailDialogVisible" title="详情" width="800">
+            <el-descriptions border :column="1">
+                <el-descriptions-item v-for="item in detailData"
+                    :label="item.label" label-align="right">
+                    <template #label>
+                        <label v-if="item.label">{{item.label}}</label>
+                        {{item.column}}
+                    </template>
+                    {{item.value}}
+                </el-descriptions-item>
+            </el-descriptions>
+        </el-dialog>
     </slot>
     `
 }

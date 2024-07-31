@@ -62,10 +62,10 @@ class RoleTable extends Table
     protected function columnName(): array
     {
         return [
-            "prop"        => "name",
-            "label"       => "角色名称",
-            "width"       => 150,
-            "search"      => true,
+            "prop"   => "name",
+            "label"  => "角色名称",
+            "width"  => 150,
+            "search" => true,
         ];
     }
 

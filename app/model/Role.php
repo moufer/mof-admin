@@ -12,6 +12,13 @@ use think\model\relation\HasMany;
 /**
  * 管理员角色模型
  * @package app\model
+ * @property integer $id ID
+ * @property string $name 名称
+ * @property string $category 类别
+ * @property string $intro 描述
+ * @property integer $status 状态
+ * @property integer $create_at 创建时间
+ * @property integer $update_at 更新时间
  * @property Collection $role_perms 菜单
  * @property array $perms 角色菜单
  */
@@ -152,6 +159,5 @@ class Role extends Model
         }
         return $permIds;
     }
-
 
 }

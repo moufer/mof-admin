@@ -67,11 +67,12 @@ export default {
             return this.http.get(url);
         },
         //读取一条记录
-        read(id) {
+        read(id,params = null) {
             let url = this.baseUrl + this.actions.read.replace('{id}', id);
-            let params = {};
-            //params[this.dataPk] = id;
-            return this.http.get(url, params);
+            if (params) {
+                url += (url.indexOf('?') > -1 ? '&' : '?') + buildQueryString(params)
+            }
+            return this.http.get(url);
         },
         //更新数据
         update(id, data) {
