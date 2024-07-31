@@ -2,13 +2,12 @@
 
 namespace app\logic;
 
-use app\library\InstallPerm;
 use app\model\Module;
 use mof\command\MigrateRollback;
 use mof\command\MigrateRun;
 use mof\command\SeedRun;
 use mof\exception\LogicException;
-use mof\InstallModule;
+use app\library\InstallModule;
 use mof\Logic;
 use mof\Model;
 use think\db\exception\DataNotFoundException;

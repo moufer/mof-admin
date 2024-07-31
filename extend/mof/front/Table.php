@@ -74,9 +74,6 @@ abstract class Table
         'type.media'    => ['width' => 120, 'align' => 'center'],
     ];
 
-    /** @var array 组件配置 */
-    protected array $manageOptions = [];
-
     /**
      * @var array Query参数数组
      */
