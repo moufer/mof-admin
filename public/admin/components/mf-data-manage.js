@@ -4,7 +4,7 @@ import MfDataToolbar from './mf-data-toolbar.js';
 import MfDataTable from './mf-data-table.js';
 import MfDataFormDialog from './mf-data-form-dialog.js';
 import { ElMessage } from 'element-plus';
-import { isEmpty } from 'comm/utils.js';
+import { isEmpty,evaluateExpression } from 'comm/utils.js';
 
 export default {
     components: {
@@ -131,7 +131,7 @@ export default {
         //获取数据
         load() {
             let query = {};
-            //过滤掉this.query里值为null或undefined的属性
+            //过滤掉this.query里值为null和undefined的属性
             for (let key in this.query) {
                 if (this.query[key] !== null && typeof this.query[key] !== 'undefined') {
                     query[key] = this.query[key];
@@ -147,6 +147,9 @@ export default {
                 pageNum: this.pageNum,
                 pageSize: this.pageSize
             }
+
+            //根据query变化tableColumns的显示情况
+            this.visibleTableColumns(query);
 
             this.loading = true;
             this.$refs.transmit.search(query, order, page).then(res => {
@@ -349,6 +352,16 @@ export default {
                 result = Object.assign(result, this.defaultQuery);
             }
             this.query = result;
+        },
+
+        //根据查询条件来显示表格列
+        visibleTableColumns(query) {
+            //遍历
+            console.log('visibleTableColumns', query)
+            this.tableColumns.forEach(column => {
+                //根据表达式来
+                column.visible = column.visibleExpr ? evaluateExpression(column.visibleExpr, query) : true;
+            });
         },
 
         //点击tab事件

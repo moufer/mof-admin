@@ -9,7 +9,6 @@ use app\validate\AdminValidate;
 use mof\front\Form;
 use mof\Model;
 use mof\utils\ElementData;
-use mof\utils\FormComponentOptions;
 
 class UserForm extends Form
 {

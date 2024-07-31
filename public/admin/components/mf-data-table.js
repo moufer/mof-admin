@@ -182,7 +182,8 @@ export default {
     >
         <el-table-column v-if="selection" type="selection" width="55" align="center"></el-table-column>
         <slot name="columns">
-            <el-table-column v-for="column in columns" :align="column.align||'left'"
+            <template v-for="column in columns">
+            <el-table-column v-if="column.visible" :align="column.align||'left'"
                 :prop="column.prop" :label="column.label" :width="column.width||'*'"
                 :filters="column.filters" :formatter="column.formatter">
                 <template #default="{row}" v-if="column.type==='image'">
@@ -213,6 +214,7 @@ export default {
                         style="margin:0 1px;">{{tag.label}}</el-tag>
                 </template>
             </el-table-column>
+            </template>
         </slot>
         <el-table-column v-if="operation.show" :fixed="operation.fixed||false"  
             :label="operation.label||操作" :width="operation.width||120" :align="operation.align||'center'">

@@ -117,6 +117,10 @@ abstract class Table
                 if (empty($column['order'])) {
                     $column['order'] = $index;
                 }
+                //显示属性
+                if (empty($column['visible'])) {
+                    $column['visible'] = true;
+                }
                 $index++;
                 $result[] = $column;
             }

@@ -20,7 +20,7 @@ export default {
     methods: {
         handleCheckItem: function (item) {
             if ('delete' === item) {
-                this.$confirm(`此操作将永久删除 ${this.selectionCount} 条数据, 是否继续?`, {
+                this.$confirm(`当前操作将删除 ${this.selectionCount} 条数据, 确定删除吗?`, {
                     type: 'warning'
                 }).then(() => {
                     this.$emit('click', 'delete')

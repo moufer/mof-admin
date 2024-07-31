@@ -3,7 +3,6 @@
 namespace app\front\table;
 
 use app\model\Module;
-use app\model\Perm;
 use mof\front\Table;
 use mof\utils\DictArray;
 use mof\utils\ElementData;
@@ -63,10 +62,10 @@ class RoleTable extends Table
     protected function columnName(): array
     {
         return [
-            "prop"   => "name",
-            "label"  => "角色名称",
-            "width"  => 150,
-            "search" => true,
+            "prop"        => "name",
+            "label"       => "角色名称",
+            "width"       => 150,
+            "search"      => true,
         ];
     }
 
