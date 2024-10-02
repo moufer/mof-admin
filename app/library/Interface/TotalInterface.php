@@ -1,6 +1,6 @@
 <?php
 /**
- * Project: AIGC
+ * Project: MofAdmin
  * Author: moufer <moufer@163.com>
  * Date: 2024/9/30 14:38
  */
