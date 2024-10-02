@@ -16,11 +16,6 @@ export default {
     const { router } = useRouteStore()
     const { user } = useUserStore();
 
-    console.log('rawPerms',currentRoutePath,rawPerms);
-    //检测rawPerms.value是什么格式
-    console.log('rawPerms.value',currentRoutePath.value,rawPerms.value);
-    //如果rawPerms.value是object
-
     const menuCollapsed = ref(true);
 
     const changePagePath = (path) => {

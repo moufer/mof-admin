@@ -49,6 +49,7 @@ export default {
             columns: [],//表格列信息
             tableOperations: [],//表格列操作
             tableSelection: true,//表格多选
+            tableSelectionExpr: '',//表格多选表达式
 
             pk: 'id',//表主键名称
             sortField: '_PK_',//排序字段
@@ -405,10 +406,14 @@ export default {
 
         //根据查询条件来显示表格列
         visibleTableColumns(query) {
+            //多选项
+            if(!isEmpty(this.tableSelectionExpr)) {
+                this.tableSelection = evaluateExpression(this.tableSelectionExpr, query);
+            }
             this.tableColumns.forEach(column => {
                 //根据表达式来
                 column.visible = column.visibleExpr ? evaluateExpression(column.visibleExpr, query) : true;
-            });
+            })
         },
 
         //点击tab事件

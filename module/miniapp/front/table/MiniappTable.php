@@ -45,7 +45,6 @@ class MiniappTable extends Table
             "prop"   => "title",
             "label"  => "名称",
             "width"  => '*',
-            "align"  => "left",
             "search" => true,
         ];
     }
@@ -68,16 +67,6 @@ class MiniappTable extends Table
             "label"  => "AppID",
             "width"  => 200,
             "search" => false,
-        ];
-    }
-
-    public function columnOriginalId(): array
-    {
-        return [
-            "prop"    => "original_id",
-            "label"   => "原始ID",
-            "search"  => false,
-            "visible" => false,
         ];
     }
 

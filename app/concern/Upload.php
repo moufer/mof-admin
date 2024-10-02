@@ -44,23 +44,8 @@ trait Upload
 
     protected function upload($type, $rules = [], $messages = []): Json
     {
-        //加入尺寸和类型限制
-        foreach (['image', 'media', 'file'] as $key) {
-            if ($type !== $key) continue;
-            $ext = config('admin.storage_' . $key . '_ext');
-            $size = (int)config('admin.storage_' . $key . '_size', 0);
-            $ext && $rules[] = 'fileExt:' . $ext;                  //文件后缀验证
-            $size && $rules[] = 'fileSize:' . $size * 1024 * 1024; //文件data大小验证
-        }
-        //验证规则
-        $rules = array_merge(['require', 'file'], $rules);
-        //验证消息
-        $messages = array_merge([
-            'file.require'  => '请上传文件',
-            'file.file'     => '请上传文件',
-            'file.fileExt'  => '不支持上传的文件类型',
-            'file.fileSize' => '文件大小超过了最大限制',
-        ], $messages);
+        //获取验证规则
+        list($rules, $messages) = upload_validate_rules($type, $rules, $messages);
 
         //验证
         try {
@@ -72,11 +57,11 @@ trait Upload
 
         //如果是图片并且限制了最大宽高，则缩小图片到最大宽高
         if ($type === 'image') {
-            if(!$image = Image::open($file)) {
+            if (!$image = Image::open($file)) {
                 return ApiResponse::error('图片文件读取失败');
             }
             //获取图片宽高
-            $wh = config('admin.storage_image_wh', '');
+            $wh = config('system.storage_image_wh', '');
             if (preg_match('/^(\d+)x(\d+)$/', $wh, $match)) {
                 $maxW = (int)$match[1];
                 $maxH = (int)$match[2];

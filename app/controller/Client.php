@@ -21,4 +21,5 @@ class Client extends ApiController
         ];
         return ApiResponse::success($data);
     }
+
 }

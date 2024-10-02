@@ -4,7 +4,6 @@ namespace app\model;
 
 use mof\interface\UserInterface;
 use mof\Model;
-use mof\Mof;
 use think\db\exception\DbException;
 use think\facade\Event;
 use think\model\relation\BelongsTo;

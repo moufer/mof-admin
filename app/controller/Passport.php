@@ -4,11 +4,14 @@ namespace app\controller;
 
 use app\front\form\PassportForm;
 use app\library\Controller;
+use app\logic\CaptchaLogic;
 use app\logic\PassportLogic;
 use mof\annotation\Inject;
 use mof\ApiResponse;
 use mof\utils\Arr;
+use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\response\Json;
 
 class Passport extends Controller
@@ -61,7 +64,7 @@ class Passport extends Controller
     {
         $module = $this->request->param('module', 'system');
         $user = $this->auth->getUser()->hidden(['password']);
-        if('system' === $module && 'system' !== $user->module) {
+        if ('system' === $module && 'system' !== $user->module) {
             return ApiResponse::error('当前用户没有系统后台权限');
         }
         $perms = $user->module === 'system'
@@ -83,4 +86,5 @@ class Passport extends Controller
         $perms = $this->auth->getUser()->role->getPerms();
         return ApiResponse::success(Arr::tree($perms));
     }
+
 }

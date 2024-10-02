@@ -15,4 +15,6 @@ class Validate extends \think\Validate
             return substr($key, 0, strpos($key, '|'));
         }, array_keys($this->rule));
     }
+
+
 }

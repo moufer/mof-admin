@@ -8,8 +8,11 @@
 namespace app\controller;
 
 use app\library\Controller;
+use app\library\Total;
+use app\logic\TotalLogic;
 use mof\annotation\AdminPerm;
 use mof\ApiResponse;
+use think\facade\Event;
 use think\response\Json;
 
 #[AdminPerm(
@@ -18,8 +21,12 @@ use think\response\Json;
 )]
 class Dashboard extends Controller
 {
-    public function index(): Json
+    public function index(TotalLogic $total): Json
     {
-        return ApiResponse::success('ok');
+        return ApiResponse::success([
+            'totals' => array_values($total->getTotalData()),
+            'charts' => $total->getTrendData()
+        ]);
     }
+
 }

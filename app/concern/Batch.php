@@ -27,7 +27,7 @@ trait Batch
         }
 
         //获取ID(数组集合)
-        $ids = $this->request->param($this->model->getPk() . '/a');
+        $ids = $this->request->param($this->logic->model()->getPk() . '/a');
         //获取更新字段
         $field = $this->request->param('field/s');
         //获取更新值
@@ -37,7 +37,7 @@ trait Batch
         if (empty($field)) return ApiResponse::error('未选择更新字段');
         if (false === $value) return ApiResponse::error('未设置更新值');
 
-        $models = $this->model->where($this->model->getPk(), 'in', $ids)->select();
+        $models = $this->logic->model()->where($this->logic->model()->getPk(), 'in', $ids)->select();
         //编辑前
         if (method_exists($this, 'onUpdateBefore')) {
             call_user_func([$this, 'onUpdateBefore'], $models, [$field => $value]);
@@ -63,10 +63,10 @@ trait Batch
     {
         if (!$this->request->isPost()) {
             return ApiResponse::error('请求方式错误');
-        } elseif (!$ids = $this->request->param($this->model->getPk() . '/a')) {
+        } elseif (!$ids = $this->request->param($this->logic->model()->getPk() . '/a')) {
             return ApiResponse::error('未选择删除项');
         }
-        $models = call_user_func([$this->modelName, 'whereIn'], $this->model->getPk(), $ids)->select();
+        $models = call_user_func([$this->modelName, 'whereIn'], $this->logic->model()->getPk(), $ids)->select();
         if (!$models->count()) {
             return ApiResponse::error('数据不存在');
         }

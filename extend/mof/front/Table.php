@@ -39,6 +39,8 @@ abstract class Table
     protected string $pk = 'id';
     /** @var bool 允许多选 */
     protected bool $tableSelection = true;
+    /** @var string 是否允许多选的表达式 */
+    protected string $tableSelectionExpr = '';
     /** @var array 表格列 */
     protected array $tableColumns = [];
     /** @var bool 使用树形表格 */
@@ -181,6 +183,8 @@ abstract class Table
             "toolbarButtons" => $this->toolbarButtons,
 
             "tableSelection"  => $this->tableSelection,
+            "tableSelectionExpr" => $this->tableSelectionExpr,
+
             "tableColumns"    => $this->tableColumns,
             "tableOperations" => $this->operation(),
             "useTreeTable"    => $this->useTreeTable,

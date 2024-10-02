@@ -21,12 +21,12 @@
     "ext-zip": "*",
     "ext-iconv": "*",
     "symfony/cache": "^6.0.19",
-    "topthink/framework": "^8.0.0",
+    "topthink/framework": "^8.0.4",
     "topthink/think-orm": "^3.0",
     "topthink/think-migration": "^3.0",
     "topthink/think-filesystem": "~1.0",
+    "topthink/think-image": "^1.0",
     "topthink/think-view": "^1.0",
-    "moufer/think-image": "dev-master",
     "firebase/php-jwt": "^6.4",
     "overtrue/flysystem-cos": "^2.0.0",
     "xxtime/flysystem-aliyun-oss": "^1.4",
@@ -34,7 +34,10 @@
     "w7corp/easywechat": "^6.7",
     "imangazaliev/didom": "^2.0",
     "justmd5/pinduoduo-sdk": "^1.8",
-    "symfony/http-foundation": "^6.4"
+    "symfony/http-foundation": "^6.4",
+    "tencentcloud/sms": "^3.0",
+    "phpmailer/phpmailer": "^6.9",
+    "gregwar/captcha": "^1.2"
   },
   "require-dev": {
     "symfony/var-dumper": "^5.4|^6.0",

@@ -10,6 +10,7 @@ use mof\utils\AnnotationParser;
 use think\db\exception\{DataNotFoundException, DbException, ModelNotFoundException};
 use think\db\Raw;
 use think\facade\Db;
+use think\helper\Str;
 
 /**
  * 安装权限菜单
@@ -49,14 +50,19 @@ class InstallPerm
         $model = new Perm();
         $model->startTrans();
         try {
-            //先卸载旧菜单(不调用模型事件)
-            $this->uninstall();
+            //安装标记，用于区别未更新的菜单
+            $installFlag = null;
 
             //从控制器注解获取权限结构
             if ($perms = $this->getControllerPerms()) {
+                //设置新的安装标记，如果数据没有更新到新的$installFlag，表明是失效的数据，后面需要删除
+                $installFlag = time();
                 //保存到数据库
-                $this->savePerm($perms);
+                $this->savePerm($perms, null, $installFlag);
             }
+
+            //卸载没有找到权限结构或者失效的菜单(不调用模型事件)
+            $this->uninstall($installFlag);
 
             $model->commit();
         } catch (\Exception $e) {
@@ -69,11 +75,16 @@ class InstallPerm
 
     /**
      * 卸载模块权限
+     * @param string|null $notEqInstallFlag 卸载 install_flag 不同的菜单
      * @return void
      */
-    public function uninstall(): void
+    public function uninstall(string $notEqInstallFlag = null): void
     {
-        Perm::where('module', $this->moduleName)->delete();
+        $where[] = ['module', '=', $this->moduleName];
+        if ($notEqInstallFlag) {
+            $where[] = ['install_flag', '<>', $notEqInstallFlag];
+        }
+        Perm::where($where)->delete();
     }
 
     /**
@@ -116,6 +127,9 @@ class InstallPerm
     /**
      * 扫描控制器，获取权限结构
      * @return PermGroup[]|PermMenu[]|null
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @throws \ReflectionException
      */
     public function getControllerPerms(): ?array
@@ -131,6 +145,7 @@ class InstallPerm
             }
             $namespace .= $this->moduleInfo['admin_controller_dir'] . '\\';
         }
+
         //扫描目录，找控制器类文件，并将文件名转化为类名
         $files = scandir($scanDir);
         $files = array_filter($files, fn($file) => preg_match('/^[A-Z][a-zA-Z0-9]+\.php$/', $file));
@@ -153,10 +168,24 @@ class InstallPerm
         $permGroup = $this->moduleInfo['admin_perm_group'] ?? [];
         foreach ($group as $groupName => $groupInfo) {
             $merge = [];
-            foreach ($permGroup as $permItem) {
-                if ($permItem['name'] === $groupName) {
-                    $merge = $permItem;
-                    break;
+            //正则判断$groupName是不是 xxx:yyy:zzz格式，如果是，表示添加到其他模块的的group
+            if (preg_match('/^[a-z]+:[a-z]+:[a-z]+$/i', $groupName)) {
+                list($category, $moduleName, $name) = explode(':', $groupName);
+                //去数据库里找这个字段
+                $merge = Perm::where('category', $category)
+                    ->where('module', $moduleName)
+                    ->where('name', $name)
+                    ->find();
+                if (!$merge) throw new LogicException(sprintf('权限分组%s不存在', $groupName));
+                $merge = $merge->visible([
+                    'id', 'category', 'module', 'name', 'title', 'icon', 'hash'
+                ])->toArray();
+            } else {
+                foreach ($permGroup as $permItem) {
+                    if ($permItem['name'] === $groupName) {
+                        $merge = $permItem;
+                        break;
+                    }
                 }
             }
             if (!$merge) $merge = [
@@ -185,17 +214,25 @@ class InstallPerm
      * 保存到数据库
      * @param PermGroup[]|PermMenu[] $perms
      * @param Perm|null $parentPerm
+     * @param string|null $installFlag 本次安装标记，用于识别已失效的数据
      * @return void
      * @throws DataNotFoundException
      * @throws DbException
      * @throws ModelNotFoundException
      */
-    protected function savePerm(array $perms, Perm $parentPerm = null): void
+    protected function savePerm(array $perms, Perm $parentPerm = null, string $installFlag = null): void
     {
+        //安装标记，用于重装时，区别已失效的数据
+        if (!$installFlag) {
+            //随机生成一个数字
+            $installFlag = Str::random(10, 1);
+        }
+
         foreach ($perms as $perm) {
             $data = $perm->toArray();
             $data['pid'] = $parentPerm ? $parentPerm->id : 0;
             $data['status'] = 1;
+            $data['install_flag'] = $installFlag;
 
             //查找是不是存在
             $tblPrem = Perm::where([
@@ -204,29 +241,39 @@ class InstallPerm
             ])->find();
 
             //新建根权限
-            !$tblPrem && $tblPrem = Perm::create($data);
+            if (!$tblPrem) {
+                $tblPrem = Perm::create($data);
+            } else if ($tblPrem->module === $this->moduleName) {
+                //只更新当前模块的权限
+                $tblPrem->save([
+                    'title'        => $data['title'],
+                    'icon'         => $data['icon'] ?? '',
+                    'install_flag' => $installFlag
+                ]);
+            }
 
             //新建action类型权限
             if ($perm->type === 'menu' && count($perm->children) > 0) {
-                $this->createActions($perm->children, $tblPrem);
+                $this->createActions($perm->children, $tblPrem, $installFlag);
             } else if ($perm->type === 'group' && count($perm->children) > 0) {
-                $this->savePerm($perm->children, $tblPrem);
+                $this->savePerm($perm->children, $tblPrem, $installFlag);
             }
         }
     }
 
     /**
      * 添加菜单行为组
-     * @param Perm $parentPerm
      * @param PermAction[] $actions
+     * @param Perm $parentPerm
+     * @param string $installFlag
      * @return array
      * @throws DataNotFoundException
      * @throws DbException
      * @throws ModelNotFoundException
      */
-    protected function createActions(array $actions, Perm $parentPerm): array
+    protected function createActions(array $actions, Perm $parentPerm, string $installFlag): array
     {
-        return array_map(function ($action) use ($parentPerm) {
+        return array_map(function ($action) use ($parentPerm, $installFlag) {
             $where = [
                 'pid'  => $parentPerm->getAttr('id'),
                 'hash' => $action->hash,
@@ -236,9 +283,16 @@ class InstallPerm
                 //不存在就新增
                 $perm = Perm::create(array_merge($where, $action->toArray(), [
                     //父级id路径
-                    'pid_path' => $parentPerm->getParents($parentPerm->getAttr('id'), true),
-                    'status'   => 1,
+                    'pid_path'     => $parentPerm->getParents($parentPerm->getAttr('id'), true),
+                    'status'       => 1,
+                    'install_flag' => $installFlag
                 ]));
+            } else {
+                //更新
+                $perm->save([
+                    'title'        => $action->title,
+                    'install_flag' => $installFlag
+                ]);
             }
             return $perm;
         }, $actions);

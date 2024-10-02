@@ -4,11 +4,18 @@ namespace app\logic;
 
 use app\enum\LoginStatus;
 use app\library\Auth;
+use app\library\Email;
 use app\model\Admin;
 use mof\annotation\Inject;
 use mof\exception\LogicException;
 use mof\Logic;
 use mof\Model;
+use mof\Module;
+use PHPMailer\PHPMailer\Exception;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
+use think\facade\Log;
 
 class PassportLogic extends Logic
 {
@@ -77,4 +84,5 @@ class PassportLogic extends Logic
         $this->module = $module;
         return $this;
     }
+
 }

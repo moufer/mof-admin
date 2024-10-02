@@ -20,6 +20,12 @@ class Request extends \think\Request
     protected $filter = ['trim', 'strip_tags', 'htmlspecialchars'];
 
     /**
+     *  是否已完成一次验证（get,put,..等操作时验证）
+     * @var bool
+     */
+    protected bool $validated = false;
+
+    /**
      * 是否批量验证
      * @var bool
      */
@@ -49,7 +55,7 @@ class Request extends \think\Request
     public function param($name = '', $default = null, array|string|null $filter = '')
     {
         $data = parent::param($name, $default, $filter);
-        if ($this->validate) $this->validate($name ? [$name => $data] : $data);
+        if ($this->validate) $this->validate($name && is_string($name) ? [$name => $data] : $data);
         return $data;
     }
 
@@ -59,7 +65,7 @@ class Request extends \think\Request
     public function get(bool|array|string $name = '', $default = null, array|string|null $filter = '')
     {
         $data = parent::get($name, $default, $filter);
-        if ($this->validate) $this->validate($name ? [$name => $data] : $data);
+        if ($this->validate) $this->validate($name && is_string($name) ? [$name => $data] : $data);
         return $data;
     }
 
@@ -69,7 +75,7 @@ class Request extends \think\Request
     public function post(bool|array|string $name = '', $default = null, array|string|null $filter = '')
     {
         $data = parent::post($name, $default, $filter);
-        if ($this->validate) $this->validate($name ? [$name => $data] : $data);
+        if ($this->validate) $this->validate($name && is_string($name) ? [$name => $data] : $data);
         return $data;
     }
 
@@ -79,7 +85,7 @@ class Request extends \think\Request
     public function put(bool|array|string $name = '', $default = null, array|string|null $filter = '')
     {
         $data = parent::put($name, $default, $filter);
-        if ($this->validate) $this->validate($name ? [$name => $data] : $data);
+        if ($this->validate) $this->validate($name && is_string($name) ? [$name => $data] : $data);
         return $data;
     }
 
@@ -89,27 +95,7 @@ class Request extends \think\Request
     public function request(bool|array|string $name = '', $default = null, array|string|null $filter = '')
     {
         $data = parent::request($name, $default, $filter);
-        if ($this->validate) $this->validate($name ? [$name => $data] : $data);
-        return $data;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function only(array $name, $data = 'param', array|string|null $filter = ''): array
-    {
-        $data = parent::only($name, $data, $filter);
-        if ($this->validate) $this->validate($data);
-        return $data;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function except(array $name, string $type = 'param'): array
-    {
-        $data = parent::except($name, $type);
-        if ($this->validate) $this->validate($data);
+        if ($this->validate) $this->validate($name && is_string($name) ? [$name => $data] : $data);
         return $data;
     }
 
@@ -203,7 +189,10 @@ class Request extends \think\Request
         $this->validateMessage = [];
         $this->scene = '';
 
+        $this->validated = true;
+
         //验证不通过是抛出ValidationException
         return $v->failException(true)->check($data);
     }
+
 }

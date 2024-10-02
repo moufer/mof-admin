@@ -5,17 +5,21 @@ namespace mof;
 use think\db\BaseQuery;
 use think\db\Query;
 use think\helper\Str;
+use think\Paginator;
 
 class Searcher
 {
     protected \think\Model $model;
 
-    protected array $order = [];
-    protected array $with  = [];
-    protected array $field = [];
+    protected array $order        = [];
+    protected array $with         = [];
+    protected array $field        = [];
+    protected bool  $fieldWithout = false;
+    protected array $appends      = [];
 
-    protected array $params   = [];
-    protected int   $pageSize = 10;
+    protected array $params     = [];
+    protected int   $pageSize   = 10;
+    protected int   $limitTotal = 0;
 
     protected ?\Closure $autoCallback = null;
 
@@ -32,15 +36,22 @@ class Searcher
         return $this;
     }
 
+    public function appends(array $attrs)
+    {
+        $this->appends = $attrs;
+        return $this;
+    }
+
     public function with(array $with): static
     {
         $this->with = $with;
         return $this;
     }
 
-    public function field(array $field): static
+    public function field(array $field, $without = false): static
     {
         $this->field = $field;
+        $this->fieldWithout = $without;
         return $this;
     }
 
@@ -53,6 +64,12 @@ class Searcher
     public function pageSize(int $num): static
     {
         $num > 0 && $num < 100 && $this->pageSize = $num;
+        return $this;
+    }
+
+    public function limitTotal(int $num): static
+    {
+        $num >= 0 && $this->limitTotal = $num;
         return $this;
     }
 
@@ -114,7 +131,8 @@ class Searcher
 
         //字段
         if (!empty($this->field)) {
-            $query->field($this->field);
+            $fieldFunc = $this->fieldWithout ? 'withoutField' : 'field';
+            $query->$fieldFunc($this->field);
         }
 
         return $query;
@@ -124,13 +142,37 @@ class Searcher
     {
         $query = $this->build();
         $page && $query->page($page, $this->pageSize);
-        return $query->select();
+        $select = $query->select();
+        if ($this->appends && $select->count()) {
+            $select->append($this->appends);
+        }
+        return $select;
     }
 
     public function paginate($simple = false): \think\Paginator
     {
-        $query = $this->build();
-        return $query->paginate($this->pageSize, $simple);
+        //检测是否设置了最大页吗
+        if ($this->limitTotal > 0) {
+            $lastPage = ceil($this->limitTotal / $this->pageSize);
+            //获取当前页页码
+            $page = (int)app()->request->get('page', 1);
+            if ($page > $lastPage) {
+                $results = new \think\Collection([]);
+                $total = $this->limitTotal;
+                //返回空记录
+                $paginate = Paginator::make($results, $this->pageSize, $page, $total, $simple);
+            }
+        }
+
+        if (empty($paginate)) {
+            $query = $this->build();
+            $paginate = $query->paginate($this->pageSize, $simple);
+        }
+
+        if ($this->appends && $paginate->count()) {
+            $paginate->getCollection()->append($this->appends);
+        }
+        return $paginate;
     }
 
     protected function searchAttr(array|string $option,
@@ -175,6 +217,9 @@ class Searcher
             case 'array':
                 if (!is_array($value) || empty($value)) return;
                 $query->whereIn($key, $value);
+                break;
+            case 'boolean':
+                $query->where($key, '=', empty($value) ? 0 : 1);
                 break;
         }
     }

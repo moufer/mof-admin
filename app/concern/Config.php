@@ -4,6 +4,7 @@ namespace app\concern;
 
 use app\library\Controller;
 use mof\ApiResponse;
+use mof\utils\Arr;
 use think\db\exception\DbException;
 use think\facade\Cache;
 use think\response\Json;
@@ -90,13 +91,17 @@ trait Config
     {
         try {
             $result = [];
+            $convertArray = false;
             $where = ['module' => $module, ...$extraInfo];
             //为了触发setValueAttr，必须使用select方法
             $rows = (new \app\model\Config())->where($where)->select();
-            $rows->each(function ($item) use (&$result) {
+            $rows->each(function ($item) use (&$result, &$convertArray) {
                 $result[$item->name] = $item->value;
+                if (!$convertArray && strpos($item->name, '.') > 0) {
+                    $convertArray = true; // 存在.，则需要转换数组
+                }
             });
-            return $result;
+            return $convertArray ? Arr::coverToMultidimensional($result) : $result;
         } catch (DbException) {
             return [];
         }

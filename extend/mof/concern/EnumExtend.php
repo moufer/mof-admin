@@ -12,10 +12,14 @@ use mof\utils\DictArray;
  */
 trait EnumExtend
 {
+    /**
+     * 获取枚举数组
+     * 格式：[value=>Description]
+     * @return array
+     */
     public static function toArray(): array
     {
         $result = [];
-
         $reflectionClass = new \ReflectionClass(static::class);
         foreach ($reflectionClass->getConstants() as $key => $value) {
             $result[$value->value] = $reflectionClass->getReflectionConstant($key)

@@ -34,6 +34,8 @@ Route::group('upload', function () {
 //需要权限验证的
 Route::group(function () {
 
+    Route::get('dashboard', '\app\controller\Dashboard@index');
+
     //用户管理
     Route::resource('user', '\app\controller\User');
 
