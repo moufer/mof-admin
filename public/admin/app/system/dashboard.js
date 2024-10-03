@@ -1,4 +1,4 @@
-import * as echarts from "../../resources/libraries/chart@4.4.0/dist/echarts.esm.min.js";
+import * as echarts from "../../resources/libraries/echarts@5.5.1/dist/echarts.esm.min.js";
 
 export default {
   name: "mf-page-dashboard",
