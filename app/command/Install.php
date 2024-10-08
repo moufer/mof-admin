@@ -2,9 +2,11 @@
 
 namespace app\command;
 
+use app\library\InstallModule;
 use app\library\InstallPerm;
 use app\model\Admin;
 use mof\exception\LogicException;
+use mof\Module;
 use think\console\Command;
 use think\console\Input;
 use think\console\Output;
@@ -15,7 +17,7 @@ class Install extends Command
     protected function configure(): void
     {
         $this->setName('mof:install')
-            ->setDescription('安装MofAdmin开发系统');
+            ->setDescription('安装' . config('app.name') . '系统');
     }
 
     protected function execute(Input $input, Output $output): void
@@ -28,17 +30,26 @@ class Install extends Command
             return;
         }
 
-        $output->info('欢迎进入MofAdmin安装程序');
+        $output->info('=====欢迎进入' . config('app.name') . '安装程序=====');
 
         //环境检测
-        $output->info('系统环境检测...');
+        $output->writeln("\n系统环境检测...");
         $this->checkEnv($input, $output);
+        $output->info("[√]环境检测通过");
 
-        $output->info('数据库检测...');
+        $output->writeln("\n数据库检测...");
         $this->checkDatabase($input, $output);
-        $this->installDatabase($input, $output);
+        $output->info('[√]数据表检测通过');
 
-        $output->info("\n请设置网站超级管理员账号");
+        $output->writeln("\n开始安装系统模块...");
+        $this->installDatabase($input, $output);
+        $output->info("[√]系统模块已安装");
+
+        $output->writeln("\n开始安装应用模块...");
+        $this->installModules($input, $output);
+        $output->info('[√]模块安装完成');
+
+        $output->writeln("\n请设置网站超级管理员账号");
         try {
             list($username, $password) = $this->createAdmin($input, $output);
             $output->info("后台账号创建成功！");
@@ -49,14 +60,14 @@ class Install extends Command
         }
 
         $this->writeInstalledFile();
-        $output->info("\n系统安装完成！请使用上面的账号登录您的MofAdmin系统后台。");
+        $output->info("\n系统安装完成！请使用上面的账号登录您的" . config('app.name') . "系统后台。");
     }
 
     private function checkInstall(): void
     {
         $file = app()->getRuntimePath() . 'install.lock';
         if (is_file($file)) {
-            //throw new LogicException("系统已安装。如需重装，请先手动删除{$file}文件。");
+            throw new LogicException("系统已安装。如需重装，请先手动删除{$file}文件。");
         }
     }
 
@@ -64,7 +75,7 @@ class Install extends Command
     {
         $env = app()->getRootPath() . '.env';
         if (!is_file($env)) {
-            throw new ("未检测到{$env}文件，请先配置.env文件。");
+            throw new ("[×]未检测到{$env}文件，请先配置.env文件");
         }
     }
 
@@ -98,13 +109,11 @@ class Install extends Command
             $result[] = ("jwt.key配置错误(不能为空)，请检查.env文件");
         }
         if ($result) {
-            $output->error('环境检测失败，请检查环境配置');
+            $output->error('[×]环境检测失败，请检查环境配置');
             foreach ($result as $index => $error) {
                 $output->error(($index + 1) . '、' . $error);
             }
             exit();
-        } else {
-            $output->info('环境检测通过');
         }
     }
 
@@ -112,11 +121,8 @@ class Install extends Command
     {
         if ($this->databaseExists()) {
             //提示用户数据库已存在，确认是否继续安装
-            $output->warning("数据库已存在，继续安装覆盖并清空已存在的表数据，是否继续？请输入：yes 或 no");
-            if (strtolower(trim(fgets(STDIN))) !== 'yes') {
-                $output->error("已取消安装");
-                exit();
-            }
+            $output->error("已取消安装。取消原因：数据表已存在，建议新建一个新的数据库或者更换表前缀");
+            exit();
         }
     }
 
@@ -147,16 +153,16 @@ class Install extends Command
         }
         Db::startTrans();
         try {
-            $output->info("\n创建数据表...");
+            //$output->info("\n创建数据表...");
             $output->writeln($this->createTables());
-            $output->info("数据表创建成功！");
-            $output->info("\n初始化数据...");
+            //$output->info("[√]数据表创建成功！");
+            //$output->info("\n初始化数据...");
             $this->createData();
-            $output->info("初始化数据成功！");
+            //$output->info("[√]初始化数据成功！");
             Db::commit();
         } catch (\Throwable $e) {
             Db::rollback();
-            $output->error('数据表或数据创建失败！');
+            $output->error('[×]数据表或数据创建失败！');
             $output->error($e->getMessage());
             exit();
         }
@@ -164,7 +170,6 @@ class Install extends Command
 
     private function createTables(): string
     {
-        $buffer = $this->getConsole()->call('mof-migrate:rollback', ['system']);
         $buffer = $this->getConsole()->call('mof-migrate:run', ['system']);
         return $buffer->fetch();
     }
@@ -218,6 +223,49 @@ class Install extends Command
         ]);
 
         return [$username, $password];
+    }
+
+    private function installModules(Input $input, Output $output): void
+    {
+        //遍历 module 目录，找到所有的模块
+        $modules = array_filter(glob(app()->getRootPath() . 'module/*'), function ($path) {
+            return is_dir($path);
+        });
+        //检测模块是不是可用
+        $modules = array_map(function ($path) {
+            $module = basename($path);
+            if (!Module::verifyIntegrity($module)) return false;
+            return $module;
+        }, $modules);
+        //移除无效的模块
+        $modules = array_filter($modules);
+        //安装排序
+        usort($modules, function ($a, $b) {
+            $infoA = Module::info($a);
+            $infoB = Module::info($b);
+            //检测父模块是否为空
+            if (!empty($infoA['parent'])) {
+                return 1;
+            } else {
+                //检测依赖是否为空
+                if (!empty($infoA['requires'])) {
+                    return 1;
+                } else if (!empty($infoB['requires'])) {
+                    return -1;
+                }
+            }
+            return 0;
+
+        });
+        //开始安装模块
+        foreach ($modules as $module) {
+            try {
+                InstallModule::make($module)->install(true);
+                $output->info("模块【{$module}】安装成功");
+            } catch (LogicException $e) {
+                $output->warning("模块【{$module}】安装失败，请稍后再系统后台安装。失败原因：" . $e->getMessage());
+            }
+        }
     }
 
     private function writeInstalledFile(): void

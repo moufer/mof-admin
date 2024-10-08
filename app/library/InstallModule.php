@@ -22,7 +22,7 @@ class InstallModule
     {
         $moduleInfo = \mof\Module::info($moduleName);
         if (!$moduleInfo) {
-            throw new LogicException('模块不存在');
+            throw new LogicException('模块不存在', 1001);
         }
         return new static($moduleInfo);
     }
@@ -37,17 +37,23 @@ class InstallModule
 
     /**
      * 安装
+     * @param bool $ignoreRequires
      * @return void
      * @throws DbException
      */
-    public function install(): void
+    public function install(bool $ignoreRequires = false): void
     {
         if (!\mof\Module::verifyIntegrity($this->moduleInfo['name'])) {
-            throw new LogicException('模块不存在或文件不完整');
+            throw new LogicException('模块不存在或文件不完整', 1002);
         }
-        $this->checkRequires();        //检测依赖
-        $this->installConsole();       //安装数据库
-        $this->installPerm->install(); //安装权限
+        if (!$ignoreRequires) {
+            //检测依赖
+            $this->checkRequires();
+        }
+        //安装数据库
+        $this->installConsole();
+        //安装权限
+        $this->installPerm->install();
         //复制资源文件
         $this->copyPublicFiles();
     }
@@ -112,7 +118,8 @@ class InstallModule
         }
         if ($defectModules) {
             throw new LogicException(
-                sprintf('依赖模块【%s】未安装或未启用', implode('、', $defectModules))
+                sprintf('依赖模块【%s】未安装或未启用', implode('、', $defectModules)),
+                1003
             );
         }
     }
@@ -133,7 +140,7 @@ class InstallModule
         } elseif ($type === 'disable') {
             $modules = \app\model\Module::where('status', 1)->select();
         } else {
-            throw new LogicException('无效的checkChildren类型');
+            throw new LogicException('无效的checkChildren类型', 1004);
         }
         $modules->each(function ($module) use (&$children) {
             $info = \mof\Module::info($module->getAttr('name'));
@@ -143,7 +150,8 @@ class InstallModule
         });
         if ($children) {
             throw new LogicException(
-                sprintf('模块被依赖【%s】，无法停用或删除。', implode('、', $children))
+                sprintf('模块被依赖【%s】，无法停用或删除。', implode('、', $children)),
+                1005
             );
         }
     }
