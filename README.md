@@ -12,9 +12,9 @@ MofAdmin后台管理系统
 ### 环境要求
 * PHP 8.1+ 
 * MySQL 5.7+
-* Redis
+* Redis 5.0+
 * Nginx/Apache
-* Composer
+* Composer 2.0+
 
 ### 准备工作
 * 在服务器上安装PHP、MySQL、Redis、Nginx、Composer

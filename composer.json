@@ -5,7 +5,8 @@
   "keywords": [
     "mofadmin",
     "thinkphp",
-    "vue"
+    "vue",
+    "php"
   ],
   "homepage": "https://www.modoer.cn/",
   "license": "Apache-2.0",
@@ -35,9 +36,13 @@
     "imangazaliev/didom": "^2.0",
     "justmd5/pinduoduo-sdk": "^1.8",
     "symfony/http-foundation": "^6.4",
+    "tencentcloud/hunyuan": "^3.0",
+    "yansongda/pay": "~3.7.0",
     "tencentcloud/sms": "^3.0",
     "phpmailer/phpmailer": "^6.9",
-    "gregwar/captcha": "^1.2"
+    "gregwar/captcha": "^1.2",
+    "openai-php/client": "^0.10.1",
+    "alibabacloud/sdk": "^1.8"
   },
   "require-dev": {
     "symfony/var-dumper": "^5.4|^6.0",
@@ -54,7 +59,10 @@
     }
   },
   "config": {
-    "preferred-install": "dist"
+    "preferred-install": "dist",
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
   },
   "scripts": {
     "post-autoload-dump": [
