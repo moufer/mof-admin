@@ -43,6 +43,12 @@ Route::group(function () {
     Route::get('config/<module>', '\app\controller\Config@options');
     Route::post('config/<module>', '\app\controller\Config@submit');
 
+    Route::group('profile', function () {
+        Route::get('edit', '\app\controller\Profile@edit');
+        Route::put('', '\app\controller\Profile@update');
+        Route::get('', '\app\controller\Profile@index');
+    });
+
     // 附件
     Route::get('storage/selector$', '\app\controller\Storage@selector');
     Route::resource('storage', '\app\controller\Storage')

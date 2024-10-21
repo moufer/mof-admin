@@ -8,7 +8,7 @@ class AdminValidate extends Validate
 {
     protected $rule = [
         'username' => 'require|alphaDash|unique:system_admin',
-        'name'     => 'require',
+        'name'     => 'require|unique:system_admin',
         'email'    => 'require|email|unique:system_admin',
         'password' => 'requireCallback:requireCheckPassword|length:6,20',
         'role_id'  => 'require',
@@ -19,6 +19,7 @@ class AdminValidate extends Validate
         'username.alphaDash' => '用户名只能包含字母、数字和下划线',
         'username.unique'    => '用户名已存在',
         'name.require'       => '姓名不能为空',
+        'name.unique'        => '姓名已存在',
         'email.require'      => '邮箱不能为空',
         'email.email'        => '邮箱格式不正确',
         'email.unique'       => '邮箱已存在',
@@ -28,13 +29,14 @@ class AdminValidate extends Validate
     ];
 
     protected $scene = [
-        'add'  => ['username', 'password', 'name', 'email', 'role_id'],
-        'edit' => ['username', 'password', 'name', 'email', 'role_id'],
+        'add'     => ['username', 'password', 'name', 'email', 'role_id'],
+        'edit'    => ['username', 'password', 'name', 'email', 'role_id'],
+        'profile' => ['password', 'name', 'email'],
     ];
 
     protected function requireCheckPassword($value, $data = []): bool
     {
-        if ('edit' === $this->currentScene && empty($value)) {
+        if (in_array($this->currentScene, ['edit', 'profile']) && empty($value)) {
             return false;
         }
         return true;

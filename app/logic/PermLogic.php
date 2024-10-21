@@ -5,7 +5,7 @@ namespace app\logic;
 use app\model\Perm;
 use mof\Logic;
 use mof\Model;
-
+use think\helper\Str;
 
 class PermLogic extends Logic
 {
@@ -16,6 +16,8 @@ class PermLogic extends Logic
 
     public function save($params): Model
     {
+        $params['name'] = $params['name'] ?? Str::random();
+        $params['hash'] = $this->createHash($params);
         $model = parent::save($params);
         //保存后，如果是菜单，则把actions数组插入到Perm表中
         $actions = $model->actions;
@@ -26,5 +28,14 @@ class PermLogic extends Logic
             }
         }
         return $model;
+    }
+
+    public function createHash($params): string
+    {
+        foreach (['type', 'category', 'module', 'name', 'perm'] as $key) {
+            $content[] = $params[$key];
+        }
+        $content[] = time(); //自定义添加时，用时间戳替代name字段
+        return md5(implode('', $content));
     }
 }

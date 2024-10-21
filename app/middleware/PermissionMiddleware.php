@@ -42,15 +42,17 @@ class PermissionMiddleware
         //获取当前请求的权限id
         list($module, $controller, $action) = $this->parseRule($request->rule()->getName());
         $ruleId = $this->getRuleId($module, $controller, $action);
-        if (!$ruleId) {
+        if (!$ruleId && !empty(config('admin.auth_strict'))) {
             return ApiResponse::noPermission();
         }
 
         //获取当前登录会员的所有权限id，判断是否拥有权限
-        $ruleIds = (new RolePerm)->where('role_id', $auth->getUser()->role_id)
-            ->column('perm_id');
-        if (!in_array($ruleId, $ruleIds)) {
-            return ApiResponse::noPermission();
+        if (!empty($ruleId)) {
+            $ruleIds = (new RolePerm)->where('role_id', $auth->getUser()->role_id)
+                ->column('perm_id');
+            if (!in_array($ruleId, $ruleIds)) {
+                return ApiResponse::noPermission();
+            }
         }
 
         return $next($request);

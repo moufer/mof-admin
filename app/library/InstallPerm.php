@@ -114,7 +114,7 @@ class InstallPerm
             Db::name('system_role_perm')
                 ->alias('rp')
                 ->leftJoin('system_perm p', 'rp.perm_hash = p.hash')
-                ->where("1=1")
+                ->whereNotNull("p.id")
                 ->exp('rp.perm_id', 'p.id')
                 ->update();
             Db::commit();

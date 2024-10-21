@@ -135,56 +135,66 @@ class Config extends \mof\front\Config
                 "options" => [
                     ['label' => '不启用', 'value' => ''],
                     ["label" => "SMTP", "value" => "smtp"]
-                ]
+                ],
+                "_extra"  => ['client_cfg' => 1],
             ], [
-                "label"   => "SMTP服务器",
-                "prop"    => "smtp_server",
-                "type"    => "input",
-                "intro"   => "SMTP服务器。",
-                "value"   => $values['smtp_server'] ?? "",
-                "colSpan" => 8
+                "label"    => "SMTP服务器",
+                "prop"     => "smtp_server",
+                "type"     => "input",
+                "intro"    => "SMTP服务器。",
+                "value"    => $values['smtp_server'] ?? "",
+                "colSpan"  => 8,
+                "_visible" => "email_type=smtp",
             ], [
-                "label"   => "SMTP加密方式",
-                "prop"    => "smtp_encryption",
-                "type"    => "select",
-                "intro"   => "SMTP加密方式。",
-                "value"   => $values['smtp_encryption'] ?? "",
-                "options" => [
+                "label"    => "SMTP加密方式",
+                "prop"     => "smtp_encryption",
+                "type"     => "select",
+                "intro"    => "SMTP加密方式。",
+                "value"    => $values['smtp_encryption'] ?? "",
+                "options"  => [
                     ["label" => "SSL", "value" => "ssl"],
                     ["label" => "TLS", "value" => "tls"]
                 ],
-                "colSpan" => 8
+                "colSpan"  => 8,
+                "_visible" => "email_type=smtp",
             ], [
-                "label"   => "SMTP端口",
-                "prop"    => "smtp_port",
-                "type"    => "input",
-                "intro"   => "SSL加密时一般使用465端口，如果使用TLS加密，则端口可能为587",
-                "value"   => $values['smtp_port'] ?? "",
-                "colSpan" => 8
+                "label"    => "SMTP端口",
+                "prop"     => "smtp_port",
+                "type"     => "input",
+                "intro"    => "SSL加密时一般使用465端口，如果使用TLS加密，则端口可能为587",
+                "value"    => $values['smtp_port'] ?? "",
+                "colSpan"  => 8,
+                "_visible" => "email_type=smtp",
             ], [
-                "label" => "SMTP账号",
-                "prop"  => "smtp_account",
-                "type"  => "input",
-                "intro" => "SMTP账号。",
-                "value" => $values['smtp_account'] ?? ""
+                "label"        => "SMTP账号",
+                "prop"         => "smtp_account",
+                "type"         => "input",
+                "intro"        => "SMTP账号。",
+                "autocomplete" => "new-smtp_account",
+                "value"        => $values['smtp_account'] ?? "",
+                "_visible"     => "email_type=smtp",
             ], [
-                "label" => "SMTP密码",
-                "prop"  => "smtp_password",
-                "type"  => "password",
-                "intro" => "SMTP密码。",
-                "value" => $values['smtp_password'] ?? ""
+                "label"        => "SMTP密码",
+                "prop"         => "smtp_password",
+                "type"         => "password",
+                "intro"        => "SMTP密码。",
+                "autocomplete" => "new-smtp_password",
+                "value"        => $values['smtp_password'] ?? "",
+                "_visible"     => "email_type=smtp",
             ], [
-                "label" => "发件人邮箱",
-                "prop"  => "smtp_sender_email",
-                "type"  => "input",
-                "intro" => "SMTP发件人邮箱。",
-                "value" => $values['smtp_sender_email'] ?? ""
+                "label"    => "发件人邮箱",
+                "prop"     => "smtp_sender_email",
+                "type"     => "input",
+                "intro"    => "SMTP发件人邮箱。",
+                "value"    => $values['smtp_sender_email'] ?? "",
+                "_visible" => "email_type=smtp",
             ], [
-                "label" => "发件人名称",
-                "prop"  => "smtp_sender_name",
-                "type"  => "input",
-                "intro" => "SMTP发件人名称。",
-                "value" => $values['smtp_sender_name'] ?? ""
+                "label"    => "发件人名称",
+                "prop"     => "smtp_sender_name",
+                "type"     => "input",
+                "intro"    => "SMTP发件人名称。",
+                "value"    => $values['smtp_sender_name'] ?? "",
+                "_visible" => "email_type=smtp",
             ]
         ];
     }
@@ -223,9 +233,24 @@ class Config extends \mof\front\Config
                 "type"    => "select",
                 "intro"   => "选择短信平台。",
                 "value"   => $values['sms_driver'] ?? "",
-                "options" => [['label' => '不启用', 'value' => ''], ...$options]
+                "options" => [['label' => '不启用', 'value' => ''], ...$options],
+                "_extra"  => ['client_cfg' => 1],
             ],
             ...$configOptions,
+        ];
+    }
+
+    #[Description('后台设置')]
+    public function groupSystem(array $values): array
+    {
+        return [
+            [
+                'label' => '权限严格验证',
+                'prop'  => 'auth_strict',
+                'type'  => 'switch',
+                'intro' => '开启后，除超级管理员以外的后台用户，在请求未记录在【权限-权限管理】的行为时，都会被提示没有权限。',
+                'value' => $values['auth_strict'] ?? 1
+            ]
         ];
     }
 }

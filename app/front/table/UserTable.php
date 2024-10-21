@@ -43,15 +43,6 @@ class UserTable extends Table
         ];
     }
 
-    protected function columnPassword(): array
-    {
-        return [
-            "prop"    => "password",
-            "label"   => "密码",
-            "visible" => false,
-        ];
-    }
-
     protected function columnName(): array
     {
         return [

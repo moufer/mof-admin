@@ -92,7 +92,7 @@ class TotalLogic extends Logic
                     return [
                         'name'   => $this->totalGroup[$key],
                         'type'   => 'line',
-                        'data'   => $this->formatItemTrades($data[$key]),
+                        'data'   => isset($data[$key]) ? $this->formatItemTrades($data[$key]) : [],
                         'smooth' => true,
                     ];
                 }, $trade['names']);

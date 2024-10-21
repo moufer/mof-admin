@@ -62,11 +62,11 @@ class Role extends Model
             foreach ($permIds as $key => $permId) {
                 if ((int)$permId === $perm->perm_id) {
                     $exists = true;
-                    unset($permIds[$key]);//删除已经找到的权限规则
+                    unset($permIds[$key]); //删除已经找到的权限规则
                     break;
                 }
             }
-            !$exists && $ids[] = $perm->id; //记录已有的权限规则id
+            !$exists && $ids[] = $perm->id; //记录要删除的权限规则id
         }
         //删除已取消的权限规则id
         RolePerm::where('role_id', $this->getAttr('id'))
@@ -80,7 +80,8 @@ class Role extends Model
             $insertData[] = [
                 'role_id'   => $this->getAttr('id'),
                 'perm_id'   => $permId,
-                'perm_hash' => $hash[$permId]
+                'perm_hash' => $hash[$permId],
+                'create_at' => date('Y-m-d H:i:s'),
             ];
         }
         //插入新的权限规则
@@ -104,7 +105,7 @@ class Role extends Model
             $where = [];
             $where[] = ['id', 'in', $permIds];
             $category && $where[] = ['category', '=', $category];
-            $permRows = Perm::where($where)->select();
+            $permRows = Perm::where($where)->order('sort', 'asc')->select();
             $perms = [];
             foreach ($permRows as $perm) {
                 if ($module && in_array($perm->module, $module)) continue;

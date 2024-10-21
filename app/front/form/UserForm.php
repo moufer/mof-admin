@@ -19,6 +19,46 @@ class UserForm extends Form
         'rule'  => AdminValidate::class
     ];
 
+    protected array $profileColumns = [
+        'password', 'avatar', 'name', 'email'
+    ];
+
+    public function get(string $type = 'param', bool $validate = true): array
+    {
+        $isProfile = $this->formValidate->getScene() === 'profile';
+        $data = parent::get($type, $validate);
+        if ($isProfile) {
+            $data = array_filter($data, function ($key) {
+                return in_array($key, $this->profileColumns);
+            }, ARRAY_FILTER_USE_KEY);
+        }
+        return $data;
+    }
+
+    /**
+     * 生成表单
+     * @param Model|null $model
+     * @return array
+     */
+    public function buildProfileForm(Model $model = null): array
+    {
+        $form = $this->formAttrs($model);
+        $elements = array_values(array_filter($this->elements($model), function ($item) {
+            return in_array($item['prop'], $this->profileColumns);
+        }));
+
+        array_unshift($elements, [
+            "prop"  => "username",
+            "label" => "账户名",
+            "type"  => "label",
+            "value" => $model->username
+        ]);
+
+        $this->improveElements($elements, $form);
+
+        return ['form' => $form, 'elements' => $elements];
+    }
+
     public function elements(Model $model = null): array
     {
         $values = $model ? $model->toArray() : [];
@@ -27,8 +67,9 @@ class UserForm extends Form
                 "prop"  => "username",
                 "label" => "用户名",
                 "value" => $values['username'] ?? '',
+                "type"  => "input",
                 "rules" => [
-                    ["required" => true],
+                    ["required" => true, "message" => "用户名不能为空"],
                 ]
             ],
             [
@@ -37,7 +78,7 @@ class UserForm extends Form
                 "type"      => "password",
                 "introEdit" => "不修改密码请留空",
                 "rules"     => empty($model) ? [
-                    ["required" => true],
+                    ["required" => true, "message" => "密码不能为空"],
                 ] : []
             ],
             [
@@ -47,20 +88,22 @@ class UserForm extends Form
                 "value" => $values['avatar'] ?? '',
             ],
             [
-                "prop"  => "name",
-                "label" => "姓名",
-                "value" => $values['name'] ?? '',
-                "rules" => [
-                    ["required" => true],
+                "prop"    => "name",
+                "label"   => "姓名",
+                "value"   => $values['name'] ?? '',
+                "type"  => "input",
+                "rules"   => [
+                    ["required" => true, "message" => "姓名不能为空"],
                 ],
                 "colSpan" => 12,
             ],
             [
-                "prop"  => "email",
-                "label" => "邮箱",
-                "value" => $values['email'] ?? '',
-                "rules" => [
-                    ["required" => true],
+                "prop"    => "email",
+                "label"   => "邮箱",
+                "value"   => $values['email'] ?? '',
+                "type"  => "input",
+                "rules"   => [
+                    ["required" => true, "message" => "邮箱不能为空"],
                 ],
                 "colSpan" => 12,
             ],
@@ -70,7 +113,7 @@ class UserForm extends Form
                 "type"    => "cascader",
                 "value"   => $values['role_id'] ?? 0,
                 "rules"   => [
-                    ["required" => true],
+                    ["required" => true, "message" => "角色不能为空"],
                 ],
                 'options' => $this->getRolesOptions(),
             ],

@@ -7,21 +7,34 @@
 
 namespace app\library\sms\driver;
 
-use app\library\sms\DriverInterface;
+use AlibabaCloud\Client\AlibabaCloud;
+use AlibabaCloud\Client\Exception\ClientException;
+use AlibabaCloud\Client\Exception\ServerException;
+use app\library\sms\DriverAbstract;
 use mof\exception\LogicException;
-use TencentCloud\Common\Credential;
-use TencentCloud\Sms\V20210111\SmsClient;
 use think\facade\Log;
 
-class AliyunDriver implements DriverInterface
+class AliyunDriver extends DriverAbstract
 {
-    protected array     $config;
-
-
+    protected array $config;
 
     public function setConfig(array $config): void
     {
+        parent::setConfig($config);
 
+        if (empty($config['access_key_id']) || empty($config['access_key_secret'])) {
+            throw new LogicException('短信配置参数错误');
+        } else if (empty($config['sign_name'])) {
+            throw new LogicException('短信签名未配置');
+        }
+        try {
+            AlibabaCloud::accessKeyClient($config['access_key_id'], $config['access_key_secret'])
+                ->regionId($config['region_id'] ?? 'cn-hangzhou')
+                ->asDefaultClient();
+        } catch (ClientException $e) {
+            Log::error($e->getMessage());
+            throw new LogicException('短信配置失败');
+        }
     }
 
     /**
@@ -29,32 +42,37 @@ class AliyunDriver implements DriverInterface
      */
     public function send(string $mobile, string $template, array $params): bool
     {
-        list($module,$action) = explode('.', $template);
-    }
-
-    private function getE164MobileNo($mobile): string
-    {
-        //正则判断是否国内手机号
-        if (preg_match("/^1[3456789]\d{9}$/", $mobile)) {
-            return "+86" . $mobile;
+        $templateId = $this->getTemplateId($template);
+        try {
+            $result = AlibabaCloud::rpc()
+                ->product('Dysmsapi')
+                ->version('2017-05-25')
+                ->action('SendSms')
+                ->method('POST')
+                ->options([
+                    'query' => [
+                        'PhoneNumbers'  => $mobile, // 接收短信的手机号码
+                        'SignName'      => $this->config['sign_name'], // 短信签名
+                        'TemplateCode'  => $templateId, // 短信模板ID
+                        'TemplateParam' => json_encode($params) // 模板参数
+                    ],
+                ])
+                ->request();
+            if ($result->toArray()['Code'] !== 'OK') {
+                $this->sendErrorRecord($result->toArray());
+            }
+            return true;
+        } catch (\Exception $e) {
+            Log::error(
+                sprintf("\n%s(%s)\nmobile:%s\ntemplateId:%s\n",
+                    $e->getMessage(), $e->getCode(), $mobile, $templateId)
+            );
+            throw new LogicException('短信发送失败');
         }
-        return $mobile;
     }
 
     private function sendErrorRecord($status): void
     {
-        switch ($status['Code']) {
-            case 'FailedOperation.InsufficientBalanceInSmsPackage':
-                Log::error('腾讯云：账号短信额度不足');
-                break;
-            case 'UnsupportedOperation.ChineseMainlandTemplateToGlobalPhone	':
-                Log::error('腾讯云：国内短信模板不支持发送国际/港澳台手机号');
-                break;
-            case 'UnsupportedOperation.UnsupportedRegion':
-                Log::error('腾讯云：不支持该地区手机号');
-                break;
-            default:
-                Log::error('腾讯云：' . $status['Code']);
-        }
+        throw new LogicException('阿里云短信：' . $status['Code']);
     }
 }

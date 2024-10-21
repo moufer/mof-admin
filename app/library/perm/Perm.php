@@ -59,7 +59,7 @@ abstract class Perm implements PermInterface
     public function getHash(): string
     {
         $content = [];
-        foreach (['type', 'category', 'module', 'name'] as $key) {
+        foreach (['type', 'category', 'module', 'name', 'perm'] as $key) {
             $content[] = $this->$key;
         }
         return md5(implode('', $content));
