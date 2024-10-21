@@ -2,7 +2,7 @@
 
 use think\migration\Migrator;
 
-class SystemPerm extends Migrator
+class SystemRolePermAddCreateAt extends Migrator
 {
     /**
      * Change Method.
@@ -27,19 +27,9 @@ class SystemPerm extends Migrator
      */
     public function change()
     {
-        //hash,name
-        $table = $this->table('system_perm');
-
-        //检测hash字段是否存在
-        if (!$table->hasColumn('hash')) {
-            //清空表内容
-            $table->truncate();
-
-            //添加字段hash
-            $table->addColumn('hash', 'string', ['limit' => 32, 'comment' => 'hash', 'null' => false, 'after' => 'pid_path'])
-                ->addColumn('name', 'string', ['limit' => 30, 'comment' => '名称', 'null' => false, 'after' => 'module'])
-                ->addIndex(['pid', 'hash'], ['unique' => true, 'name' => 'hash'])
-                ->save();
-        }
+        $table = $this->table('system_role_perm');
+        $table->addColumn('create_at', 'datetime', [
+            'comment' => '添加时间', 'null' => true
+        ])->update();
     }
 }

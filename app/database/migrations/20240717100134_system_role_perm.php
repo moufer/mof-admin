@@ -28,8 +28,10 @@ class SystemRolePerm extends Migrator
     public function change()
     {
         $table = $this->table('system_role_perm');
-        $table->addColumn('perm_hash', 'string', [
-            'limit' => 32, 'comment' => '权限hash', 'null' => false, 'after' => 'perm_id'
-        ])->save();
+        if (!$table->hasColumn('perm_hash')) {
+            $table->addColumn('perm_hash', 'string', [
+                'limit' => 32, 'comment' => '权限hash', 'null' => false, 'after' => 'perm_id'
+            ])->save();
+        }
     }
 }
