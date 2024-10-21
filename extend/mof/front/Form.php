@@ -47,7 +47,9 @@ class Form
     {
         //检测$name是不是$formValidate里的方法，如果是则调用$formValidate里的方法
         if (method_exists($this->formValidate, $name)) {
-            return call_user_func_array([$this->formValidate, $name], $arguments);
+            $result = call_user_func_array([$this->formValidate, $name], $arguments);
+            if ($result === $this->formValidate) return $this;
+            return $result;
         } else {
             //如果不是则抛出异常
             throw new Exception('The method does not exist: ' . $name);
@@ -79,11 +81,11 @@ class Form
         $elements = $this->elements($model);
         if (isset($elements['tabs'])) {
             foreach ($elements['tabs'] as $index => $tab) {
-                $this->improveElements($tab['elements']);
+                $this->improveElements($tab['elements'], $form);
                 $elements['tabs'][$index] = $tab;
             }
         } else {
-            $this->improveElements($elements);
+            $this->improveElements($elements, $form);
         }
         return [
             'dialog'   => $dialog,
@@ -150,9 +152,10 @@ class Form
     /**
      * 完善元素配置信息
      * @param array $elements
+     * @param array $form
      * @return void
      */
-    protected function improveElements(array &$elements): void
+    protected function improveElements(array &$elements, array &$form): void
     {
         //添加未设置的排序字段
         $sort = false;
@@ -192,6 +195,9 @@ class Form
                     $rule['message'] = "{$element['label']}不能为空";
                 } else {
                     $rule['message'] = "{$element['label']}格式不正确";
+                }
+                if (empty($rule['trigger'])) {
+                    $rule['trigger'] = 'blur';
                 }
                 $element['rules'][$k] = $rule;
             }

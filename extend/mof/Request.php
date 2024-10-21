@@ -101,12 +101,13 @@ class Request extends \think\Request
 
     /**
      * 设置验证
-     * @param string|array|\mof\Validate $validate
+     * @param string|array|Validate $validate
      * @param array|null $message
+     * @param null $scene
      * @param bool $batch
      * @return $this
      */
-    public function withValidate(string|array|\mof\Validate $validate, array $message = null, bool $batch = false): static
+    public function withValidate(string|array|\mof\Validate $validate, array $message = null, $scene = null, bool $batch = false): static
     {
         if (is_array($validate)) {
             $_validate = $validate;
@@ -125,6 +126,9 @@ class Request extends \think\Request
             $this->validateMessage = $message;
         }
         $this->batchValidate = $batch;
+        if ($scene !== null) {
+            $this->scene = $scene;
+        }
         return $this;
     }
 
@@ -143,11 +147,16 @@ class Request extends \think\Request
      * 获取验证规则
      * @return array|null 格式：[rule=>rule,message=>message]
      */
-    public function validateRules(): ?array
+    public function validateRules(): mixed
     {
         $result = [];
-        if (!empty($this->validate)) $result['rule'] = $this->validate;
-        if (!empty($this->validateMessage)) $result['message'] = $this->validateMessage;
+        if (!empty($this->validate)) {
+            if (is_object($this->validate) || is_string($this->validate)) {
+                return $this->validate;
+            }
+            $result['rule'] = $this->validate;
+            if (!empty($this->validateMessage)) $result['message'] = $this->validateMessage;
+        }
         return $result ?: null;
     }
 
@@ -171,10 +180,10 @@ class Request extends \think\Request
         } else if ($validate instanceof \mof\Validate) {
             $v = $validate;
         } else {
-            $class = $validate;
-            $v = new $class();
+            $v = new $validate();
         }
 
+        $scene = $this->scene;
         if (!empty($scene) && $v->hasScene($scene)) {
             $v->scene($scene);
         }

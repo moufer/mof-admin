@@ -302,6 +302,14 @@ class FormValidate
     }
 
     /**
+     * @return string
+     */
+    public function getScene(): string
+    {
+        return $this->scene;
+    }
+
+    /**
      * 数据验证
      * @param array $data 验证数据
      * @param array|string $validate 验证规则 格式：[rule=>rule,message=>message] | ValidateClass
