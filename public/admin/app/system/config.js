@@ -28,7 +28,9 @@ export default {
     },
     tabOptions: {
       type: Object,
-      default: {},
+      default: {
+        tabPosition: "top",
+      },
     },
   },
   setup(props, { emit }) {
@@ -108,8 +110,10 @@ export default {
           .then(() =>
             ElMessage({ message: "提交成功", type: "success", duration: 1000 })
           )
-          .catch((err) =>
-            ElMessage({ message: err.errmsg, type: "error", duration: 1000 })
+          .catch(
+            (err) =>
+              err.errmsg &&
+              ElMessage({ message: err.errmsg, type: "error", duration: 1000 })
           )
           .finally(() => (loading.value = false));
       }, 200);
@@ -132,25 +136,25 @@ export default {
   },
   template: /*html*/ `
     <div class="page-config">
-        <el-tabs v-model="activeTab" @tab-click="tabClick" v-bind="tabOptions">
-        <el-tab-pane v-for="tab in tabs" :label="tab.label" :name="tab.prop" :lazy="true" style="padding-top:10px;">
-            <el-form label-width="200px" :label-position="position" :model="formData[tab.prop]">
-            <el-row>
-                <el-col :xs="24" :sm="22" :md="20" :lg="19" :xl="17">
-                <template v-for="item in tab.options">
-                    <el-form-item v-if="item.type === 'divider'" v-show="showItem(item._visible, tab.prop)">
-                        <el-divider v-bind="item">{{item.label}}</el-divider>
-                    </el-form-item>
-                    <mf-form-render v-else v-show="showItem(item._visible, tab.prop)"
-                        :item="item" v-model="formData[tab.prop][item.prop]"></mf-form-render>
-                </template>
-                <el-form-item v-if="tab.options.length > 0">
-                    <el-button type="primary" size="large" @click="submitForm" :loading="loading">提交</el-button>
-                </el-form-item>
-                </el-col>
-            </el-row>
+        <el-tabs v-model="activeTab" @tab-click="tabClick" tab-position="top">
+          <el-tab-pane v-for="tab in tabs" :label="tab.label" :name="tab.prop" style="padding-top:10px;">
+            <el-form label-width="200px" :label-position="position" :model="formData[tab.prop]" autocomplete="new-config">
+              <el-row>
+                  <el-col :xs="24" :sm="22" :md="20" :lg="19" :xl="17">
+                  <template v-for="item in tab.options">
+                      <el-form-item v-if="item.type === 'divider'" v-show="showItem(item._visible, tab.prop)">
+                          <el-divider v-bind="item">{{item.label}}</el-divider>
+                      </el-form-item>
+                      <mf-form-render v-else v-show="showItem(item._visible, tab.prop)"
+                          :item="item" v-model="formData[tab.prop][item.prop]"></mf-form-render>
+                  </template>
+                  <el-form-item v-if="tab.options.length > 0">
+                      <el-button type="primary" size="large" @click="submitForm" :loading="loading">提交</el-button>
+                  </el-form-item>
+                  </el-col>
+              </el-row>
             </el-form>
-        </el-tab-pane>
+          </el-tab-pane>
         </el-tabs>
     </div>
     `,

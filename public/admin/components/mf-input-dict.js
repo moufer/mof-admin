@@ -1,31 +1,29 @@
-//非构建方式写一个vue3组件
 export default {
-    data() {
-        return {
-        }
+  data() {
+    return {};
+  },
+  props: {
+    modelValue: {
+      type: Object,
+      default: () => {},
     },
-    props: {
-        modelValue: {
-            type: Object,
-            default: () => { }
-        },
-        options: {
-            type: Array,
-            default: () => []
-        }
+    options: {
+      type: Array,
+      default: () => [],
     },
-    emits: ['update:modelValue'],
-    computed: {
-        values: {
-            get: function () {
-                return this.modelValue
-            },
-            set: function (newValue) {
-                this.$emit('update:modelValue', newValue)
-            }
-        }
+  },
+  emits: ["update:modelValue"],
+  computed: {
+    values: {
+      get: function () {
+        return this.modelValue;
+      },
+      set: function (newValue) {
+        this.$emit("update:modelValue", newValue);
+      },
     },
-    template: /*html*/`
+  },
+  template: /*html*/ `
 <div class="input-list" style="width: 100%;">
     <div v-for="(option, index) in options" :key="index">
         <el-input v-bind="option" style="margin-bottom: 5px;" v-model="values[option.key]">
@@ -34,5 +32,5 @@ export default {
         </el-input>
     </div>
 </div>
-`
-}
+`,
+};

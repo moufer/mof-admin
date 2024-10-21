@@ -1,36 +1,35 @@
-//非构建方式写一个vue3组件
 export default {
   data() {
     return {
-      items: []
-    }
+      items: [],
+    };
   },
   props: {
     modelValue: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
-  emits: ['update:modelValue'],
+  emits: ["update:modelValue"],
   computed: {
     value: {
       get: function () {
-        return this.modelValue
+        return this.modelValue;
       },
       set: function (newValue) {
-        this.$emit('update:modelValue', newValue)
-      }
-    }
+        this.$emit("update:modelValue", newValue);
+      },
+    },
   },
   methods: {
     append: function () {
-      this.value.push({ key: '', value: '' })
+      this.value.push({ key: "", value: "" });
     },
     remove: function (index) {
-      this.value.splice(index, 1)
-    }
+      this.value.splice(index, 1);
+    },
   },
-  template: /*html*/`
+  template: /*html*/ `
 <div class="keyValue">
   <el-row :gutter="5">
     <el-col :span="8">键(Key)</el-col>
@@ -53,5 +52,5 @@ export default {
     </el-col>
   </el-row>
 </div>
-`
-}
+`,
+};

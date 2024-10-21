@@ -247,7 +247,7 @@ export default {
     <el-dialog v-model="visible" v-bind="dialog" :lock-scroll="false" :before-close="onBeforeClose">
         <template #default>
             <el-result icon="error" title="错误提示" :sub-title="error" v-if="error" />
-            <el-form ref="formRef" :model="model" v-bind="form">
+            <el-form ref="formRef" :model="model" v-bind="form" autocomplete="new-dialog">
                 <el-tabs v-model="activeTab" @tab-click="handleTabClick" v-if="tabs.length" type="card">
                     <el-tab-pane :label="tab.label" :name="tab.prop" v-for="tab in tabs">
                         <el-row style="padding:0 10px;" :gutter="10">

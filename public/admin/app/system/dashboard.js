@@ -1,4 +1,4 @@
-import * as echarts from "../../resources/libraries/echarts@5.5.1/dist/echarts.esm.min.js";
+import * as echarts from "lib/echarts@5.5.1/dist/echarts.esm.min.js";
 
 export default {
   name: "mf-page-dashboard",
@@ -36,7 +36,6 @@ export default {
         let chartDom = document.getElementById("chart" + index);
         let myChart = echarts.init(chartDom);
         myChart.setOption(option);
-        console.log("xxxx", option);
       });
     },
   },
@@ -80,10 +79,10 @@ export default {
           <div style="height:250px;width:100%;margin:0 auto;" :id="'chart'+index"></div>
         </el-card>
       </div>
-    </div>
-    
-    <div style="margin-top:20px;font-size:12px;text-align:center;color:var(--el-text-color-secondary);">
-      Copyright (c) 2019-2024 陌风软件开发工作室
+
+      <div style="margin-top:20px;font-size:12px;text-align:center;color:var(--el-text-color-secondary);">
+        Copyright (c) 2019-2024 陌风软件开发工作室
+      </div>
     </div>
     `,
 };

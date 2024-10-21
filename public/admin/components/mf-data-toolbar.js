@@ -1,39 +1,44 @@
 export default {
-    name: 'mf-data-toolbar',
-    props: {
-        selectionCount: {
-            type: Number,
-            default: 0
-        },
-        buttons: {
-            type: Array,
-            default: () => ['add', 'delete', 'status', 'refresh', 'search']
-        },
-        statusTypes: {
-            type: Array,
-            default: () => [
-                { label: '启用', value: 1, icon: 'View' },
-                { label: '禁用', value: 0, icon: 'Hide' }
-            ]
-        },
+  name: "mf-data-toolbar",
+  props: {
+    selectionCount: {
+      type: Number,
+      default: 0,
     },
-    methods: {
-        handleCheckItem: function (item) {
-            if ('delete' === item) {
-                this.$confirm(`当前操作将删除 ${this.selectionCount} 条数据, 确定删除吗?`, {
-                    type: 'warning'
-                }).then(() => {
-                    this.$emit('click', 'delete')
-                }).catch(() => { });
-            } else {
-                this.$emit('click', item)
-            }
-        },
-        handleCheckStatus: function (command) {
-            this.$emit('click', 'status', { value: command })
-        }
+    buttons: {
+      type: Array,
+      default: () => ["add", "delete", "status", "refresh", "search"],
     },
-    template: /*html*/`
+    statusTypes: {
+      type: Array,
+      default: () => [
+        { label: "启用", value: 1, icon: "View" },
+        { label: "禁用", value: 0, icon: "Hide" },
+      ],
+    },
+  },
+  methods: {
+    handleCheckItem: function (item) {
+      if ("delete" === item) {
+        this.$confirm(
+          `当前操作将删除 ${this.selectionCount} 条数据, 确定删除吗?`,
+          {
+            type: "warning",
+          }
+        )
+          .then(() => {
+            this.$emit("click", "delete");
+          })
+          .catch(() => {});
+      } else {
+        this.$emit("click", item);
+      }
+    },
+    handleCheckStatus: function (command) {
+      this.$emit("click", "status", { value: command });
+    },
+  },
+  template: /*html*/ `
     <div class="table-toolbar">
     <div class="left">
       <el-button type="success" @click="handleCheckItem('refresh')" icon="Refresh" />
@@ -64,5 +69,5 @@ export default {
         v-if="buttons.indexOf('search')>-1" />
     </div>
   </div>
-    `
-}
+    `,
+};

@@ -1,145 +1,151 @@
-import MfKeyValue from './mf-key-value.js';
-import MfXselect from './mf-xselect.js';
-import MfIconSelector from './mf-icon-selector.js';
-import { ElMessage } from 'element-plus';
-import { isEmpty, deepCopy } from 'comm/utils.js';
+import MfKeyValue from "./mf-key-value.js";
+import MfXselect from "./mf-xselect.js";
+import MfIconSelector from "./mf-icon-selector.js";
+import { ElMessage } from "element-plus";
+import { isEmpty, deepCopy } from "comm/utils.js";
 
 export default {
-    name: 'mf-form-item',
-    components: {
-        MfKeyValue, MfXselect, MfIconSelector
+  name: "mf-form-item",
+  components: {
+    MfKeyValue,
+    MfXselect,
+    MfIconSelector,
+  },
+  emits: ["update:value"],
+  props: {
+    item: {
+      type: Object,
+      required: true,
     },
-    emits: ['update:value'],
-    props: {
-        item: {
-            type: Object,
-            required: true
-        },
-        value: {
-            type: [Object, Array, String, Number, Boolean],
-            default: () => {
-                return {}
-            }
+    value: {
+      type: [Object, Array, String, Number, Boolean],
+      default: () => {
+        return {};
+      },
+    },
+  },
+  data() {
+    return {
+      form: {},
+      headers: {},
+      fileList: [],
+      previewImageDialogImageUrl: "",
+      previewImageDialogVisible: false,
+    };
+  },
+  created() {
+    this.init();
+  },
+  computed: {
+    formValue: {
+      get: function () {
+        return this.value;
+      },
+      set: function (newValue) {
+        this.$emit("update:value", newValue);
+      },
+    },
+  },
+  methods: {
+    getData() {
+      return this.form;
+    },
+    init() {
+      if (this.item.type?.startsWith("upload:")) {
+        this.headers.Authorization = localStorage.getItem("admin_token");
+        if (typeof this.item.headers === "object") {
+          //合并 this.headers 和 this.item.headers
+          this.headers = Object.assign(this.headers, this.item.headers);
         }
-    },
-    data() {
-        return {
-            form: {},
-            headers: {},
-            fileList: [],
-            previewImageDialogImageUrl: '',
-            previewImageDialogVisible: false,
+        if (isEmpty(this.formValue)) {
+          this.formValue = [];
+        } else {
+          this.fileList = deepCopy(this.formValue);
         }
+      }
+      this.initRules();
     },
-    created() {
-        this.init();
-    },
-    computed: {
-        formValue: {
-            get: function () {
-                return this.value
-            },
-            set: function (newValue) {
-                this.$emit('update:value', newValue)
-            }
-        }
-    },
-    methods: {
-        getData() {
-            return this.form;
-        },
-        init() {
-            if (this.item.type?.startsWith('upload:')) {
-                this.headers.Authorization = localStorage.getItem('admin_token');
-                if (typeof this.item.headers === 'object') {
-                    //合并 this.headers 和 this.item.headers
-                    this.headers = Object.assign(this.headers, this.item.headers);
-                }
-                if (isEmpty(this.formValue)) {
-                    this.formValue = [];
-                } else {
-                    this.fileList = deepCopy(this.formValue);
-                }
-            }
-            this.initRules();
-        },
-        initRules() {
-            if (this.item.rules && this.item.rules.length) {
-                this.item.rules.forEach(rule => {
-                    //补充message内容
-                    if (!rule.message) {
-                        if (rule.required === true) {
-                            rule.message = `${this.item.label}不能为空`
-                        } else {
-                            rule.message = `${this.item.label}格式不正确`
-                        }
-                    }
-                })
-            }
-        },
-        beforeUpload(rawFile) {
-            let size = rawFile.size; //字节
-            let ext = rawFile.name.split('.').pop().toLowerCase(); //后缀
-            if (this.item.limit_size > 0 && size > this.item.limit_size) { //大小
-                ElMessage.error(`文件大小超过了最大限制`);
-                return false;
-            } else if (!isEmpty(this.item.limit_ext)) { //扩展名
-                let exts = this.item.limit_ext.split(',').map(item => item.toLowerCase());
-                if (!exts.includes(ext)) {
-                    ElMessage.error(`不支持此文件格式`);
-                    return false;
-                }
-            }
-            return true;
-        },
-        uploadExceed(files, fileList, e) {
-            ElMessage.error(`超出了上传数量`);
-        },
-        uploadSuccess(res, file, fileList) {
-            if (res.errcode !== 0) {
-                this.$refs.upload.handleRemove(file);
-                ElMessage({ message: res.errmsg, type: 'error' });
+    initRules() {
+      if (this.item.rules && this.item.rules.length) {
+        this.item.rules.forEach((rule) => {
+          //补充message内容
+          if (!rule.message) {
+            if (rule.required === true) {
+              rule.message = `${this.item.label}不能为空`;
             } else {
-                if (fileList.length > 0) {
-                    this.formValue = fileList.map(item => {
-                        return { path: item.response?.data.path }
-                    });
-                } else {
-                    this.formValue = [];
-                }
+              rule.message = `${this.item.label}格式不正确`;
             }
-        },
-        uploadRemove(uploadFile, uploadFiles) {
-            if (uploadFiles.length > 0) {
-                this.formValue = uploadFiles.map(item => {
-                    return { path: item.response?.data.path }
-                });
-            } else {
-                this.formValue = [];
-            }
-        },
-        uploadPreview(file) {
-            this.previewImageDialogImageUrl = file.url;
-            this.previewImageDialogVisible = true;
-        },
-        uploadError(error, uploadFile, uploadFiles) {
-            ElMessage({
-                message: error.errmsg || '上传失败',
-                type: 'error',
-            });
-        },
-        getTreeCheckedKeys(name) {
-            //获取tree组件的ref
-            let ref = this.$refs.tree;
-            let checkedKeys = ref.getCheckedKeys();
-            let halfCheckedKeys = ref.getHalfCheckedKeys();
-            //合并checkedKeys和halfCheckedKeys
-            checkedKeys = checkedKeys.concat(halfCheckedKeys);
-            console.log('ok', checkedKeys, halfCheckedKeys);
-            this.formValue = checkedKeys;
-        }
+          }
+        });
+      }
     },
-    template: /*html*/`
+    beforeUpload(rawFile) {
+      let size = rawFile.size; //字节
+      let ext = rawFile.name.split(".").pop().toLowerCase(); //后缀
+      if (this.item.limit_size > 0 && size > this.item.limit_size) {
+        //大小
+        ElMessage.error(`文件大小超过了最大限制`);
+        return false;
+      } else if (!isEmpty(this.item.limit_ext)) {
+        //扩展名
+        let exts = this.item.limit_ext
+          .split(",")
+          .map((item) => item.toLowerCase());
+        if (!exts.includes(ext)) {
+          ElMessage.error(`不支持此文件格式`);
+          return false;
+        }
+      }
+      return true;
+    },
+    uploadExceed(files, fileList, e) {
+      ElMessage.error(`超出了上传数量`);
+    },
+    uploadSuccess(res, file, fileList) {
+      if (res.errcode !== 0) {
+        this.$refs.upload.handleRemove(file);
+        ElMessage({ message: res.errmsg, type: "error" });
+      } else {
+        if (fileList.length > 0) {
+          this.formValue = fileList.map((item) => {
+            return { path: item.response?.data.path };
+          });
+        } else {
+          this.formValue = [];
+        }
+      }
+    },
+    uploadRemove(uploadFile, uploadFiles) {
+      if (uploadFiles.length > 0) {
+        this.formValue = uploadFiles.map((item) => {
+          return { path: item.response?.data.path };
+        });
+      } else {
+        this.formValue = [];
+      }
+    },
+    uploadPreview(file) {
+      this.previewImageDialogImageUrl = file.url;
+      this.previewImageDialogVisible = true;
+    },
+    uploadError(error, uploadFile, uploadFiles) {
+      ElMessage({
+        message: error.errmsg || "上传失败",
+        type: "error",
+      });
+    },
+    getTreeCheckedKeys(name) {
+      //获取tree组件的ref
+      let ref = this.$refs.tree;
+      let checkedKeys = ref.getCheckedKeys();
+      let halfCheckedKeys = ref.getHalfCheckedKeys();
+      //合并checkedKeys和halfCheckedKeys
+      checkedKeys = checkedKeys.concat(halfCheckedKeys);
+      console.log("ok", checkedKeys, halfCheckedKeys);
+      this.formValue = checkedKeys;
+    },
+  },
+  template: /*html*/ `
     <el-form-item :label="item.label" :prop="item.prop" :rules="item.rules">
         <template v-if="!item.type || item.type=='input'">
             <el-input v-model="formValue" autocomplete="off"
@@ -269,5 +275,5 @@ export default {
             {{item.intro}}
         </div>
     </el-form-item>
-    `
-}
+    `,
+};

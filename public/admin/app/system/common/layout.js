@@ -1,36 +1,39 @@
-import { ref, getCurrentInstance, onMounted } from 'vue'
-import { storeToRefs } from 'pinia';
-import { logout } from 'comm/userLogin.js';
-import MfMenu from 'comp/mf-menu.js';
-import { useRoute } from 'vue-router';
-import { useRouteStore } from 'comm/routeStore.js';
-import { useUserStore } from 'comm/userStore.js';
+import { ref, getCurrentInstance, onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { logout } from "comm/userLogin.js";
+import MfMenu from "comp/mf-menu.js";
+import { useRoute } from "vue-router";
+import { useRouteStore } from "comm/routeStore.js";
+import { useUserStore } from "comm/userStore.js";
 
 export default {
   components: {
-    MfMenu
+    MfMenu,
   },
   setup() {
-
     const { currentRoutePath, rawPerms } = storeToRefs(useRouteStore());
-    const { router } = useRouteStore()
+    const { router } = useRouteStore();
     const { user } = useUserStore();
 
     const menuCollapsed = ref(true);
 
     const changePagePath = (path) => {
       router.push(`/${path}`);
-    }
+    };
 
     const changeCollapsed = (collapsed) => {
       menuCollapsed.value = collapsed;
-    }
+    };
 
     const userLogout = () => {
       logout().then(() => {
-        router.push('/login');
+        router.push("/login");
       });
-    }
+    };
+
+    const toProfile = () => {
+      router.push("/system/profile");
+    };
 
     onMounted(() => {
       const instance = getCurrentInstance();
@@ -38,7 +41,7 @@ export default {
       if (route.path !== currentRoutePath.value) {
         instance.refs.menu.setPagePath(currentRoutePath.value);
       } else {
-        console.log('passed', currentRoutePath.value);
+        console.log("passed", currentRoutePath.value);
       }
     });
 
@@ -46,15 +49,16 @@ export default {
       user,
       rawPerms,
       menuCollapsed,
+      toProfile,
       userLogout,
       changePagePath,
-      changeCollapsed
-    }
+      changeCollapsed,
+    };
   },
-  template: /*html*/`
+  template: /*html*/ `
     <el-container class="body-container">
       <el-header>
-        <div class="logo-box"><a href="./">磨锋后台管理系统</a></div>
+        <div class="logo-box">磨锋AIGC系统</div>
         <div class="navs-bar"></div>
         <div class="status-bar">
           <div class="avatar-box">
@@ -68,7 +72,7 @@ export default {
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>资料</el-dropdown-item>
+                  <el-dropdown-item @click="toProfile">资料</el-dropdown-item>
                   <el-dropdown-item @click="userLogout">登出</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -92,5 +96,5 @@ export default {
         </el-main>
       </el-container>
     </el-container>
-    `
-}
+    `,
+};

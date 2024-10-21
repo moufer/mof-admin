@@ -14,8 +14,8 @@ export default {
     const router = useRouter();
 
     const http = inject('http');
-    const loginTitle = inject('loginTitle', '磨锋后台管理系统');
-    const loginModule = inject('loginModule', '磨锋后台管理系统');
+    const loginTitle = inject('loginTitle', '磨锋AIGC系统');
+    const loginModule = inject('loginModule', 'system');
 
     const formValues = reactive({ username: '', password: '', module: loginModule });
     const loginRules = {

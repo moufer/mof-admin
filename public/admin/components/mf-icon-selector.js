@@ -1,63 +1,65 @@
-import * as ElementPlusIconsVue from '../resources/libraries/element-plus-icons-vue@2.1.0/index.js';
+import * as ElementPlusIconsVue from "../resources/libraries/element-plus-icons-vue@2.1.0/index.js";
 export default {
-    data() {
-        return {
-            iconsDrawer: false,
-            iconAll: [],
-            icons: [],
-            iconProp: '',
-            keyword: '',
-        }
+  data() {
+    return {
+      iconsDrawer: false,
+      iconAll: [],
+      icons: [],
+      iconProp: "",
+      keyword: "",
+    };
+  },
+  props: {
+    item: {
+      type: Object,
+      default: () => {
+        return {};
+      },
     },
-    props: {
-        item: {
-            type: Object,
-            default: () => {
-                return {}
-            }
-        },
-        modelValue: {
-            type: String,
-            default: ''
-        }
+    modelValue: {
+      type: String,
+      default: "",
     },
-    emits: ['update:modelValue'],
-    computed: {
-        value: {
-            get: function () {
-                return this.modelValue
-            },
-            set: function (newValue) {
-                this.$emit('update:modelValue', newValue)
-            }
-        }
+  },
+  emits: ["update:modelValue"],
+  computed: {
+    value: {
+      get: function () {
+        return this.modelValue;
+      },
+      set: function (newValue) {
+        this.$emit("update:modelValue", newValue);
+      },
     },
-    watch: {
-        keyword: function (val, oldVal) {
-            this.icons = this.iconAll.filter(item => item.toLowerCase().includes(val.toLowerCase()) || val === '');
-        }
+  },
+  watch: {
+    keyword: function (val, oldVal) {
+      this.icons = this.iconAll.filter(
+        (item) => item.toLowerCase().includes(val.toLowerCase()) || val === ""
+      );
     },
-    created() {
-        if (this.icons.length === 0) {
-            //从elementPlus里icon获取图标列表
-            for (const [key,] of Object.entries(ElementPlusIconsVue)) {
-                this.icons.push(key);
-                this.iconAll.push(key);
-            }
-        }
+  },
+  created() {
+    if (this.icons.length === 0) {
+      //从elementPlus里icon获取图标列表
+      for (const [key] of Object.entries(ElementPlusIconsVue)) {
+        this.icons.push(key);
+        this.iconAll.push(key);
+      }
+    }
+  },
+  methods: {
+    openIconsDrawer() {
+      this.iconsDrawer = true;
     },
-    methods: {
-        openIconsDrawer() {
-            this.iconsDrawer = true;
-        },
-        closeIconsDrawer(icon) {
-            if (icon) {
-                this.value = icon;
-            }
-            this.iconsDrawer = false;
-        }
+    closeIconsDrawer(icon) {
+      if (icon) {
+        this.value = icon;
+      }
+      this.iconsDrawer = false;
     },
-    template: /*html*/`
+  },
+  template: /*html*/ `
   <div class="iconSelector" style="width:100%;display:flex;">
     <el-col :span="9">
         <el-input v-model="value" autocomplete="off"></el-input>
@@ -84,5 +86,5 @@ export default {
         </el-row>
     </el-drawer>
   </div>
-  `
-}
+  `,
+};
