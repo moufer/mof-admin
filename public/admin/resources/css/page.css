@@ -23,7 +23,7 @@
 }
 
 .el-form .el-upload-list__item {
-  transition:none;
+  transition: none;
 }
 
 .el-tabs__header {
@@ -32,11 +32,12 @@
 
 /* 图片上传组件里图片缩略图的尺寸 */
 .el-upload-list--picture-card {
-	--el-upload-list-picture-card-size:120px;
+  --el-upload-list-picture-card-size: 120px;
 }
+
 /* 图片上传组件里上传图片按钮的尺寸 */
 .el-upload--picture-card {
-	--el-upload-picture-card-size:120px;
+  --el-upload-picture-card-size: 120px;
 }
 
 .picture-uploader .el-upload {
@@ -82,8 +83,8 @@
   margin-top: 5px;
 }
 
-.data-manage .el-button{
-  font-weight:normal;
+.data-manage .el-button {
+  font-weight: normal;
   padding: 8px 12px;
   font-size: 13px;
   border-radius: 3px;
@@ -94,16 +95,17 @@
 }
 
 .data-manage .el-tabs__header {
-  margin-bottom:0px;
+  margin-bottom: 0px;
 }
 
 .data-manage .table-box {
-  padding:15px;
-  background-color:var(--el-bg-color);
-  border:1px solid var(--el-border-color-light);
+  padding: 15px;
+  background-color: var(--el-bg-color);
+  border: 1px solid var(--el-border-color-light);
 }
 
-.data-manage .table-body .table-search .el-date-editor.el-input, .el-date-editor.el-input__wrapper {
+.data-manage .table-body .table-search .el-date-editor.el-input,
+.el-date-editor.el-input__wrapper {
   width: 220px;
 }
 
@@ -133,6 +135,12 @@
   justify-content: flex-end;
 }
 
+
+.data-manage .data-manage .table-box {
+  border: 0;
+  padding: 5px;
+}
+
 .table-toolbar .el-button~.el-button,
 .table-toolbar .el-button+.el-button,
 .table-toolbar .el-dropdown {
@@ -145,12 +153,12 @@
 
 .table-body .el-table__row .el-button~.el-button,
 .table-body .el-table__row .el-button+.el-button,
-.table-body .el-table__row .el-dropdown{
+.table-body .el-table__row .el-dropdown {
   margin-left: 8px;
 }
 
 .table-pagination {
-  margin-top:15px;
+  margin-top: 15px;
 }
 
 /** 图片选择器 */
@@ -195,14 +203,11 @@
   justify-content: center;
 }
 
-.mf-image-selector-preview-item.__img {
-}
+.mf-image-selector-preview-item.__img {}
 
-.mf-image-selector-preview-item.__media {
-}
+.mf-image-selector-preview-item.__media {}
 
-.mf-image-selector-preview-item.__file {
-}
+.mf-image-selector-preview-item.__file {}
 
 .mf-image-selector-item .el-image {
   width: 110px;
@@ -218,7 +223,7 @@
 
 /** 附件选择对话框 **/
 
-.mf-storage-dialog-items{
+.mf-storage-dialog-items {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -241,7 +246,7 @@
   background: #F5F6FA;
   display: flex;
   align-items: center;
-  justify-content:center;
+  justify-content: center;
   cursor: pointer;
 }
 
@@ -261,7 +266,7 @@
 
 .mf-storage-dialog-footer {
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
 }
 
 /** mf-ueditor **/

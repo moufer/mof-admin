@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>磨锋后台管理</title>
-    <link rel="stylesheet" href="./resources/libraries/element-plus@2.6.0/index.css" />
+    <link rel="stylesheet" href="./resources/libraries/element-plus@2.8.5/index.css" />
     <link rel="stylesheet" href="./resources/css/frame.css">
     <link rel="stylesheet" href="./resources/css/page.css">
     <link ref="stylesheet" href="./resources/libraries/wangeditor@5.1.23/editor/dist/css/style.css">
@@ -30,9 +30,9 @@
         "comp/": "./components/",
         "comm/": "./resources/common/",
         "utils": "./resources/common/utils.js",
-        "vue": "./resources/libraries/vue@3.3.4/vue.esm-browser.js",
-        "element-plus": "./resources/libraries/element-plus@2.6.0/index.full.min.mjs",
-        "vue-router": "./resources/libraries/vue-router@4.2.5/vue-router.esm-browser.js",
+        "vue": "./resources/libraries/vue@3.5.12/vue.esm-browser.prod.js",
+        "element-plus": "./resources/libraries/element-plus@2.8.5/index.full.min.mjs",
+        "vue-router": "./resources/libraries/vue-router@4.4.5/vue-router.esm-browser.js",
         "moment": "./resources/libraries/moment@2.29.4/dist/moment.js",
         "lodash": "./resources/libraries/lodash/dist/lodash-esm.js",
         "wovoui-icons": "./resources/libraries/wovoui-icons@1.1.9/index.es.mjs",
@@ -46,9 +46,9 @@
 
         import { createApp, provide, ref, reactive } from 'vue';
         import ElementPlus, { ElMessage } from 'element-plus';
-        import zhCn from './resources/libraries/element-plus@2.6.0/locale/zh-cn.mjs';
+        import zhCn from './resources/libraries/element-plus@2.8.5/locale/zh-cn.mjs';
         import { createPinia } from 'pinia';
-        import * as ElementPlusIconsVue from './resources/libraries/element-plus-icons-vue@2.1.0/index.js';
+        import * as ElementPlusIconsVue from './resources/libraries/element-plus-icons-vue@2.3.1/index.js';
         import { mofRouter } from 'comm/router.js';
 
         import http from 'comm/http.js';
