@@ -28,8 +28,7 @@ MofAdmin后台开发框架
 ### 准备工作
 * 服务器上安装：*PHP、MySQL、Redis、Nginx/Apache、Composer*
 * 安装PHP扩展：*redis*、*zip*、*iconv*、*fileinfo*
-* 通过宝塔安装的PHP，请解禁（PHP设置-禁用函数）下列函数 *putenv*、*proc_open*
-* 配置好Composer
+* 通过宝塔安装的PHP，请解禁（PHP设置-禁用函数）函数： *putenv*、*proc_open*
 
 ### 下载代码
 ~~~
@@ -37,7 +36,7 @@ git clone https://gitee.com/moufer/mof-admin.git
 ~~~
 
 ### 安装依赖包
-进入项目根目录，执行
+进入项目根目录，执行（国内服务器建议把 composer 镜像设置为[阿里云](https://developer.aliyun.com/composer)）
 ~~~
 composer install
 ~~~
@@ -45,11 +44,11 @@ composer install
 ### 配置数据库
 ~~~
 1、复制 .env.sample 命名为 .env
-2、配置 .env 文件中的MySQL、redis和JWT参数
+2、配置 .env 文件中的MySQL、redis和JWT key
 ~~~
 
 ### 安装系统
-进入项目根目录，执行命令（国内服务器建议把 composer 镜像设置为[阿里云](https://developer.aliyun.com/composer)）
+进入项目根目录，执行命令
 ~~~
 php think mof:install
 ~~~
