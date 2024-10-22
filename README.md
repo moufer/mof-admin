@@ -1,11 +1,20 @@
-MofAdmin后台管理系统
+MofAdmin后台开发框架
 ===============
 
-## 主要新特性
-
-* 本项目采用前后端分离，支持前后端分离开发模式
-* 后端基于PHP8.1+ThinkPHP8开发
+## 特性
+* 本项目采用前后端分离开发模式
+* 后端基于PHP8.1+ThinkPHP8
 * 前端基于Vue3+ElementPlus**非构建模式**开发
+* 使用模块化开发，模块热插拔
+* 后台常用组件集成封装，只需编写PHP代码即可完成后台页面的设计，降低后端开发人员开发前端页面的难度，专注后端代码，提高开发效率
+* 本项目为纯后台项目，适合作为WebApp，手机App、小程序等项目的后端开发
+
+## 演示
+* https://mof.modoer.cn/admin
+* 账号：demo 密码：demo888
+
+## 案例
+* [磨锋AIGC系统](https://gitee.com/moufer/mof-aigc)
 
 ## 安装
 
@@ -17,9 +26,9 @@ MofAdmin后台管理系统
 * Composer 2.0+
 
 ### 准备工作
-* 在服务器上安装PHP、MySQL、Redis、Nginx、Composer
-* 配置好MySQL和Redis
-* 配置好Nginx
+* 服务器上安装：*PHP、MySQL、Redis、Nginx/Apache、Composer*
+* 安装PHP扩展：*redis*、*zip*、*iconv*、*fileinfo*
+* 通过宝塔安装的PHP，请解禁（PHP设置-禁用函数）下列函数 *putenv*、*proc_open*
 * 配置好Composer
 
 ### 下载代码
@@ -36,27 +45,29 @@ composer install
 ### 配置数据库
 ~~~
 1、复制 .env.sample 命名为 .env
-2、配置 .env 文件中的MySQL和redis的链接信息
+2、配置 .env 文件中的MySQL、redis和JWT参数
 ~~~
 
 ### 安装系统
-进入项目根目录，执行
+进入项目根目录，执行命令（国内服务器建议把 composer 镜像设置为[阿里云](https://developer.aliyun.com/composer)）
 ~~~
 php think mof:install
 ~~~
-进入命令行提示完成安装并新建管理员账号。
+根据安装程序提示完成安装并新建管理员账号。
 
 ### 配置域名
-配置好Nginx的配置文件，将项目根目录下的public目录作为网站根目录。
+nginx/apache配置新域名，并将项目的public目录作为网站根目录。
 
 ### 访问系统
 后台是使用VUE非构建模式开发，所以不需要重新构建，直接访问即可。
-访问链接 http://你的域名/admin/index.html，使用管理员账号登录。
+访问链接 `https://你的域名/admin/index.html`，使用管理员账号登录。
 
 ## 开发文档
 待完善
+
 ## 使用文档
 待完善
+
 ## 版权信息
 
 MofAdmin遵循Apache2开源协议发布，并提供免费使用。
