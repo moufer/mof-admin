@@ -34,14 +34,13 @@
     "liz/flysystem-qiniu": "^1.10",
     "w7corp/easywechat": "^6.7",
     "imangazaliev/didom": "^2.0",
-    "justmd5/pinduoduo-sdk": "^1.8",
     "symfony/http-foundation": "^6.4",
-
+    "yansongda/pay": "~3.7.0",
     "tencentcloud/sms": "^3.0",
     "phpmailer/phpmailer": "^6.9",
     "gregwar/captcha": "^1.2",
     "alibabacloud/sdk": "^1.8",
-    "yansongda/pay": "~3.7.0"
+    "justmd5/pinduoduo-sdk": "^1.8"
   },
   "require-dev": {
     "symfony/var-dumper": "^5.4|^6.0",

@@ -7,7 +7,7 @@ const mofRouter = function (module = "system", extraRoutes = []) {
     {
       name: "frame",
       path: "/",
-      meta: { title: "磨锋后台管理系统", requiresAuth: true },
+      meta: { title: window.__SITE_NAME__ , requiresAuth: true },
       component: () => import(`../../app/${module}/common/frame.js`),
     },
     {
