@@ -37,7 +37,7 @@ class Passport extends Controller
         return ApiResponse::success([
             'token' => $auth->getToken()->toArray(),
             'user'  => $auth->getUser()->hidden(['password']),
-            'perms' => Arr::tree($auth->getUser()->getPerms($module)),
+            'perms' => $data['module'] === 'system' ? Arr::tree($auth->getUser()->getPerms($module)) : [],
         ]);
     }
 
@@ -53,11 +53,17 @@ class Passport extends Controller
 
     /**
      * 获取验证token
+     * @param string $source 前端 token 来源，只有系统会员登录才返回perms
      * @return Json
      */
-    public function token(): Json
+    public function token(string $source = ''): Json
     {
-        return ApiResponse::success($this->auth->getToken()->toArray());
+        $user = $this->auth->getUser();
+        return ApiResponse::success([
+            'token' => $this->auth->getToken()->toArray(),
+            'user'  => $user->hidden(['password'])->toArray(),
+            'perms' => $source === 'system' ? Arr::tree($user->getPerms($user->module)) : [],
+        ]);
     }
 
     public function info(): Json

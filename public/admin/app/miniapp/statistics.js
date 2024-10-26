@@ -68,9 +68,11 @@ export default {
 
   mounted() {
     this.chart = echarts.init(this.$refs.chart);
-    this.getTrends(this.rangeDate).then((data) => {
-      this.setChartData(this.activeTrend);
-    });
+    this.getTrends(this.rangeDate)
+      .then(() => {
+        this.setChartData(this.activeTrend);
+      })
+      .catch(() => {});
   },
   computed: {
     trend() {

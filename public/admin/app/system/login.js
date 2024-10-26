@@ -1,61 +1,59 @@
-import { reactive, getCurrentInstance, inject, onUnmounted, ref } from 'vue'
-import { ElLoading, ElMessage } from 'element-plus';
-import { addStyle } from 'comm/utils.js';
-import { loginSuccess } from 'comm/userLogin.js';
-import { useUserStore } from 'comm/userStore.js';
-import { useRouteStore } from 'comm/routeStore.js';
-import { useRouter } from 'vue-router';
+import { reactive, getCurrentInstance, inject, onUnmounted } from "vue";
+import { ElLoading, ElMessage } from "element-plus";
+import { useRoute, useRouter } from "vue-router";
+import { addStyle } from "comm/utils.js";
+import { useAuthStore } from "app/system/store/authStore.js";
+import { usePermStore} from "app/system/store/permStore.js";
 
 export default {
-  emits: ['onsuccess', 'onerror'],
-  setup(props, { emit }) {
-
+  setup() {
     const instance = getCurrentInstance();
+    const route = useRoute();
     const router = useRouter();
+    const authStore = useAuthStore();
+    const permStore = usePermStore();
 
-    const http = inject('http');
-    const loginTitle = inject('loginTitle', '磨锋后台管理');
-    const loginModule = inject('loginModule', '磨锋后台管理');
+    const http = inject("http");
+    const siteName = inject("siteName");
+    const defaultPath = inject("defaultPath", "/");
 
-    const formValues = reactive({ username: '', password: '', module: loginModule });
+    const formValues = reactive({
+      username: "",
+      password: "",
+      module: window.__LOGIN_MODULE__,
+    });
+
     const loginRules = {
-      username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-      password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+      username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+      password: [{ required: true, message: "请输入密码", trigger: "blur" }],
     };
 
     const handleLogin = () => {
-      instance.refs.formRef.validate(valid => {
+      instance.refs.formRef.validate((valid) => {
         if (valid) {
           // 显示 Loading 组件
           const loading = ElLoading.service({
-            text: 'Loading',
-            background: 'rgba(0, 0, 0, 0.7)',
+            text: "Loading",
+            background: "rgba(0, 0, 0, 0.7)",
           });
 
           // 发送登录请求
-          http.post('/system/passport/login', formValues)
-            .then(res => {
-              //emit('onsuccess', res);
-              loginSuccess(res);
-
-              useUserStore().setUser(res.data.user);
-              if (res.data.perms) {
-                useRouteStore().setPerms(res.data.perms);
-              }
-
-              let pagePath = '';
-              if (window.location.hash.length > 2) {
-                pagePath = window.location.hash.substring(1);
-              }
-              if (pagePath === '/login' || !router.hasRoutePath(pagePath)) {
-                pagePath = router.firstRoute().path;
-              }
-              router.push(pagePath);
-
-            }).catch(err => {
+          http
+            .post("/system/passport/login", formValues)
+            .then((res) => {
+              authStore.setUser(res.data.user).setToken(res.data.token.token);
+              if(res.data?.perms) permStore.setPerms(res.data.perms);
+              //从route的query获取forward参数
+              const forward = route.query?.forward ?? defaultPath;
+              //跳转
+              console.log("forward", forward);
+              router.push(forward);
+            })
+            .catch((err) => {
               console.log(err);
               err.errmsg && ElMessage.error(err.errmsg);
-            }).finally(() => loading.close());
+            })
+            .finally(() => loading.close());
         }
       });
     };
@@ -63,20 +61,18 @@ export default {
     //组件样式动态添加
     const styleStr = instance.type?.style;
     const styleEl = styleStr ? addStyle(styleStr) : null;
-
-    onUnmounted(() => {
-      //移除样式
-      styleEl?.remove();
-    });
+    onUnmounted(() => styleEl?.remove());
 
     return {
-      loginTitle, formValues, loginRules,
-      handleLogin
-    }
+      siteName,
+      formValues,
+      loginRules,
+      handleLogin,
+    };
   },
-  template: /*html*/`
+  template: /*html*/ `
   <div class="page-login-box">
-    <div class="login-title">{{loginTitle}}</div>
+    <div class="login-title">{{siteName}}</div>
     <el-form ref="formRef" class="login-form" label-width="80px" :model="formValues" :rules="loginRules">
         <el-form-item label="用户名" prop="username">
             <el-input v-model="formValues.username"></el-input>
@@ -94,7 +90,7 @@ export default {
     </div>
   </div>
   `,
-  style: /*css*/`
+  style: /*css*/ `
   body {
     background-color: #393d4a;
   }
@@ -149,5 +145,5 @@ export default {
     text-align: center;
     margin-top: 20px;
   } 
-  `
-}
+  `,
+};

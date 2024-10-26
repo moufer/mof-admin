@@ -64,11 +64,12 @@ class UserForm extends Form
         $values = $model ? $model->toArray() : [];
         return [
             [
-                "prop"  => "username",
-                "label" => "用户名",
-                "value" => $values['username'] ?? '',
-                "type"  => "input",
-                "rules" => [
+                "prop"         => "username",
+                "label"        => "用户名",
+                "value"        => $values['username'] ?? '',
+                "type"         => "input",
+                "autocomplete" => "new-username",
+                "rules"        => [
                     ["required" => true, "message" => "用户名不能为空"],
                 ]
             ],
@@ -76,6 +77,7 @@ class UserForm extends Form
                 "prop"      => "password",
                 "label"     => "密码",
                 "type"      => "password",
+                "autocomplete" => "new-username",
                 "introEdit" => "不修改密码请留空",
                 "rules"     => empty($model) ? [
                     ["required" => true, "message" => "密码不能为空"],
@@ -91,7 +93,7 @@ class UserForm extends Form
                 "prop"    => "name",
                 "label"   => "姓名",
                 "value"   => $values['name'] ?? '',
-                "type"  => "input",
+                "type"    => "input",
                 "rules"   => [
                     ["required" => true, "message" => "姓名不能为空"],
                 ],
@@ -101,7 +103,7 @@ class UserForm extends Form
                 "prop"    => "email",
                 "label"   => "邮箱",
                 "value"   => $values['email'] ?? '',
-                "type"  => "input",
+                "type"    => "input",
                 "rules"   => [
                     ["required" => true, "message" => "邮箱不能为空"],
                 ],

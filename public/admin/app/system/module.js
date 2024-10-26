@@ -1,4 +1,4 @@
-import MfDataManage from '../../components/mf-data-manage.js';
+import MfDataManage from 'comp/mf-data-manage.js';
 export default {
     components: {
         MfDataManage

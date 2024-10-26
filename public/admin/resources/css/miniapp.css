@@ -1,6 +1,5 @@
 .el-main {
-
-  background-color: #F7F8FE;
+    background-color: #F7F8FE;
 }
 
 .iframe-container {
@@ -23,12 +22,12 @@
 }
 
 .miniapp-box.fold .miniapp-icon {
-    animation: fold 0.3s ;
+    animation: fold 0.3s;
     width: 40px;
 }
 
 .miniapp-box.expand .miniapp-icon {
-    animation: expand 0.4s  ;
+    animation: expand 0.4s;
     width: 120px;
 }
 
@@ -38,7 +37,7 @@
 }
 
 .miniapp-box .miniapp-title {
-    margin:10px auto 0;
+    margin: 10px auto 0;
     width: 100%;
     /* 单行 */
     white-space: nowrap;
@@ -47,36 +46,63 @@
 }
 
 .miniapp-box.fold .miniapp-title {
-    animation: hide 0.3s ;
+    animation: hide 0.3s;
     width: 0%;
     display: none;
 }
 
 .miniapp-box.expand .miniapp-title {
-    animation: show 0.8s ;
+    animation: show 0.8s;
     width: 100%;
     display: block;
 }
 
 @keyframes fold {
-    0% { width: 120px; }
-    100% { width: 40px; }
+    0% {
+        width: 120px;
+    }
+
+    100% {
+        width: 40px;
+    }
 }
 
 @keyframes expand {
-    0% { width: 40px; }
-    30% { width: 40px; }
-    100% { width: 120px; }
+    0% {
+        width: 40px;
+    }
+
+    30% {
+        width: 40px;
+    }
+
+    100% {
+        width: 120px;
+    }
 }
 
 @keyframes hide {
-    0% { opacity: 1; width: 0%; }
-    100% { opacity: 0; width: 100%; }
+    0% {
+        opacity: 1;
+        width: 0%;
+    }
+
+    100% {
+        opacity: 0;
+        width: 100%;
+    }
 }
 
 @keyframes show {
-    0% { opacity: 0; width: 0%; }
-    100% { opacity: 1; width: 100%; }
+    0% {
+        opacity: 0;
+        width: 0%;
+    }
+
+    100% {
+        opacity: 1;
+        width: 100%;
+    }
 }
 
 

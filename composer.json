@@ -36,12 +36,12 @@
     "imangazaliev/didom": "^2.0",
     "justmd5/pinduoduo-sdk": "^1.8",
     "symfony/http-foundation": "^6.4",
-    "yansongda/pay": "~3.7.0",
+
     "tencentcloud/sms": "^3.0",
     "phpmailer/phpmailer": "^6.9",
     "gregwar/captcha": "^1.2",
-    "openai-php/client": "*",
-    "alibabacloud/sdk": "^1.8"
+    "alibabacloud/sdk": "^1.8",
+    "yansongda/pay": "~3.7.0"
   },
   "require-dev": {
     "symfony/var-dumper": "^5.4|^6.0",
@@ -58,10 +58,7 @@
     }
   },
   "config": {
-    "preferred-install": "dist",
-    "allow-plugins": {
-      "php-http/discovery": true
-    }
+    "preferred-install": "dist"
   },
   "scripts": {
     "post-autoload-dump": [

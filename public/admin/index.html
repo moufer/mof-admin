@@ -1,125 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>磨锋后台管理</title>
-    <link rel="stylesheet" href="./resources/libraries/element-plus@2.8.5/index.css" />
-    <link rel="stylesheet" href="./resources/css/frame.css">
-    <link rel="stylesheet" href="./resources/css/page.css">
-    <link ref="stylesheet" href="./resources/libraries/wangeditor@5.1.23/editor/dist/css/style.css">
-    <script src="./global.js"></script>
-    <!--
-	<script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
-	-->
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>磨锋后台管理</title>
+  <link
+    rel="stylesheet"
+    href="./resources/libraries/element-plus@2.8.5/index.css"
+  />
+  <link rel="stylesheet" href="./resources/css/app.css"/>
+  <link rel="stylesheet" href="./resources/css/page.css"/>
+  <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script> -->
+  <!-- <script>new window.VConsole()</script> -->
+  <script>
+    window.__SITE_NAME__ = "磨锋后台系统";
+    window.__LOGIN_MODULE__ = "system";
+  </script>
 </head>
 
 <body>
-    <div id="frame">
-        <router-view v-if="useRouter"></router-view>
-    </div>
-    <script>
-        //var vConsole = new window.VConsole();
-    </script>
-    <script type="importmap">
-    {
-      "imports": {
-        "lib/": "./resources/libraries/",
-        "comp/": "./components/",
-        "comm/": "./resources/common/",
-        "utils": "./resources/common/utils.js",
-        "vue": "./resources/libraries/vue@3.5.12/vue.esm-browser.prod.js",
-        "element-plus": "./resources/libraries/element-plus@2.8.5/index.full.min.mjs",
-        "vue-router": "./resources/libraries/vue-router@4.4.5/vue-router.esm-browser.js",
-        "moment": "./resources/libraries/moment@2.29.4/dist/moment.js",
-        "lodash": "./resources/libraries/lodash/dist/lodash-esm.js",
-        "wovoui-icons": "./resources/libraries/wovoui-icons@1.1.9/index.es.mjs",
-        "pinia": "./resources/dist/pinia-esm.js",
-        "mf-components": "./components/mf-components.js"
-      }
+<div id="app"></div>
+<script type="importmap">
+  {
+    "imports": {
+      "app/": "./app/",
+      "lib/": "./resources/libraries/",
+      "comp/": "./components/",
+      "comm/": "./resources/common/",
+
+      "utils": "./resources/common/utils.js",
+      "http": "./resources/common/http.js",
+      "mf-components": "./components/mf-components.js",
+
+      "vue": "./resources/libraries/vue@3.5.12/vue.esm-browser.prod.js",
+      "vue-router": "./resources/libraries/vue-router@4.4.5/vue-router.esm-browser.js",
+      "pinia": "./resources/libraries/pinia@2.1.7/pinia-esm.js",
+      "element-plus": "./resources/libraries/element-plus@2.8.5/index.full.min.mjs",
+      "element-plus-icons-vue": "./resources/libraries/element-plus-icons-vue@2.3.1/index.js",
+      "moment": "./resources/libraries/moment@2.29.4/dist/moment.js",
+      "lodash": "./resources/libraries/lodash/dist/lodash-esm.js",
+      "wovoui-icons": "./resources/libraries/wovoui-icons@1.1.9/index.es.mjs",
+      "echarts": "./resources/libraries/echarts@5.5.1/dist/echarts.esm.min.js",
+      "vue-ueditor-wrap":"./resources/libraries/vue-ueditor-wrap@3.0.8/es/vue-ueditor-wrap-esm.js"
     }
-  </script>
-
-    <script type="module">
-
-        import { createApp, provide, ref, reactive } from 'vue';
-        import ElementPlus, { ElMessage } from 'element-plus';
-        import zhCn from './resources/libraries/element-plus@2.8.5/locale/zh-cn.mjs';
-        import { createPinia } from 'pinia';
-        import * as ElementPlusIconsVue from './resources/libraries/element-plus-icons-vue@2.3.1/index.js';
-        import { mofRouter } from 'comm/router.js';
-
-        import http from 'comm/http.js';
-        import { getConfig } from 'comm/config.js';
-        import { isLogin } from 'comm/userLogin.js';
-        import { useUserStore } from 'comm/userStore.js';
-        import { useRouteStore } from 'comm/routeStore.js';
-
-        const router = mofRouter('system');
-        const pinia = createPinia();
-
-        const app = createApp({
-            setup() {
-                const useRouter = ref(false);
-                const loginModule = 'system';
-
-                //依赖注入
-                provide('http', http);
-                provide('loginModule', loginModule);
-
-                const entrance = () => {
-                    //获取用户信息和权限信息
-                    http.get('/system/passport/info?module=system').then(res => {
-                        //设置路由
-                        useRouter.value = true;
-
-                        useUserStore().setUser(res.data.user); //设置会员
-                        useRouteStore().setPerms(res.data.perms); //设置菜单和权限
-
-                        let pagePath = '';
-                        if (window.location.hash.length > 2) {
-                            pagePath = window.location.hash.substring(1);
-                        }
-                        if (!router.hasRoutePath(pagePath)) {
-                            console.log(router.firstRoute());
-                            pagePath = router.firstRoute().path;
-                        }
-                        router.push(pagePath);
-
-                    }).catch(err => {
-                        console.log('err', err)
-                        err.errmsg && ElMessage.error(err.errmsg);
-                        router.push('/login');
-                    });
-                }
-
-                getConfig().then(() => {
-                    isLogin().then(() => {
-                        entrance();
-                    }).catch(() => {
-                        router.push('/login');
-                    }).finally(() => {
-                        useRouter.value = true;
-                    });
-                }).catch(err => {
-                    console.log(err);
-                    err.errmsg && ElMessage.error(err.errmsg);
-                });
-
-                return {
-                    useRouter
-                }
-            }
-        });
-
-        app.use(ElementPlus, { locale: zhCn, }).use(router).use(pinia);
-        for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-            app.component(key, component);
-        }
-        app.mount('#frame');
-    </script>
+  }
+</script>
+<script src="./config.js"></script>
+<script type="module" src="./app/system/common/main.js" defer></script>
 </body>
-
 </html>

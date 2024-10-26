@@ -7,12 +7,8 @@ import {
   getCurrentInstance,
 } from "vue";
 import { ElMessage } from "element-plus";
-import MfFormRender from "../../components/mf-form-render.js";
-import {
-  evaluateExpression,
-  addStyle,
-  convertToMultilevelObject,
-} from "comm/utils.js";
+import MfFormRender from "comp/mf-form-render.js";
+import { evaluateExpression, addStyle } from "comm/utils.js";
 
 export default {
   name: "mf-page-config",

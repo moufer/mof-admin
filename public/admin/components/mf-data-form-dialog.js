@@ -1,6 +1,6 @@
 import { evaluateExpression, deepCopy, formDefaultValue } from "utils";
 import { isEmpty } from "lodash";
-import MfFormRender from "comp/mf-form-render.js";
+import MfFormRender from "./mf-form-render.js";
 export default {
   name: "mf-data-form-dialog",
   components: {

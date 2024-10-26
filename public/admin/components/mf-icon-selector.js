@@ -1,4 +1,4 @@
-import * as ElementPlusIconsVue from "../resources/libraries/element-plus-icons-vue@2.1.0/index.js";
+import * as ElementPlusIconsVue from "element-plus-icons-vue";
 export default {
   data() {
     return {

@@ -1,5 +1,5 @@
 import { serverUrl, clientUrl, storageUrl } from "comm/utils.js";
-import { VueUeditorWrap } from "../resources/libraries/vue-ueditor-wrap@3.0.8/es/vue-ueditor-wrap-esm.js";
+import { VueUeditorWrap } from "vue-ueditor-wrap";
 import MfStorageDialog from "./mf-storage-dialog.js";
 export default {
   components: {

@@ -1,4 +1,4 @@
-import { useConfigStore } from "comm/configStore.js";
+import { useConfigStore } from "app/system/store/configStore.js";
 import { set } from "lodash";
 
 /**

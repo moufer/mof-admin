@@ -1,4 +1,4 @@
-import * as echarts from "lib/echarts@5.5.1/dist/echarts.esm.min.js";
+import * as echarts from "echarts";
 
 export default {
   name: "mf-page-dashboard",

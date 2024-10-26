@@ -38,7 +38,7 @@ class GetConfig
         //把system放在最前面
         array_unshift($modules, 'system');
 
-        return array_reduce($modules, function ($carry, $name) {
+        $result = array_reduce($modules, function ($carry, $name) {
             $cacheKey = "{$name}_config";
             if (!$config = app('cache')->get($cacheKey)) {
                 $rows = (new Config)->where([
@@ -52,5 +52,6 @@ class GetConfig
             }
             return $carry;
         });
+        return $result ?? [];
     }
 }
