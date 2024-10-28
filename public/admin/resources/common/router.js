@@ -2,12 +2,18 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import { useAuthStore } from "app/system/store/authStore.js";
 import { usePermStore } from "app/system/store/permStore.js";
 import { ElMessage } from "element-plus";
-const mofRouter = function (module = "system", extraRoutes = []) {
+
+let router = null;
+export function getRouter() {
+  return router;
+}
+
+export function mofRouter(app, module = "system", extraRoutes = []) {
   let routes = [
     {
       name: "frame",
       path: "/",
-      meta: { title: window.__SITE_NAME__ , requiresAuth: true },
+      meta: { title: window.__SITE_NAME__, requiresAuth: true },
       component: () => import(`../../app/${module}/common/frame.js`),
     },
     {
@@ -29,7 +35,7 @@ const mofRouter = function (module = "system", extraRoutes = []) {
     routes = routes.concat(extraRoutes);
   }
 
-  const router = createRouter({
+  router = createRouter({
     routes,
     history: createWebHashHistory(),
   });
@@ -130,7 +136,7 @@ const mofRouter = function (module = "system", extraRoutes = []) {
     permsToRoutes(perms);
   };
 
-  return router;
-};
+  app.use(router);
 
-export { mofRouter };
+  return router;
+}

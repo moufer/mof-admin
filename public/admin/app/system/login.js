@@ -3,7 +3,7 @@ import { ElLoading, ElMessage } from "element-plus";
 import { useRoute, useRouter } from "vue-router";
 import { addStyle } from "comm/utils.js";
 import { useAuthStore } from "app/system/store/authStore.js";
-import { usePermStore} from "app/system/store/permStore.js";
+import { usePermStore } from "app/system/store/permStore.js";
 
 export default {
   setup() {
@@ -42,9 +42,11 @@ export default {
             .post("/system/passport/login", formValues)
             .then((res) => {
               authStore.setUser(res.data.user).setToken(res.data.token.token);
-              if(res.data?.perms) permStore.setPerms(res.data.perms);
+              if (res.data?.perms) permStore.setPerms(res.data.perms);
               //从route的query获取forward参数
-              const forward = route.query?.forward ?? defaultPath;
+              const forward = decodeURIComponent(
+                route.query?.forward || defaultPath
+              );
               //跳转
               console.log("forward", forward);
               router.push(forward);

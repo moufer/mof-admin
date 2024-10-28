@@ -1,16 +1,17 @@
-import axios from "lib/axios@1.5.1/axios.ems.js";
+import axios from "axios";
 import { ElMessage } from "element-plus";
-import { useRouter } from "vue-router";
+import { getRouter } from "./router.js";
 
 const http = axios.create({
   baseURL: window.serverUrl,
 });
+
 http.interceptors.request.use(
   function (cfg) {
     // 判断是否存在token，如果存在将每个页面header都添加token
-    if (localStorage.getItem("admin_token")) {
-      cfg.headers.Authorization =
-        "Bearer " + localStorage.getItem("admin_token");
+    const token = localStorage.getItem("admin_token");
+    if (token) {
+      cfg.headers.Authorization = "Bearer " + token;
     }
     //application/json; charset=utf-8
     cfg.headers["Content-Type"] = "application/json; charset=utf-8";
@@ -29,22 +30,22 @@ http.interceptors.response.use(
     }
   },
   function (err) {
-    console.log("http", err.response);
     let errMsg = "";
     if (err.response.data && err.response.data.errmsg) {
       errMsg = err.response.data.errmsg;
     }
     // 对响应错误做点什么
     if (err.response.status === 401) {
-      localStorage.removeItem("admin_token");
-      if ("/login" !== useRouter().currentRoute.value.path) {
+      //localStorage.removeItem("admin_token");
+      const router = getRouter();
+      if ("/login" !== router.currentRoute.value.path) {
+        const currentPath = router.currentRoute.value.fullPath;
         ElMessage.error(errMsg ? errMsg : "登录已过期，请重新登录");
-        console.log("currentRoute", http.router.currentRoute.value.path);
         setTimeout(() => {
-          const router = useRouter();
-          console.log("useRouter()", router);
-          router.push("/login");
-          //window.location.href = window.clientUrl + '/login.html';//跳转到登录框
+          router.push({
+            path: "/login",
+            query: { forward: encodeURIComponent(currentPath) },
+          });
         }, 1000);
       }
     } else if (err.response.status === 403) {
