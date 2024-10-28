@@ -43,13 +43,13 @@ return [
         'qcloud' => [
             'type'            => 'qcloud',
             'region'          => 'ap-shanghai', //bucket 所属区域 英文
-            'appId'           => '1252422187', // 域名中数字部分
-            'secretId'        => 'AKID89yb3KfPAvjNqGGhgT3WnrjUBiNttRPi',
-            'secretKey'       => 'HiX9v6DAzc2GI70oRyOTM5z8va7WnvqZ',
-            'bucket'          => 'lyj-1252422187', // 存储桶名称
+            'appId'           => '******', // 域名中数字部分
+            'secretId'        => '******',
+            'secretKey'       => '******',
+            'bucket'          => '******', // 存储桶名称
             'timeout'         => 60, // 超时时间
             'connect_timeout' => 60, // 连接超时时间
-            'cdn'             => 'https://lyj-1252422187.cos.ap-shanghai.myqcloud.com', // CDN加速域名
+            'cdn'             => 'https://******.cos.ap-shanghai.myqcloud.com', // CDN加速域名
             'scheme'          => 'https', //协议头部
             'read_from_cdn'   => false, //是否从CDN读取
         ]
