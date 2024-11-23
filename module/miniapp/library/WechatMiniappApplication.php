@@ -3,9 +3,7 @@
 namespace module\miniapp\library;
 
 use EasyWeChat\MiniApp\Application;
-use InvalidArgumentException;
 use module\miniapp\library\wechat\AppCode;
-use module\miniapp\library\wechat\Code\Code;
 use module\miniapp\library\wechat\Mobile;
 use module\miniapp\model\MiniApp;
 use mof\exception\LogicException;

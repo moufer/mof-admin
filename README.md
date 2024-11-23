@@ -36,7 +36,7 @@ git clone https://gitee.com/moufer/mof-admin.git
 ~~~
 
 ### 安装依赖包
-进入项目根目录，执行（国内服务器建议把 composer 镜像设置为[阿里云](https://developer.aliyun.com/composer)）
+进入项目根目录，执行（国内服务器建议把 composer 镜像设置为[阿里云源](https://developer.aliyun.com/composer)或者[腾讯源](https://mirrors.tencent.com/help/composer.html)）
 ~~~
 composer install
 ~~~
