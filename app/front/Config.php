@@ -19,6 +19,13 @@ class Config extends \mof\front\Config
                 "intro"  => "请填写站点名称。",
                 "_extra" => ['client_cfg' => 1],
             ], [
+                'label'  => 'Logo',
+                'prop'   => 'site_logo',
+                'type'   => 'upload:image',
+                'value'  => $values['logo'] ?? '',
+                'intro'  => '请上传站点Logo图片。',
+                "_extra" => ['client_cfg' => 1],
+            ], [
                 "label"  => "备案号",
                 "prop"   => "site_icp",
                 "type"   => "input",

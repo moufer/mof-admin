@@ -66,7 +66,7 @@ class PermissionMiddleware
     protected function parseRule(string $name): array
     {
         //name格式1: \app\\controller\{controller}[@\/]{action}
-        //name格式2: \module\\miniapp\controller\{controller}[@\/]{action}
+        //name格式2: \module\\{moduleName}\controller\{controller}[@\/]{action}
 
         $name = trim(str_replace(['\\', '@', '//'], '/', $name), '/');
         $path = explode('/', $name);
