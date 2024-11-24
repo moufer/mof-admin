@@ -34,7 +34,10 @@ MofAdmin-磨锋后台开发框架
 ~~~
 git clone https://gitee.com/moufer/mof-admin.git
 ~~~
-
+如果你需要包含小程序saas模块，请克隆miniapp分支
+~~~
+git clone -b miniapp https://gitee.com/moufer/mof-admin.git
+~~~
 ### 安装依赖包
 进入项目根目录，执行（国内服务器建议把 composer 镜像设置为[阿里云源](https://developer.aliyun.com/composer)或者[腾讯源](https://mirrors.tencent.com/help/composer.html)）
 ~~~

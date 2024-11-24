@@ -210,7 +210,7 @@ export default {
                 :filters="column.filters" :formatter="column.formatter">
                 <template #default="{row}" v-if="column.type==='image'">
                     <el-image :src="formatter('image', column, row[column.propAlias||column.prop])" 
-                        style="width:auto;"></el-image>
+                        style="width:auto;" :referrerPolicy="column.referrerPolicy||'no-referrer-when-downgrade'"></el-image>
                 </template>
                 <template #default="{row}" v-if="column.type==='select'">
                     {{formatter('select', column, row[column.propAlias||column.prop])}}

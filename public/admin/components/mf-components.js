@@ -129,7 +129,7 @@ const MfHtml = {
 const MfImage = {
   ...commOptions,
   template: /*html*/ `
-    <img :src="modelValue" style="max-width:100%;" />
+    <img :src="modelValue" style="max-width:100%;" :referrerPolicy="item.referrerPolicy||'no-referrer-when-downgrade'" />
     `,
 };
 
