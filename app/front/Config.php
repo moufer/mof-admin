@@ -22,7 +22,7 @@ class Config extends \mof\front\Config
                 'label'  => 'Logo',
                 'prop'   => 'site_logo',
                 'type'   => 'upload:image',
-                'value'  => $values['logo'] ?? '',
+                'value'  => $values['site_logo'] ?? '',
                 'intro'  => '请上传站点Logo图片。',
                 "_extra" => ['client_cfg' => 1],
             ], [
