@@ -5,12 +5,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>磨锋后台管理</title>
-  <link
-    rel="stylesheet"
-    href="./resources/libraries/element-plus@2.8.5/index.css"
-  />
-  <link rel="stylesheet" href="./resources/css/app.css"/>
-  <link rel="stylesheet" href="./resources/css/page.css"/>
+  <link rel="stylesheet" href="./libraries/element-plus@2.8.5/index.css"/>
+  <link rel="stylesheet" href="./assets/css/app.css"/>
+  <link rel="stylesheet" href="./assets/css/page.css"/>
   <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script> -->
   <!-- <script>new window.VConsole()</script> -->
   <script>
@@ -24,30 +21,74 @@
 <script type="importmap">
   {
     "imports": {
-      "app/": "./app/",
-      "lib/": "./resources/libraries/",
-      "comp/": "./components/",
-      "comm/": "./resources/common/",
+      "vue": "./libraries/vue@3.5.12/vue.esm-browser.prod.js",
+      "vue-router": "./libraries/vue-router@4.4.5/vue-router.esm-browser.js",
+      "pinia": "./libraries/pinia@2.1.7/pinia-esm.js",
+      "axios":"./libraries/axios@1.5.1/axios.ems.js",
+      "element-plus": "./libraries/element-plus@2.8.5/index.full.min.mjs",
+      "element-plus/locale/zh-cn":"./libraries/element-plus@2.8.5/locale/zh-cn.mjs",
+      "@element-plus/icons-vue": "./libraries/element-plus-icons-vue@2.3.1/index.js",
+      "moment": "./libraries/moment@2.29.4/dist/moment.js",
+      "lodash-es": "./libraries/lodash-es@4.17.21/lodash.js",
+      "wovoui-icons": "./libraries/wovoui-icons@1.1.9/index.es.mjs",
+      "echarts": "./libraries/echarts@5.5.1/dist/echarts.esm.min.js",
+      "vue-ueditor-wrap": "./libraries/vue-ueditor-wrap@3.0.8/es/vue-ueditor-wrap-esm.js",
+      "@wangeditor/editor": "./libraries/wangeditor@5.1.23/editor/dist/index.esm.js",
 
-      "utils": "./resources/common/utils.js",
-      "http": "./resources/common/http.js",
-      "mf-components": "./components/mf-components.js",
+      "@/router/index" : "./router/index.js",
 
-      "vue": "./resources/libraries/vue@3.5.12/vue.esm-browser.prod.js",
-      "vue-router": "./resources/libraries/vue-router@4.4.5/vue-router.esm-browser.js",
-      "pinia": "./resources/libraries/pinia@2.1.7/pinia-esm.js",
-      "axios":"./resources/libraries/axios@1.5.1/axios.ems.js",
-      "element-plus": "./resources/libraries/element-plus@2.8.5/index.full.min.mjs",
-      "element-plus-icons-vue": "./resources/libraries/element-plus-icons-vue@2.3.1/index.js",
-      "moment": "./resources/libraries/moment@2.29.4/dist/moment.js",
-      "lodash": "./resources/libraries/lodash/dist/lodash-esm.js",
-      "wovoui-icons": "./resources/libraries/wovoui-icons@1.1.9/index.es.mjs",
-      "echarts": "./resources/libraries/echarts@5.5.1/dist/echarts.esm.min.js",
-      "vue-ueditor-wrap":"./resources/libraries/vue-ueditor-wrap@3.0.8/es/vue-ueditor-wrap-esm.js"
+      "@/utils/index": "./utils/index.js",
+      "@/utils/index/http": "./utils/http.js",
+      "@/utils/index/config": "./utils/config.js",
+
+      "@/components/mf-components": "./components/mf-components.js",
+      "@/components/mf-data-form-dialog": "./components/mf-data-form-dialog.js",
+      "@/components/mf-data-manage": "./components/mf-data-manage.js",
+      "@/components/mf-data-search": "./components/mf-data-search.js",
+      "@/components/mf-data-table": "./components/mf-data-table.js",
+      "@/components/mf-data-toolbar": "./components/mf-data-toolbar.js",
+      "@/components/mf-data-transmit": "./components/mf-data-transmit.js",
+      "@/components/mf-form-item": "./components/mf-form-item.js",
+      "@/components/mf-form-render": "./components/mf-form-render.js",
+      "@/components/mf-icon-selector": "./components/mf-icon-selector.js",
+      "@/components/mf-input-dict": "./components/mf-input-dict.js",
+      "@/components/mf-key-value": "./components/mf-key-value.js",
+      "@/components/mf-menu": "./components/mf-menu.js",
+      "@/components/mf-select-search": "./components/mf-select-search.js",
+      "@/components/mf-storage-dialog": "./components/mf-storage-dialog.js",
+      "@/components/mf-ueditor": "./components/mf-ueditor.js",
+      "@/components/mf-upload": "./components/mf-upload.js",
+      "@/components/mf-wang-editor": "./components/mf-wang-editor.js",
+      "@/components/mf-xselect": "./components/mf-xselect.js",
+
+      "@/modules/common/404": "./modules/common/404.js",
+      "@/modules/common/permission": "./modules/common/permission.js",
+
+      "@/modules/system/common/frame": "./modules/system/common/frame.js",
+      "@/modules/system/common/main": "./modules/system/common/main.js",
+      "@/modules/system/store/authStore": "./modules/system/store/authStore.js",
+      "@/modules/system/store/configStore": "./modules/system/store/configStore.js",
+      "@/modules/system/store/permStore": "./modules/system/store/permStore.js",
+      "@/modules/system/store/routeStore": "./modules/system/store/routeStore.js",
+      "@/modules/system/config":"./modules/system/config.js",
+      "@/modules/system/dashboard": "./modules/system/dashboard.js",
+      "@/modules/system/login": "./modules/system/login.js",
+      "@/modules/system/module": "./modules/system/module.js",
+      "@/modules/system/perm": "./modules/system/perm.js",
+      "@/modules/system/profile": "./modules/system/profile.js",
+      "@/modules/system/role": "./modules/system/role.js",
+      "@/modules/system/storage": "./modules/system/storage.js",
+      "@/modules/system/user": "./modules/system/user.js"
     }
   }
 </script>
-<script src="./config.js"></script>
-<script type="module" src="./app/system/common/main.js" defer></script>
+<script>
+window.clientUrl = window.location.href.replace(/\/[^/]*([?#].*)?$/, "");
+//去掉clientUrl里的最后一级目录
+window.serverUrl = window.clientUrl.replace(/\/[^/]*([?#].*)?$/, "");
+//api域名
+window.serverUrl = "http://127.0.0.1:8000";
+</script>
+<script type="module" src="./src/modules/system/common/main.js" defer></script>
 </body>
 </html>

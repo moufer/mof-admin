@@ -1,5 +1,8 @@
 .vscode
+.idea
 node_modules
+public
+libraries
 yarn.lock
 package.json
 package-lock.json
