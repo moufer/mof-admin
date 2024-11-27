@@ -70,6 +70,18 @@ nginx/apache配置新域名，并将项目的public目录作为网站根目录�
 ## 使用文档
 待完善
 
+## 鸣谢
+感谢以下的项目或资源的支持！
+
+* ThinkPHP：https://www.thinkphp.cn/
+* ElementPlus：https://element-plus.gitee.io/zh-CN/
+* Vue3：https://v3.cn.vuejs.org/
+* ......
+
+## 联系我
+![企业微信二维码](https://www.modoer.cn/wp-content/uploads/2024/11/%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg)
+
+
 ## 版权信息
 
 MofAdmin遵循Apache2开源协议发布，并提供免费使用。
