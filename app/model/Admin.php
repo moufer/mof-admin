@@ -33,18 +33,6 @@ class Admin extends Model implements UserInterface
 
     protected $hidden = ['password'];
 
-    /**
-     * 状态
-     * @return array[]
-     */
-    public static function statusOptions(): array
-    {
-        return [
-            ['value' => 1, 'label' => '正常'],
-            ['value' => 0, 'label' => '禁用'],
-        ];
-    }
-
     public function getUserType(): string
     {
         return 'system';

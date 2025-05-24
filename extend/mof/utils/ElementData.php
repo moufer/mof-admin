@@ -12,11 +12,11 @@ class ElementData
     protected array  $data     = [];
     protected string $uniqueId = '';
 
-    public static function make(Collection|DictArray|array $data): static
+    public static function make(Collection|DictArray|Dictionary|array $data): static
     {
         if ($data instanceof Collection) {
             $data = $data->toArray();
-        } else if ($data instanceof DictArray) {
+        } else if ($data instanceof DictArray || $data instanceof Dictionary) {
             $data = $data->convertLabelValue();
         }
         return new static($data);

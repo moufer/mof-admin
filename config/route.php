@@ -38,6 +38,8 @@ return [
     'default_action'        => 'index',
     // 操作方法后缀
     'action_suffix'         => '',
+    //操作方法参数绑定变量名
+    'action_bind_param'     => 'param',
     // 默认JSONP格式返回的处理方法
     'default_jsonp_handler' => 'jsonpReturn',
     // 默认JSONP处理方法

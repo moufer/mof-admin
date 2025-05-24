@@ -43,14 +43,12 @@ class Model extends \think\Model
             [$type,] = explode(':', $type, 2);
         }
 
-        switch ($type) {
-            case 'el-upload':
-                return is_array($value) && isset($value[0]['path']) ? $value[0]['path'] : '';
-            case 'storage':
-                return Mof::removeStorageUrl($value);
-        }
+        return match ($type) {
+            'el-upload' => is_array($value) && isset($value[0]['path']) ? $value[0]['path'] : '',
+            'storage' => Mof::removeStorageUrl($value),
+            default => parent::writeTransform($value, $type),
+        };
 
-        return parent::writeTransform($value, $type);
     }
 
     /**
@@ -68,15 +66,13 @@ class Model extends \think\Model
             [$type, $param] = explode(':', $type, 2);
         }
 
-        switch ($type) {
-            case 'el-upload':
-                return $value
-                    ? [['name' => basename($value), 'url' => Mof::storageUrl($value), 'path' => $value]]
-                    : [];
-            case 'storage':
-                return Mof::storageUrl($value);
-        }
+        return match ($type) {
+            'el-upload' => $value
+                ? [['name' => basename($value), 'url' => Mof::storageUrl($value), 'path' => $value]]
+                : [],
+            'storage' => Mof::storageUrl($value),
+            default => parent::readTransform($value, $type),
+        };
 
-        return parent::readTransform($value, $type);
     }
 }

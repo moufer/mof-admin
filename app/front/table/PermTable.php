@@ -3,6 +3,7 @@
 namespace app\front\table;
 
 use app\model\Module;
+use mof\enum\StatusEnum;
 use mof\front\Table;
 use mof\utils\DictArray;
 use mof\utils\ElementData;
@@ -23,7 +24,7 @@ class PermTable extends Table
     {
         parent::init();
         $this->elSgModules = DictArray::make(Module::modulesList())->toElementData();
-        $this->tabs = $this->elSgModules->toTabs('label','value');
+        $this->tabs = $this->elSgModules->toTabs('label', 'value');
         $this->activeTab = $this->elSgModules->data()[0]['value'];
         $this->tabProp = 'category';
     }
@@ -94,10 +95,7 @@ class PermTable extends Table
             "label"   => "状态",
             "search"  => true,
             "type"    => "select",
-            "options" => [
-                ["label" => "禁用", "value" => 0],
-                ["label" => "启用", "value" => 1],
-            ]
+            "options" => StatusEnum::toDict()
         ];
     }
 

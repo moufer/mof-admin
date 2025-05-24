@@ -25,11 +25,15 @@ class SystemRolePermAddCreateAt extends Migrator
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function change()
+    public function up()
     {
         $table = $this->table('system_role_perm');
         $table->addColumn('create_at', 'datetime', [
             'comment' => '添加时间', 'null' => true
         ])->update();
+    }
+
+    public function down()
+    {
     }
 }

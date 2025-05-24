@@ -4,6 +4,7 @@ namespace mof;
 
 use mof\annotation\Inject;
 use mof\concern\logic\Curd;
+use mof\exception\LogicException;
 use think\App;
 
 class Logic
@@ -50,6 +51,19 @@ class Logic
             $this->model = $model;
         }
         return $this->model;
+    }
+
+    /**
+     * 获取模型搜索器
+     * @param array $params
+     * @return Searcher
+     */
+    public function searcher(array $params = []): Searcher
+    {
+        if (empty($this->model)) {
+            throw new LogicException('未设置搜索器模型类');
+        }
+        return call_user_func([get_class($this->model), 'createSearcher'], $params);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace app\concern;
 
 use app\library\Controller;
+use mof\annotation\Description;
 use mof\ApiResponse;
 use mof\utils\Arr;
 use think\db\exception\DbException;
@@ -16,10 +17,11 @@ use think\response\Json;
 trait Config
 {
     /**
-     * 获取参数选项
+     * 参数选项
      * @param $module string 模块名称
      * @return Json
      */
+    #[Description('参数选项')]
     public function options(string $module): Json
     {
         if (!$class = \mof\Module::loadConfig($module)) {
@@ -35,6 +37,7 @@ trait Config
      * @param $module
      * @return Json
      */
+    #[Description('提交配置参数')]
     public function submit($module): Json
     {
         if (!$class = \mof\Module::loadConfig($module)) {

@@ -4,7 +4,6 @@ namespace app\library;
 
 use mof\annotation\Inject;
 use mof\ApiController;
-use mof\FormValidate;
 use mof\interface\AuthInterface;
 
 /**

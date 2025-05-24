@@ -2,6 +2,8 @@
 
 namespace mof\utils;
 
+use Exception;
+
 /**
  * Html Security Class
  *
@@ -855,5 +857,4 @@ class HtmlSecurity
 
         return $str;
     }
-
 }

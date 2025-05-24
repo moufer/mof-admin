@@ -25,7 +25,7 @@ class SystemPerm extends Migrator
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function change()
+    public function up()
     {
         //hash,name
         $table = $this->table('system_perm');
@@ -41,5 +41,9 @@ class SystemPerm extends Migrator
                 ->addIndex(['pid', 'hash'], ['unique' => true, 'name' => 'hash'])
                 ->save();
         }
+    }
+
+    public function down()
+    {
     }
 }

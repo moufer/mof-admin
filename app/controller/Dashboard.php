@@ -8,11 +8,9 @@
 namespace app\controller;
 
 use app\library\Controller;
-use app\library\Total;
 use app\logic\TotalLogic;
 use mof\annotation\AdminPerm;
 use mof\ApiResponse;
-use think\facade\Event;
 use think\response\Json;
 
 #[AdminPerm(

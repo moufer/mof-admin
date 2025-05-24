@@ -39,7 +39,8 @@ class Mof
             $url = $path;
         }
         if (str_starts_with($url, '/')) {
-            $url = app('request')->domain() . $url;
+            $domain = config('system.storage_domain', app('request')->domain());
+            $url = $domain . $url;
         }
         return $url;
     }

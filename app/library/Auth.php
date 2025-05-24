@@ -6,6 +6,7 @@ use mof\exception\AuthTokenException;
 use mof\interface\AuthInterface;
 use mof\interface\TokenInterface;
 use mof\interface\UserInterface;
+use mof\Model;
 use mof\Token;
 use think\facade\Cache;
 
@@ -13,7 +14,7 @@ class Auth implements AuthInterface
 {
     protected TokenInterface $token;
     /**
-     * @var UserInterface|null 当前登录用户
+     * @var UserInterface|Model|null 当前登录用户
      */
     protected ?UserInterface $user = null;
 
@@ -35,7 +36,8 @@ class Auth implements AuthInterface
         $token = $this->token->create($this->aud);
 
         //缓存用户
-        Cache::set($this->token->uuid(),
+        Cache::set(
+            $this->token->uuid(),
             [$user->getId(), get_class($user)],
             $token['expires'] - time()
         );
@@ -99,7 +101,7 @@ class Auth implements AuthInterface
 
     /**
      * 用户信息
-     * @return UserInterface
+     * @return UserInterface|Model
      */
     public function getUser(): UserInterface
     {
@@ -121,7 +123,9 @@ class Auth implements AuthInterface
      */
     public function refresh(): bool
     {
-        if (!$this->user) return false;
+        if (!$this->user) {
+            return false;
+        }
 
         $this->user->refresh();
         $token = $this->token->toArray();
@@ -146,5 +150,4 @@ class Auth implements AuthInterface
     {
         return $this->token;
     }
-
 }

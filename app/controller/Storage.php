@@ -3,14 +3,10 @@
 namespace app\controller;
 
 use app\library\Controller;
-use app\concern\Batch;
-use app\library\Searcher;
 use app\logic\StorageLogic;
 use mof\annotation\AdminPerm;
 use mof\annotation\Inject;
 use mof\ApiResponse;
-use think\db\exception\DataNotFoundException;
-use think\db\exception\DbException;
 use think\response\Json;
 
 #[AdminPerm(
@@ -25,31 +21,40 @@ class Storage extends Controller
     public function index(): Json
     {
         return ApiResponse::success(
-            $this->logic->paginate($this->request->searcher())
+            $this->logic->paginate($this->request->searcher($this->getScopeData()))
         );
     }
 
     public function delete($id): Json
     {
-        $this->logic->delete($id);
+        $this->logic->withAccess($this->getScopeData())->delete($id);
         return ApiResponse::success();
     }
 
     public function deletes(): Json
     {
-        $this->logic->deletes($this->request->getPostIds());
+        $this->logic->withAccess($this->getScopeData())->deletes($this->request->getPostIds());
         return ApiResponse::success();
     }
 
     public function selector(): Json
     {
         return ApiResponse::success(
-            $this->logic->paginate(
-                $this->request->searcher([
-                    'user_type' => 'system',
-                    'user_id'   => $this->auth->getId()
-                ])
-            )
+            $this->logic->paginate($this->request->searcher($this->getScopeData()))
         );
+    }
+
+    /**
+     * 获取当前资源的访问范围数据
+     * @return array
+     */
+    protected function getScopeData(): array
+    {
+        return [
+            'extend_type' => 'system',
+            'extend_id'   => 0,
+            'user_type'   => 'system',
+            'user_id'     => $this->auth->getId()
+        ];
     }
 }

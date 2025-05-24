@@ -14,7 +14,7 @@ class PermAction extends Perm
 {
     protected array $attrs = [
         'type', 'category', 'module', 'name', 'title', 'hash',
-        'perm',
+        'perm', 'status'
     ];
 
     protected array $data = [

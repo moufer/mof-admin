@@ -2,7 +2,8 @@
 
 namespace mof\front;
 
-use JetBrains\PhpStorm\ArrayShape;
+use mof\utils\DictArray;
+use ReflectionClass;
 use think\helper\Str;
 
 /**
@@ -10,6 +11,8 @@ use think\helper\Str;
  */
 abstract class Table
 {
+    /** @var string 模块名 */
+    protected string $module = '';
     /** @var string 表名 */
     protected string $table = '';
     /** @var string 接口基础地址 */
@@ -27,10 +30,10 @@ abstract class Table
         'deletes' => '/deletes',
         'status'  => '/status'
     ];
-    /** @var array 表格选项 */
-    protected array  $tabs      = [];
-    protected string $tabProp   = '';
-    protected string $activeTab = '';
+    /** @var array|string 表格选项 */
+    protected array|string $tabs      = [];
+    protected string       $tabProp   = '';
+    protected string       $activeTab = '';
 
     /** @var array|string[] 操作条按钮 */
     protected array $toolbarButtons = ['add', 'delete', 'status', 'refresh', 'search'];
@@ -68,7 +71,7 @@ abstract class Table
 
     /** @var array|array[] 列默认选项 */
     protected array $defaultOptions = [
-        'normal'        => ['width' => 100, 'align' => 'center'],
+        'normal'        => ['width' => '*', 'align' => 'center'],
         'prop.id'       => ['width' => 80, 'align' => 'center'],
         'prop.sort'     => ['width' => 80, 'align' => 'center'],
         'type.datetime' => ['width' => 115, 'align' => 'center'],
@@ -92,13 +95,12 @@ abstract class Table
         //从类名里获取module和table，格式：module|app\{module}\table\{table}Table
         $class = trim(get_class($this), '\\');
         $class = explode('\\', $class);
-        $this->table = Str::snake(substr(array_pop($class), 0, -5));
-        //替换接口基础地址里的{module}和{table}
-        $this->serverBaseUrl = str_replace(
-            ['{module}', '{table}'],
-            ['app' === $class[0] ? 'system' : $class[1], $this->table],
-            $this->serverBaseUrl
-        );
+
+        !$this->table && $this->table = Str::snake(substr(array_pop($class), 0, -5));
+        !$this->module && $this->module = 'app' === $class[0] ? 'system' : $class[1];
+
+        //自动替换接口基础地址里的变量
+        $this->serverBaseUrl = $this->parseServerBaseUrl();
     }
 
     /**
@@ -112,8 +114,15 @@ abstract class Table
         foreach ($methods as $method) {
             if (str_starts_with($method, 'column')) {
                 $column = $this->$method();
-                if (!$column) continue;
-                //默认宽度
+                if (!$column) {
+                    continue;
+                }
+                //如果没有定义prop属性，从方法名获取
+                if (empty($column['prop'])) {
+                    $propName = substr($method, 6); // 去掉'column'前缀
+                    $column['prop'] = Str::snake($propName); // 驼峰转下划线
+                }
+                //填充默认选项
                 $column = $this->fillColumnOptions($column);
                 //排序序号
                 if (empty($column['order'])) {
@@ -145,6 +154,7 @@ abstract class Table
 
     /**
      * 操作列配置
+     * 自定义按钮组格式：['name'=>'按钮名','type'=>'按钮类型','icon'=>'mode=icon时填写','command'='按钮点击后出发点的命令']
      * @return array
      */
     public function operation(): array
@@ -170,6 +180,18 @@ abstract class Table
             $this->getTableColumns();
         }
 
+        //tabs是枚举类时，转换为数组
+        if ($this->tabs && is_string($this->tabs) && class_exists($this->tabs)) {
+            //检测$this->tabs是不是枚举类
+            $ref = new ReflectionClass($this->tabs);
+            if ($ref->isEnum()) {
+                $this->tabs = call_user_func([$this->tabs, 'toDict'])->toElementData()->toTabs('label', 'value');
+                if (!$this->activeTab) {
+                    $this->activeTab = $this->tabs[0]['name'];
+                }
+            }
+        }
+
         return [
             "manageOptions" => (object)$this->manageOptions(),
 
@@ -182,7 +204,7 @@ abstract class Table
 
             "toolbarButtons" => $this->toolbarButtons,
 
-            "tableSelection"  => $this->tableSelection,
+            "tableSelection"     => $this->tableSelection,
             "tableSelectionExpr" => $this->tableSelectionExpr,
 
             "tableColumns"    => $this->tableColumns,
@@ -222,6 +244,11 @@ abstract class Table
         if (!$options) {
             $options = $this->defaultOptions['normal'];
         }
+        //检测枚举选项
+        if (isset($column['type']) && in_array($column['type'], ['select', 'radio']) && $column['options'] instanceof DictArray) {
+            $column['options'] = $column['options']->toElementData()->toSelectOptions();
+        }
+
         //合并
         $result = array_merge($options, $column);
 
@@ -242,4 +269,34 @@ abstract class Table
         return $result;
     }
 
+    /**
+     * 解析serverBaseUrl
+     * @return string
+     */
+    protected function parseServerBaseUrl(): string
+    {
+        $mapping = [
+            'module' => $this->module,
+            'table'  => $this->table,
+        ];
+
+        //替换接口基础地址里的{module}和{table}
+        $url = str_replace(['{module}', '{table}'], $mapping, $this->serverBaseUrl);
+        //查找{xxx}变量
+        $matches = [];
+        preg_match_all('/\{(.*?)}/', $url, $matches);
+        //替换变量
+        foreach ($matches[1] as $var) {
+            if (!isset($mapping[$var])) {
+                //从request参数里获取值
+                if (app()->request->has($var)) {
+                    $mapping[$var] = app()->request->get($var);
+                } else {
+                    continue;
+                }
+            }
+            $url = str_replace("{{$var}}", $mapping[$var], $url);
+        }
+        return $url;
+    }
 }

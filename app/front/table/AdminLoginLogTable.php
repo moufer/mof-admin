@@ -7,7 +7,7 @@
 
 namespace app\front\table;
 
-use app\enum\LoginStatus;
+use app\enum\LoginStatusEnum;
 use mof\front\Table;
 
 class AdminLoginLogTable extends Table
@@ -70,8 +70,8 @@ class AdminLoginLogTable extends Table
             "prop"    => "status",
             "label"   => "登录状态",
             "type"    => "select",
-            "options" => LoginStatus::toDict()->toElementData()->toSelectOptions(),
-            "width" => 120,
+            "options" => LoginStatusEnum::toDict(),
+            "width"   => 120,
         ];
     }
 

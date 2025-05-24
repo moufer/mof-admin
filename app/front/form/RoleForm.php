@@ -13,14 +13,18 @@ class RoleForm extends Form
 {
     protected array $validate = [
         'param' => [
-            'category', 'name', 'status/d', 'perm_ids/a', 'intro'
+            'category',
+            'name',
+            'status/d',
+            'perm_ids/a',
+            'intro'
         ],
-        'rule'  => [
+        'rule' => [
             'name|名称'     => 'require|unique:system_role',
             'status|状态'   => 'require|in:0,1',
             'perms|权限'    => 'array',
             'category|分类' => 'require',
-        ]
+        ],
     ];
 
     protected function elements(?Model $model = null): array
@@ -71,7 +75,7 @@ class RoleForm extends Form
 
     private function getPermSwitchData()
     {
-        return $this->getSgModules()->map(fn($tab) => [
+        return $this->getSgModules()->map(fn ($tab) => [
             '_expr' => 'category=' . $tab['value'],
             'data'  => Perm::getAll('category=' . $tab['value'], true),
         ]);

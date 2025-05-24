@@ -2,6 +2,7 @@
 
 namespace app\front\table;
 
+use app\enum\ModuleStatusEnum;
 use mof\front\Table;
 
 class ModuleTable extends Table
@@ -10,7 +11,7 @@ class ModuleTable extends Table
     protected bool   $showSearch     = false;
     protected bool   $showPagination = false;
     protected bool   $tableSelection = false;
-    protected array  $toolbarButtons = ['refresh','search'];
+    protected array  $toolbarButtons = ['refresh', 'search'];
     protected string $sortField      = 'order';
 
     public function columnName(): array
@@ -69,11 +70,7 @@ class ModuleTable extends Table
             "label"   => "状态",
             "type"    => "select",
             "search"  => true,
-            "options" => [
-                ["label" => "已停用", "value" => 0],
-                ["label" => "已启用", "value" => 1],
-                ["label" => "未安装", "value" => -1],
-            ]
+            "options" => ModuleStatusEnum::toDict(),
         ];
     }
 }

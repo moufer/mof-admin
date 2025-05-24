@@ -8,7 +8,6 @@ use think\facade\Route;
 
 class Module
 {
-
     /**
      * 获取模块路径
      * @param $name
@@ -135,7 +134,7 @@ class Module
      */
     public static function writeEnabledModules($modules): bool|int
     {
-        $result = array_map(fn($module) => $module['name'], $modules);
+        $result = array_map(fn ($module) => $module['name'], $modules);
         //写入一个php文件，内容是return $result的数组
         $file = runtime_path() . 'mof' . DIRECTORY_SEPARATOR . 'modules.php';
         if (!is_dir(dirname($file))) {
@@ -190,8 +189,10 @@ class Module
      */
     public static function getEnabledModules(): array
     {
-        static $modules = false;
-        if ($modules) return $modules;
+        static $modules = null;
+        if ($modules) {
+            return $modules;
+        }
 
         $modules = [];
         $files = runtime_path() . 'mof' . DIRECTORY_SEPARATOR . 'modules.php';
@@ -235,7 +236,9 @@ class Module
     {
         $file = static::path($module) . 'front' . DIRECTORY_SEPARATOR . 'Config.php';
         $className = static::namespace($module) . 'front\\Config';
-        if (!file_exists($file) || !class_exists($className)) return null;
+        if (!file_exists($file) || !class_exists($className)) {
+            return null;
+        }
         return new $className();
     }
 
@@ -247,8 +250,12 @@ class Module
     public static function getNameByNameSpace(string $namespace): ?string
     {
         $list = explode('\\', trim($namespace, '\\'));
-        if ($list[0] === 'app') return 'system';
-        if ($list[0] === 'module') return $list[1];
+        if ($list[0] === 'app') {
+            return 'system';
+        }
+        if ($list[0] === 'module') {
+            return $list[1];
+        }
         return null;
     }
 }

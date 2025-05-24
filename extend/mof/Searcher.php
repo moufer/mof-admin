@@ -2,6 +2,7 @@
 
 namespace mof;
 
+use think\Collection;
 use think\db\BaseQuery;
 use think\db\Query;
 use think\helper\Str;
@@ -36,7 +37,7 @@ class Searcher
         return $this;
     }
 
-    public function appends(array $attrs)
+    public function appends(array $attrs): static
     {
         $this->appends = $attrs;
         return $this;
@@ -107,7 +108,9 @@ class Searcher
                 ? $this->model->getSearchFields() : false;
             if ($searchFields) {
                 foreach ($searchFields as $field => $option) {
-                    if (!isset($this->params[$field])) continue;        //没有提供这个参数
+                    if (!isset($this->params[$field])) {
+                        continue;
+                    }        //没有提供这个参数
                     $val = $this->params[$field];                       //参数值
                     $method = 'search' . Str::studly($field) . 'Attr';  //先查找是否存在专有搜索器
                     if (method_exists($this->model, $method)) {
@@ -138,9 +141,10 @@ class Searcher
         return $query;
     }
 
-    public function select(?int $page = null): \think\Collection
+    public function select(?int $page = null): Collection
     {
         $query = $this->build();
+
         $page && $query->page($page, $this->pageSize);
         $select = $query->select();
         if ($this->appends && $select->count()) {
@@ -149,7 +153,7 @@ class Searcher
         return $select;
     }
 
-    public function paginate($simple = false): \think\Paginator
+    public function paginate($simple = false): Paginator
     {
         //检测是否设置了最大页吗
         if ($this->limitTotal > 0) {
@@ -157,7 +161,7 @@ class Searcher
             //获取当前页页码
             $page = (int)app()->request->get('page', 1);
             if ($page > $lastPage) {
-                $results = new \think\Collection([]);
+                $results = new Collection([]);
                 $total = $this->limitTotal;
                 //返回空记录
                 $paginate = Paginator::make($results, $this->pageSize, $page, $total, $simple);
@@ -175,17 +179,31 @@ class Searcher
         return $paginate;
     }
 
-    protected function searchAttr(array|string $option,
-                                  Query        $query, string $key, mixed $value, array $data): void
-    {
-        if (is_string($option)) $option = [$option];
-        if (empty($option[0])) $option[0] = 'string';
-        if (empty($option['op'])) $option['op'] = '=';
+    protected function searchAttr(
+        array|string $option,
+        Query $query,
+        string $key,
+        mixed        $value,
+        array $data
+    ): void {
+        if (is_string($option)) {
+            $option = [$option];
+        }
+        if (empty($option[0])) {
+            $option[0] = 'string';
+        }
+        if (empty($option['op'])) {
+            $option['op'] = '=';
+        }
 
         switch ($option[0]) {
             case 'integer':
-                if (!is_numeric($value)) return;
-                if (empty($value) && empty($option['zero'])) return;
+                if (!is_numeric($value)) {
+                    return;
+                }
+                if (empty($value) && empty($option['zero'])) {
+                    return;
+                }
                 if ('find_in_set' === $option['op']) {
                     $query->whereFindInSet($key, $value);
                 } else {
@@ -193,17 +211,25 @@ class Searcher
                 }
                 break;
             case 'string':
-                if (!is_string($value) && !is_numeric($value)) return;
-                if (empty($option['empty']) && empty($value)) return;
+                if (!is_string($value) && !is_numeric($value)) {
+                    return;
+                }
+                if (empty($option['empty']) && empty($value)) {
+                    return;
+                }
                 if ('like' === $option['op']) {
-                    if (empty($option['like'])) $option['like'] = '%{value}%';
+                    if (empty($option['like'])) {
+                        $option['like'] = '%{value}%';
+                    }
                     $query->whereLike($key, str_replace('{value}', $value, $option['like']));
                 } else {
                     $query->where($key, $option['op'], $value);
                 }
                 break;
             case 'datetime':
-                if (empty($value)) return;
+                if (empty($value)) {
+                    return;
+                }
                 if ('between' === $option['op']) {
                     empty($option['split']) && $option['split'] = ',';
                     if (!is_array($value) && str_contains($value, $option['split'])) {
@@ -215,7 +241,9 @@ class Searcher
                 }
                 break;
             case 'array':
-                if (!is_array($value) || empty($value)) return;
+                if (!is_array($value) || empty($value)) {
+                    return;
+                }
                 $query->whereIn($key, $value);
                 break;
             case 'boolean':

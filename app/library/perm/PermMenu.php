@@ -20,11 +20,11 @@ class PermMenu extends Perm
 {
     protected array $attrs = [
         'type', 'category', 'module', 'name', 'title', 'hash',
-        'url', 'perm', 'icon', 'sort', 'children', 'group'
+        'url', 'perm', 'icon', 'sort', 'children', 'group', 'status'
     ];
 
     protected array $data = [
-        'type' => 'menu',
+        'type'     => 'menu',
         'children' => []
     ];
 
