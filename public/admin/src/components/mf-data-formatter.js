@@ -113,7 +113,7 @@ export default {
             );
           }
           return this.column.options.filter(
-            (item) => this.value.indexOf(item.this.value) >= 0
+            (item) => this.value.indexOf(item.value) >= 0
           );
         default:
           return this.value;
