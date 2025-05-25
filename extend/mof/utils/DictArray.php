@@ -2,16 +2,6 @@
 
 namespace mof\utils;
 
-use ArrayAccess;
-use ArrayIterator;
-use Countable;
-use IteratorAggregate;
-use JsonSerializable;
-use think\contract\Arrayable;
-use think\contract\Jsonable;
-use think\helper\Arr;
-use Traversable;
-
 class DictArray
 {
     /**

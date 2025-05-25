@@ -8,6 +8,7 @@ interface TokenInterface
      * @return string
      */
     public function uuid(): string;
+
     /**
      * @return void
      */
@@ -15,9 +16,10 @@ interface TokenInterface
 
     /**
      * @param string $aud
+     * @param string|null $uuid
      * @return array
      */
-    public function create(string $aud): array;
+    public function create(string $aud, string $uuid = null): array;
 
     /**
      * @param string $token

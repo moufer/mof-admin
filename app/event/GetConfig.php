@@ -3,8 +3,8 @@
 namespace app\event;
 
 use app\model\Config;
+use app\model\Module;
 use mof\utils\Arr;
-use think\facade\Cache;
 
 class GetConfig
 {
@@ -24,14 +24,14 @@ class GetConfig
                 //一维数组换成多维数组
                 $convertArray && $moduleConfig = Arr::coverToMultidimensional($moduleConfig);
                 //更新config
-                app('config')->set($moduleConfig, $name);
+                $this->setConfig($moduleConfig ?? [], $name);
             }
         }
     }
 
     protected function getConfig(): array
     {
-        $modules = array_map(fn($m) => $m['name'], \app\model\Module::enabledModules());
+        $modules = array_map(fn($m) => $m['name'], Module::enabledModules());
         //找到system，从中删除
         $key = array_search('system', $modules);
         if ($key !== false) unset($modules[$key]);
@@ -47,11 +47,18 @@ class GetConfig
                 $config = $rows->toArray();
                 app('cache')->set($cacheKey, $config);
             }
-            if ($config) {
+            if ($config || $name == 'system') {
+                //确保system配置存在，不管是否有配置
                 $carry[$name] = $config;
             }
             return $carry;
         });
         return $result ?? [];
+    }
+
+    protected function setConfig(array $config, $name): void
+    {
+
+        app('config')->set($config, $name);
     }
 }

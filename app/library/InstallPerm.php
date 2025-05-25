@@ -8,7 +8,6 @@ use mof\exception\LogicException;
 use mof\Module;
 use mof\utils\AnnotationParser;
 use think\db\exception\{DataNotFoundException, DbException, ModelNotFoundException};
-use think\db\Raw;
 use think\facade\Db;
 use think\helper\Str;
 
@@ -60,7 +59,6 @@ class InstallPerm
                 //保存到数据库
                 $this->savePerm($perms, null, $installFlag);
             }
-
             //卸载没有找到权限结构或者失效的菜单(不调用模型事件)
             $this->uninstall($installFlag);
 
@@ -147,11 +145,17 @@ class InstallPerm
         }
 
         //扫描目录，找控制器类文件，并将文件名转化为类名
-        $files = scandir($scanDir);
-        $files = array_filter($files, fn($file) => preg_match('/^[A-Z][a-zA-Z0-9]+\.php$/', $file));
+        $files = $this->scanControllerFiles($scanDir);
         if (!$files) return null;
 
-        $controllers = array_map(fn($file) => $namespace . basename($file, '.php'), $files);
+        $controllers = array_map(function ($file) use ($scanDir, $namespace) {
+            $file = str_replace([$scanDir, DIRECTORY_SEPARATOR], ["", "\\"], $file);
+            //去掉后缀
+            $file = preg_replace('/\.php$/i', '', $file);
+            //转化为类名
+            return $namespace . $file;
+        }, $files);
+
         //获取控制器的权限信息
         $perms = array_filter(
             array_map(fn($controller) => AnnotationParser::adminPerm($controller), $controllers)
@@ -168,7 +172,7 @@ class InstallPerm
         $permGroup = $this->moduleInfo['admin_perm_group'] ?? [];
         foreach ($group as $groupName => $groupInfo) {
             $merge = [];
-            //正则判断$groupName是不是 xxx:yyy:zzz格式，如果是，表示添加到其他模块的的group
+            //正则判断$groupName是不是 category:moduleName:name 形式，如果是，表示添加到其他模块的的group
             if (preg_match('/^[a-z]+:[a-z]+:[a-z]+$/i', $groupName)) {
                 list($category, $moduleName, $name) = explode(':', $groupName);
                 //去数据库里找这个字段
@@ -230,8 +234,9 @@ class InstallPerm
 
         foreach ($perms as $perm) {
             $data = $perm->toArray();
+
             $data['pid'] = $parentPerm ? $parentPerm->id : 0;
-            $data['status'] = 1;
+            $data['status'] = $data['status'] ?: 1;
             $data['install_flag'] = $installFlag;
 
             //查找是不是存在
@@ -246,6 +251,7 @@ class InstallPerm
             } else if ($tblPrem->module === $this->moduleName) {
                 //只更新当前模块的权限
                 $tblPrem->save([
+                    'sort'         => $data['sort'] ?? 100,
                     'title'        => $data['title'],
                     'icon'         => $data['icon'] ?? '',
                     'install_flag' => $installFlag
@@ -298,4 +304,24 @@ class InstallPerm
         }, $actions);
     }
 
+    /**
+     * 扫描控制器文件，包含子目录
+     * @param string $scanDir
+     * @return array
+     */
+    protected function scanControllerFiles(string $scanDir): array
+    {
+        $result = [];
+        $files = scandir($scanDir);
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..') continue;
+            if (is_dir($scanDir . $file)) {
+                $nextDir = $scanDir . $file . DIRECTORY_SEPARATOR;
+                $result = array_merge($result, $this->scanControllerFiles($nextDir));
+            } else if (preg_match('/^[A-Z][a-zA-Z0-9]+\.php$/', $file)) {
+                $result[] = $scanDir . $file;
+            }
+        }
+        return $result;
+    }
 }

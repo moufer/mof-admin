@@ -2,7 +2,6 @@
 
 namespace mof\concern;
 
-use mof\enum\StatusEnum;
 use mof\utils\DictArray;
 
 /**
@@ -41,4 +40,5 @@ trait EnumExtend
                    ?->getAttributes()[0]
                    ?->getArguments()[0];
     }
+
 }

@@ -60,15 +60,48 @@ php think mof:install
 ### 配置域名
 nginx/apache配置新域名，并将项目的public目录作为网站根目录。
 
-### 访问系统
-后台是使用VUE非构建模式开发，所以不需要重新构建，直接访问即可。
-访问链接 `https://你的域名/admin/index.html`，使用管理员账号登录。
+## 访问前端
+进入前端代码目录 `public/admin`，先拉取库，并构建
+~~~
+npm install
+npm run build
+~~~
+
+### 开发环境 
+完成上面操作后，如果需要在本地开发时，需要启动下http服务。在修改前端代码时，页面会热启动，方便开发。
+~~~
+npm run serve
+~~~
+启动服务后，访问链接 `http://localhost:5050`，使用管理员账号登录。
+
+### 生产环境
+在生产环境下，考虑到静态文件会被浏览器缓存，所以需要通过构建的方式来生成importmap。
+
+先修改下 `.env.production` 里的 SERVER_URL ，修改为你的生产环境域名，如果你打算与框架代码放在一起，就放到 `public/admin` 下， SERVER_URL 改成 `https://你的域名/admin`。
+
+接着执行命令
+~~~
+npm run build:prod
+~~~
+构建换成后，进入dist目录里，把文件上传到对应的服务器目录下，访问链接 `https://你的域名/admin/index.html`，使用管理员账号登录。
 
 ## 开发文档
 待完善
 
 ## 使用文档
 待完善
+
+## 鸣谢
+感谢以下的项目或资源的支持！
+
+* ThinkPHP：https://www.thinkphp.cn/
+* ElementPlus：https://element-plus.gitee.io/zh-CN/
+* Vue3：https://v3.cn.vuejs.org/
+* ......
+
+## 联系我
+![企业微信二维码](https://www.modoer.cn/wp-content/uploads/2024/11/%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg)
+
 
 ## 版权信息
 

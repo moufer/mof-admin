@@ -18,7 +18,7 @@ class PermGroup extends Perm
 {
     protected array $attrs = [
         'type', 'category', 'module', 'name', 'title', 'hash',
-        'icon', 'sort', 'children',
+        'icon', 'sort', 'children', 'status'
     ];
 
     protected array $data = [

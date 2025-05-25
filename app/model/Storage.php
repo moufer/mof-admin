@@ -25,13 +25,15 @@ class Storage extends Model
     ];
 
     protected array $searchFields = [
-        'id'        => 'integer',
-        'user_type' => 'string',
-        'user_id'   => 'integer',
-        'file_type' => 'string',
-        'mime'      => 'string',
-        'title'     => ['string', 'op' => 'like'],
-        'create_at' => ['datetime', 'op' => 'between'],
+        'id'          => 'integer',
+        'extend_type' => 'string',
+        'extend_id'   => 'integer',
+        'user_type'   => 'string',
+        'user_id'     => 'integer',
+        'file_type'   => 'string',
+        'mime'        => 'string',
+        'title'       => ['string', 'op' => 'like'],
+        'create_at'   => ['datetime', 'op' => 'between'],
     ];
 
     public static function extendMorph(string $morph, array $alias): void

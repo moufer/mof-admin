@@ -1,6 +1,6 @@
 .vscode
+.idea
 node_modules
-yarn.lock
-package.json
-package-lock.json
+dist
 rollup.config.js
+.DS_Store

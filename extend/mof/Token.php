@@ -37,11 +37,11 @@ class Token implements TokenInterface
      * @param string $aud 面向的用户
      * @return array 令牌信息，格式：['token' => $token, 'expires' => $expires]
      */
-    public function create(string $aud = 'system'): array
+    public function create(string $aud = 'system', string $uuid = null): array
     {
         //生成token
         $payload = [];
-        $uuid = Random::uuid();
+        $uuid = empty($uuid) ? Random::uuid() : $uuid;
         $token = $this->createJWT($uuid, $aud, $payload);
 
         $this->uuid = $uuid;
