@@ -1,4 +1,9 @@
-import { deepCopy, getThumbByFileType, serverUrl } from "/src/utils/index.js";
+import {
+  deepCopy,
+  getThumbByFileType,
+  uploadUrl,
+  storageSelectorUrl,
+} from "/src/utils/index.js";
 import { ElMessage } from "element-plus";
 export default {
   inject: ["http"],
@@ -89,9 +94,7 @@ export default {
       };
       this.uploadProps["show-file-list"] = false;
       if (typeof this.uploadProps["action"] === "undefined") {
-        this.uploadProps["action"] = serverUrl(
-          "/system/upload/" + this.fileType.action
-        );
+        this.uploadProps["action"] = uploadUrl(this.fileType.action);
       }
       if (typeof this.uploadProps["headers"] === "undefined") {
         this.uploadProps["headers"] = {
@@ -104,7 +107,7 @@ export default {
     },
 
     getData() {
-      let url = serverUrl("/system/storage/selector");
+      let url = storageSelectorUrl();
       let params = new URLSearchParams();
       params.append(
         "params[file_type]",
@@ -115,7 +118,7 @@ export default {
       params.append("order[sort]", "desc");
       params.append("page", this.currentPage);
       params.append("page_size", 10);
-      url += "?" + params.toString();
+      url += (url.indexOf("?") === -1 ? "?" : "&") + params.toString();
 
       this.http
         .get(url)

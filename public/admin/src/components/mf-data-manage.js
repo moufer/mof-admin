@@ -42,6 +42,7 @@ export default {
     "table-operation-click",
     "toolbar-click",
     "table-data-change",
+    "form-operate-click",
   ],
   data() {
     return {
@@ -331,7 +332,7 @@ export default {
     },
 
     //提交表单
-    submit(action, data, pkId) {
+    formSubmit(action, data, pkId) {
       if ("edit" === action) {
         data[this.pk] = pkId;
       } else if (typeof data[this.pk] !== "undefined") {
@@ -349,6 +350,10 @@ export default {
         .catch((err) => {
           err.errmsg && ElMessage.error(err.errmsg);
         });
+    },
+
+    formOperate(command, formDialog, data) {
+      this.$emit("form-operate-click", command, formDialog, data);
     },
 
     //初始化表格配置
@@ -615,7 +620,7 @@ export default {
         </div>
     </div>
     <slot name="form-dialog">
-        <MfDataFormDialog ref="dialog" @submit="submit" />
+        <MfDataFormDialog ref="dialog" @submit="formSubmit" @operate="formOperate" />
     </slot>
     <slot name="detail-dialog">
         <el-dialog v-model="detailDialogVisible" title="详情" width="800">

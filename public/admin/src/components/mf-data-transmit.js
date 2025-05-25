@@ -38,9 +38,8 @@ export default {
       params.append("page", page.pageNum || 1);
       params.append("page_size", page.pageSize || 10);
       //把排序参数转换成url参数
-      if (params.toString()) {
-        url += "?" + params.toString();
-      }
+      const split = url.indexOf("?") > -1 ? "&" : "?";
+      url += (split === "?" ? window.serverUrlSplit : "&") + params.toString();
       return new Promise((resolve, reject) => {
         //从服务器加载数据
         this.http

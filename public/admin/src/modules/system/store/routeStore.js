@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
-import http from "/src/utils/http.js";
+import api from "/src/modules/system/common/api.js";
 
 const router = useRouter;
 
@@ -33,8 +33,8 @@ export const useRouteStore = defineStore("route", {
 
   actions: {
     async loadPerms() {
-      const res = await http.get("/system/passport/info?module=system");
-      this.setPerms(res.data); //加路由规则
+      const { data } = await api.passport.info("system");
+      this.setPerms(data); //加路由规则
     },
 
     setCurrentRoute(to) {
@@ -64,7 +64,7 @@ export const useRouteStore = defineStore("route", {
           router.addRoute("index", {
             path: perm.url,
             meta: { title: perm.title, id: perm.id, pid: perm.pid },
-            component: () => import(`/src/modules/${perm.url}.js`),
+            component: () => import(`@/modules/${perm.url}.js`),
           });
         } else if (perm.type === "group" && perm.children.length > 0) {
           this.addRoutes(perm.children, params);

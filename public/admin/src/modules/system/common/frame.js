@@ -33,9 +33,9 @@ export default {
 
     const toProfile = () => router.push("/system/profile");
 
-    watch(route.path, (path) => {
-      console.log("path", path);
-    });
+    // watch(route.path, (path) => {
+    //   console.log("path", path);
+    // });
 
     onMounted(() => {
       if (route.path === "/") {

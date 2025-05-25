@@ -1,5 +1,66 @@
-import { set } from "lodash-es";
+import { set, includes } from "lodash-es";
 import { useConfigStore } from "/src/modules/system/store/configStore.js";
+
+/**
+ * 获取importmap
+ * @returns
+ */
+const getImportmap = function () {
+  if (window.importmap) {
+    return window.importmap;
+  }
+  const importmapElement = document.querySelector('script[type="importmap"]');
+  if (importmapElement) {
+    const importmap = JSON.parse(importmapElement.textContent);
+    return importmap.imports;
+  }
+  return null;
+};
+
+/**
+ * 资源链接地址
+ * @param {string} path
+ * @returns
+ */
+const assetUrl = (path) => {
+  path = path.startsWith("/") ? path.substring(1) : path;
+  return window.assetUrl + "/" + path;
+};
+
+/**
+ * 第三方资源链接地址
+ * @param {string} packageName
+ * @param {string} filePath
+ * @returns
+ */
+const vendorPath = (packageName, returnFilePath = false) => {
+  const importmap = getImportmap();
+  const packagePath = importmap[packageName] || "";
+  if (!packagePath) return "";
+
+  let path = "";
+  if (returnFilePath) {
+    path = packagePath;
+  } else {
+    //去掉文件名
+    path = packagePath.split("/").slice(0, -1).join("/");
+  }
+  //如果开头是./，则去掉
+  path = path.startsWith("./") ? path.substring(2) : path;
+  //与clientUrl合并
+  return clientUrl(path);
+};
+
+/**
+ * 第三方资源链接地址
+ * @param {string} packageName
+ * @param {string} filePath
+ * @returns
+ */
+const vendorUrl = (packageName, filePath) => {
+  const path = vendorPath(packageName, false);
+  return path + "/" + filePath;
+};
 
 /**
  * 服务器端链接地址
@@ -8,12 +69,9 @@ import { useConfigStore } from "/src/modules/system/store/configStore.js";
  * @returns
  */
 const serverUrl = (url, params = []) => {
-  //如果url开头是"/"，则去掉
-  if (url.charAt(0) === "/") {
-    url = url.substring(1);
-  }
+  url = url.startsWith("/") ? url.substring(1) : url;
   if (params.length > 0) {
-    url += "?" + buildQueryString(params);
+    url += window.serverUrlSplit + buildQueryString(params);
   }
   return window.serverUrl + "/" + url;
 };
@@ -42,12 +100,37 @@ const clientUrl = (url, params = []) => {
  * @returns
  */
 const storageUrl = (url, provider = "default") => {
+  if (url.substring(0, 4) === "http") {
+    return url;
+  }
   const { config } = useConfigStore();
   if (url.charAt(0) === "/") {
     url = url.substring(1);
   }
+  //如果第一个字符时"/"，则去掉
+  if (url.charAt(0) === "/") {
+    url = url.substring(1);
+  }
+  return config.storage_url + "/" + url;
+};
+
+/**
+ * 上传文件地址
+ * @param {string} type image|file|media
+ * @returns
+ */
+const uploadUrl = (type) => {
+  const { config } = useConfigStore();
+  return serverUrl(config.upload_url.replace("{type}", type));
+};
+
+/**
+ * 存储端选择器地址
+ */
+const storageSelectorUrl = () => {
+  const { config } = useConfigStore();
   console.log("config", config);
-  return config.storageUrl + "/" + url;
+  return serverUrl(config.storage_selector_url || "/system/storage/selector");
 };
 
 /**
@@ -225,6 +308,11 @@ const evaluateExpression = (exp, data) => {
   return result;
 };
 
+/**
+ * 添加样式
+ * @param {string} style
+ * @returns
+ */
 const addStyle = (style) => {
   let styleEl = document.createElement("style");
   styleEl.setAttribute("type", "text/css");
@@ -238,6 +326,11 @@ const addStyle = (style) => {
   };
 };
 
+/**
+ * 添加css
+ * @param {string} url
+ * @returns
+ */
 const addCss = (url) => {
   let linkEl = document.createElement("link");
   linkEl.setAttribute("rel", "stylesheet");
@@ -252,10 +345,20 @@ const addCss = (url) => {
   };
 };
 
+/**
+ * 移除样式
+ * @param {string} styleEl
+ */
 const removeStyle = (styleEl) => {
   document.head.removeChild(styleEl);
 };
 
+/**
+ * 构建查询字符串
+ * @param {object} params
+ * @param {string} parentKey
+ * @returns
+ */
 const buildQueryString = (params, parentKey = "") => {
   const queryString = Object.keys(params)
     .map((key) => {
@@ -273,13 +376,22 @@ const buildQueryString = (params, parentKey = "") => {
   return queryString;
 };
 
-//暂停1秒钟
+/**
+ * 暂停1秒钟
+ * @param {number} time
+ * @returns
+ */
 const sleep = (time) => {
   return new Promise((resolve) => {
     setTimeout(resolve, time);
   });
 };
 
+/**
+ * 表单默认值
+ * @param {string} type
+ * @returns
+ */
 const formDefaultValue = function (type) {
   switch (type) {
     case "cascader":
@@ -300,19 +412,53 @@ const formDefaultValue = function (type) {
   }
 };
 
+/**
+ * 根据文件名获取文件类型
+ * @param {string} fileName
+ * @returns
+ */
+const getFileTypeByFileName = function (fileName) {
+  const extension = fileName.split(".").pop().toLowerCase();
+
+  const extensionMap = {
+    video: ["mp4", "mkv", "avi", "mov", "wmv", "flv"],
+    audio: ["mp3", "wav", "aac", "ogg", "flac"],
+    ppt: ["ppt", "pptx"],
+    doc: ["doc", "docx"],
+    zip: ["zip", "rar", "7z", "tar", "gz", "bz2"],
+    pdf: ["pdf"],
+  };
+
+  return (
+    Object.entries(extensionMap).find(([__, exts]) =>
+      includes(exts, extension)
+    )?.[0] || "other"
+  );
+};
+
+/**
+ * 根据文件类型获取缩略图
+ * @param {string} filePath
+ * @param {string} fileType
+ * @returns
+ */
 const getThumbByFileType = function (filePath, fileType) {
   let ext = ["video", "audio", "ppt", "doc", "zip", "pdf"];
   let type = fileType || "other";
-  let src = clientUrl("/resources/images/file-other.png");
-  if ("image" === fileType) {
+  let src = assetUrl("/images/file-other.png");
+  if ("image" === type) {
     src = filePath.substring(0, 4) !== "http" ? storageUrl(filePath) : filePath;
-  } else if (ext.indexOf(fileType) > -1) {
-    src = clientUrl(`/resources/images/file-${type}.png`);
+  } else if (ext.indexOf(type) > -1) {
+    src = assetUrl(`/images/file-${type}.png`);
   }
   return src;
 };
 
-//一层对象转换成多层
+/**
+ * 一层对象转换成多层
+ * @param {object} obj
+ * @returns
+ */
 const convertToMultilevelObject = function (obj) {
   const result = {};
 
@@ -333,9 +479,16 @@ export {
   formDefaultValue,
   buildQueryString,
   sleep,
+  getFileTypeByFileName,
   getThumbByFileType,
   serverUrl,
   clientUrl,
+  uploadUrl,
   storageUrl,
+  storageSelectorUrl,
   convertToMultilevelObject,
+  vendorUrl,
+  vendorPath,
+  assetUrl,
+  getImportmap,
 };

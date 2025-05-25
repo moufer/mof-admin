@@ -1,11 +1,9 @@
-import {
-  isEmpty,
-  evaluateExpression,
-  clientUrl,
-  getThumbByFileType,
-} from "/src/utils/index.js";
+import _ from "lodash-es";
+import { isEmpty, evaluateExpression } from "/src/utils/index.js";
+import MfDataFormatter from "/src/components/mf-data-formatter.js";
 export default {
   name: "mf-data-table",
+  components: { MfDataFormatter },
   props: {
     data: {
       type: Array,
@@ -115,9 +113,10 @@ export default {
     /**
      * 根据提供的参数确定操作按钮的可见性可用性。
      *
-     * @param {Object} button - 操作按钮对象。
+     * @param expr
      * @param {Object} row - 行对象。
      * @param {number} index - 按钮的索引。
+     * @param key
      * @return {boolean} - 如果按钮应该可见，则返回true；否则返回false。
      */
     buttonExpr(expr, row, index, key) {
@@ -130,72 +129,10 @@ export default {
       } else if (type === "boolean") {
         return expr;
       } else if (type === "string") {
-        //console.log('operationButtonVisible', expr, row, index)
         //通过表达式来判断是否显示
         return evaluateExpression(expr, row);
       }
       return true;
-    },
-    /**
-     * 根据指定的类型和列配置格式化给定的值。
-     *
-     * @param {string} type - 要应用的格式化类型。
-     * @param {object} column - 列的配置对象。
-     * @param {any} value - 要格式化的值。
-     * @param {object} row - 行的数据对象。
-     * @return {any} 格式化后的值。
-     */
-    formatter(type, column, value, row) {
-      switch (type) {
-        case "select":
-          if (typeof column.options === "function") {
-            column.options = column.options();
-          }
-          //判断value是不是一个数组
-          if (Array.isArray(value)) {
-            return column.options
-              .filter((item) => value.indexOf(item.value) > -1)
-              .map((item) => item.label)
-              .join("，");
-          } else {
-            return (
-              column.options.find((item) => item.value === value)?.label ||
-              value
-            );
-          }
-        case "date":
-          return value
-            ? moment(value).format(column.format || "YYYY-MM-DD")
-            : value;
-        case "datetime":
-          return value
-            ? moment(value).format(column.format || "YYYY-MM-DD HH:mm:ss")
-            : value;
-        case "time":
-          return value
-            ? moment(value).format(column.format || "HH:mm:ss")
-            : value;
-        case "image":
-          return value ? value : clientUrl("/resources/images/no-image.png");
-        case "icon":
-          return !value || value.indexOf(" ") > -1 ? "Sugar" : value;
-        case "media":
-          return getThumbByFileType(
-            row[column.prop],
-            row[column.media_type_prop || "other"] || "other"
-          );
-        case "boolean":
-          return value ? "是" : "否";
-        case "tag":
-          if (column.tags && column.tags.length > 0) {
-            return column.tags.filter((item) => value.indexOf(item) >= 0);
-          }
-          return column.options.filter(
-            (item) => value.indexOf(item.value) >= 0
-          );
-        default:
-          return value;
-      }
     },
   },
   template: /*html*/ `
@@ -208,32 +145,8 @@ export default {
             <el-table-column v-if="column.visible" :align="column.align||'left'"
                 :prop="column.prop" :label="column.label" :width="column.width||'*'"
                 :filters="column.filters" :formatter="column.formatter">
-                <template #default="{row}" v-if="column.type==='image'">
-                    <el-image :src="formatter('image', column, row[column.propAlias||column.prop])" 
-                        style="width:auto;" :referrerPolicy="column.referrerPolicy||'no-referrer-when-downgrade'"></el-image>
-                </template>
-                <template #default="{row}" v-if="column.type==='select'">
-                    {{formatter('select', column, row[column.propAlias||column.prop])}}
-                </template>
-                <template #default="{row}" v-if="column.type==='icon'">
-                    <el-icon style="font-size:24px;">
-                        <component :is="formatter('icon', column, row[column.propAlias||column.prop])" />
-                    </el-icon>
-                </template>
-                <template #default="{row}" v-if="column.type==='media'">
-                    <el-image :src="formatter('media', column, row[column.propAlias||column.prop], row)" 
-                        style="width:auto;max-height:100px;" fit="scale-down"></el-image>
-                </template>
-                <template #default="{row}" v-if="column.type==='avatar'">
-                    <el-avatar :src="formatter('image', column, row[column.propAlias||column.prop])">
-                    </el-avatar>
-                </template>
-                <template #default="{row}" v-if="column.type==='boolean'">
-                    {{formatter('boolean', column, row[column.propAlias||column.prop])}}
-                </template>
-                <template #default="{row}" v-if="column.type==='tag'">
-                    <el-tag round v-for="tag in formatter('tag', column, row[column.propAlias||column.prop])" 
-                        style="margin:0 1px;">{{tag.label}}</el-tag>
+                <template #default="{row}">
+                    <mf-data-formatter :column="column" :row="row" />
                 </template>
             </el-table-column>
             </template>
@@ -277,5 +190,5 @@ export default {
             </template>
         </el-pagination>
     </div>
-    `,
+  `,
 };

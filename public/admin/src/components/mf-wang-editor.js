@@ -1,7 +1,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { ElMessage } from "element-plus";
 import * as wangEditor from "@wangeditor/editor";
-import { addCss, serverUrl } from "/src/utils/index.js";
+import { addCss, vendorUrl, serverUrl } from "/src/utils/index.js";
 export default {
   props: {
     config: {
@@ -18,7 +18,7 @@ export default {
   emits: ["update:modelValue"],
   setup(props, { emit }) {
     const styleEl = addCss(
-      "../libraries/wangeditor@5.1.23/editor/dist/css/style.css"
+      vendorUrl("@wangeditor/editor", "editor/dist/css/style.css")
     );
     const toolbarRef = ref(null);
     const editorRef = ref(null);

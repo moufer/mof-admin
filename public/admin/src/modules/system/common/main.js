@@ -6,9 +6,16 @@ import zhCn from "element-plus/locale/zh-cn";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 
 import http from "/src/utils/http.js";
+import api from "/src/modules/system/common/api.js";
 import { mofRouter } from "/src/router/index.js";
-import { getConfig } from "/src/utils/config.js";
 import { useConfigStore } from "/src/modules/system/store/configStore.js";
+import { vendorUrl, assetUrl } from "/src/utils/index.js";
+
+// 获取importmap
+const url1 = vendorUrl("@wangeditor/editor", "editor/dist/css/style.css");
+console.log("vendorUrl", url1);
+const url2 = assetUrl("/css/app.css");
+console.log("assetUrl", url2);
 
 const App = {
   template: /*html*/ `
@@ -18,8 +25,9 @@ const App = {
 
 const app = createApp(App);
 
-getConfig()
-  .then((data) => {
+api.client
+  .config()
+  .then(({ data }) => {
     mofRouter(app, window.__ENTER_MODULE__ || "system");
 
     app.use(createPinia());

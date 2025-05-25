@@ -1,6 +1,6 @@
 import {
   deepCopy,
-  serverUrl,
+  uploadUrl,
   storageUrl,
   getThumbByFileType,
 } from "/src/utils/index.js";
@@ -127,9 +127,7 @@ export default {
     };
     this.uploadProps["show-file-list"] = false;
     if (typeof this.uploadProps["action"] === "undefined") {
-      this.uploadProps["action"] = serverUrl(
-        "/system/upload/" + this.fileType.action
-      );
+      this.uploadProps["action"] = uploadUrl(this.fileType.action);
     }
     if (typeof this.uploadProps["headers"] === "undefined") {
       this.uploadProps["headers"] = {
@@ -205,10 +203,10 @@ export default {
                         <el-image referrerPolicy="no-referrer" :src="fullUrl(url)" fit="contain" :preview-src-list="previewList" />
                     </div>
                     <div class="mf-image-selector-preview-item" v-if="['audio','video'].indexOf(subType)>-1">
-                        <el-image :src="'/resources/images/file-'+subType+'.png'" fit="contain" @click="showPlayBox(index)" />
+                        <el-image :src="'/assets/images/file-'+subType+'.png'" fit="contain" @click="showPlayBox(index)" />
                     </div>
                     <div class="mf-image-selector-preview-item" v-if="subType === 'file'">
-                        <el-image src="/resources/images/file-other.png" fit="contain" @click="download(index)" />
+                        <el-image src="/assets/images/file-other.png" fit="contain" @click="download(index)" />
                     </div>
                     <el-button size="small" type="danger" @click="deleteItem(index)"
                         class="mf-image-selector-item__close">删除</el-button>

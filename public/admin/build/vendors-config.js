@@ -1,6 +1,22 @@
 import { readPackageJson } from "./utils.js";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const projectRoot = path.resolve(__dirname, "..");
+
+// 加载环境变量
+const envFile =
+  process.env.NODE_ENV === "production"
+    ? ".env.production"
+    : ".env.development";
+dotenv.config({ path: path.resolve(projectRoot, envFile) });
 
 const versions = await readPackageJson();
+
+// 修改：使用 DIST_DIR 替代 BUILD_VENDORS_DIR
+const distPath = path.join(process.env.DIST_DIR, "vendor");
 
 export const vendorConfig = {
   // 基础库
@@ -8,55 +24,65 @@ export const vendorConfig = {
     {
       name: "vue",
       input: "./node_modules/vue/dist/vue.esm-browser.js",
-      output: (version) => `./public/js/vendor/vue@${version}/vue.js`,
+      output: (version) => `./${distPath}/vue@${version}/vue.js`,
       packageName: "vue",
       extras: [
         {
           name: "runtime",
           input: "./node_modules/vue/dist/vue.runtime.esm-browser.js",
-          output: (version) =>
-            `./public/js/vendor/vue@${version}/vue.runtime.js`,
+          output: (version) => `./${distPath}/vue@${version}/vue.runtime.js`,
         },
       ],
     },
     {
       name: "pinia",
       input: "./node_modules/pinia/dist/pinia.mjs",
-      output: (version) => `./public/js/vendor/pinia@${version}/pinia.js`,
+      output: (version) => `./${distPath}/pinia@${version}/pinia.js`,
       packageName: "pinia",
     },
     {
       name: "vue-router",
       input: "./node_modules/vue-router/dist/vue-router.mjs",
-      output: (version) =>
-        `./public/js/vendor/vue-router@${version}/vue-router.js`,
+      output: (version) => `./${distPath}/vue-router@${version}/vue-router.js`,
       packageName: "vue-router",
     },
     {
-      name: "lodash",
+      name: "lodash-es",
       input: "./node_modules/lodash-es/lodash.js",
-      output: (version) => `./public/js/vendor/lodash@${version}/lodash.js`,
+      output: (version) => `./${distPath}/lodash@${version}/lodash.js`,
       packageName: "lodash-es",
     },
     {
       name: "axios",
       input: "./node_modules/axios/index.js",
-      output: (version) => `./public/js/vendor/axios@${version}/axios.js`,
+      output: (version) => `./${distPath}/axios@${version}/axios.js`,
       packageName: "axios",
     },
     {
       name: "moment",
       input: "./node_modules/moment/dist/moment.js",
-      output: (version) => `./public/js/vendor/moment@${version}/moment.js`,
+      output: (version) => `./${distPath}/moment@${version}/moment.js`,
       packageName: "moment",
       extras: [
         {
           name: "locale/zh-cn",
           input: "./node_modules/moment/locale/zh-cn.js",
           output: (version) =>
-            `./public/js/vendor/moment@${version}/locale/zh-cn.js`,
+            `./${distPath}/moment@${version}/locale/zh-cn.js`,
         },
       ],
+    },
+    {
+      name: "@vueuse/core",
+      input: "./node_modules/@vueuse/core/index.mjs",
+      output: (version) => `./${distPath}/vueuse@${version}/vueuse.js`,
+      packageName: "@vueuse/core",
+    },
+    {
+      name: "@vueuse/shared",
+      input: "./node_modules/@vueuse/shared/index.mjs",
+      output: (version) => `./${distPath}/vueuse@${version}/vueuse-shared.js`,
+      packageName: "@vueuse/core",
     },
   ],
 
@@ -66,7 +92,7 @@ export const vendorConfig = {
       name: "element-plus",
       input: "./node_modules/element-plus/es/index.mjs",
       output: (version) =>
-        `./public/js/vendor/element-plus@${version}/element-plus.js`,
+        `./${distPath}/element-plus@${version}/element-plus.js`,
       packageName: "element-plus",
       css: [
         "./node_modules/element-plus/dist/index.css",
@@ -77,15 +103,15 @@ export const vendorConfig = {
           name: "locale/zh-cn",
           input: "./node_modules/element-plus/dist/locale/zh-cn.mjs",
           output: (version) =>
-            `./public/js/vendor/element-plus@${version}/locale/zh-cn.js`,
+            `./${distPath}/element-plus@${version}/locale/zh-cn.js`,
         },
       ],
     },
     {
-      name: "@element-plus/icons",
+      name: "@element-plus/icons-vue",
       input: "./node_modules/@element-plus/icons-vue/dist/index.js",
       output: (version) =>
-        `./public/js/vendor/element-plus-icons@${version}/icons.js`,
+        `./${distPath}/element-plus-icons@${version}/icons.js`,
       packageName: "@element-plus/icons-vue",
     },
   ],
@@ -101,20 +127,18 @@ export const vendorConfig = {
         {
           from: "./node_modules/bootstrap-icons/font/bootstrap-icons.css",
           to: (version) =>
-            `./public/js/vendor/bootstrap-icons@${version}/bootstrap-icons.css`,
+            `./${distPath}/bootstrap-icons@${version}/bootstrap-icons.css`,
         },
         {
           from: "./node_modules/bootstrap-icons/font/fonts",
-          to: (version) =>
-            `./public/js/vendor/bootstrap-icons@${version}/fonts`,
+          to: (version) => `./${distPath}/bootstrap-icons@${version}/fonts`,
         },
       ],
     },
     {
       name: "@wovosoft/wovoui-icons",
       input: "./node_modules/@wovosoft/wovoui-icons/dist/index.es.mjs",
-      output: (version) =>
-        `./public/js/vendor/wovoui-icons@${version}/icons.js`,
+      output: (version) => `./${distPath}/wovoui-icons@${version}/icons.js`,
       packageName: "@wovosoft/wovoui-icons",
       css: ["./node_modules/@wovosoft/wovoui-icons/dist/style.css"],
     },
@@ -125,15 +149,15 @@ export const vendorConfig = {
     {
       name: "@wangeditor/editor",
       input: "./node_modules/@wangeditor/editor/dist/index.esm.js",
-      output: (version) => `./public/js/vendor/wangeditor@${version}/editor.js`,
+      output: (version) => `./${distPath}/wangeditor@${version}/editor.js`,
       packageName: "@wangeditor/editor",
       css: "./node_modules/@wangeditor/editor/dist/css/style.css",
     },
     {
       name: "vue-ueditor-wrap",
-      input: "./node_modules/vue-ueditor-wrap/lib/vue-ueditor-wrap.min",
+      input: "./node_modules/vue-ueditor-wrap/es/vue-ueditor-wrap/index.js",
       output: (version) =>
-        `./public/js/vendor/vue-ueditor-wrap@${version}/vue-ueditor-wrap.js`,
+        `./${distPath}/vue-ueditor-wrap@${version}/vue-ueditor-wrap.js`,
       packageName: "vue-ueditor-wrap",
     },
   ],
@@ -143,24 +167,31 @@ export const vendorConfig = {
     {
       name: "echarts",
       input: "./node_modules/echarts/dist/echarts.esm.js",
-      output: (version) => `./public/js/vendor/echarts@${version}/echarts.js`,
+      output: (version) => `./${distPath}/echarts@${version}/echarts.js`,
       packageName: "echarts",
       extras: [
         {
           name: "theme/dark",
           input: "./node_modules/echarts/theme/dark.js",
-          output: (version) =>
-            `./public/js/vendor/echarts@${version}/theme/dark.js`,
+          output: (version) => `./${distPath}/echarts@${version}/theme/dark.js`,
         },
       ],
     },
     {
       name: "marked",
       input: "./node_modules/marked/lib/marked.esm.js",
-      output: (version) => `./public/js/vendor/marked@${version}/marked.js`,
+      output: (version) => `./${distPath}/marked@${version}/marked.js`,
       packageName: "marked",
     },
+    {
+      name: "vconsole",
+      input: "./node_modules/vconsole/dist/vconsole.min.js",
+      output: (version) => `./${distPath}/vconsole@${version}/vconsole.js`,
+      packageName: "vconsole",
+    },
   ],
+
+  ignoreClearDirs: ["ueditor-plus"],
 };
 
 // 导出一些常用的配置组合
@@ -169,7 +200,7 @@ export const presets = {
   minimal: ["vue", "vue-router", "pinia"],
 
   // 基础配置
-  basic: ["vue", "vue-router", "pinia", "axios", "lodash"],
+  basic: ["vue", "vue-router", "pinia", "axios", "lodash-es"],
 
   // 完整配置
   full: Object.values(vendorConfig)

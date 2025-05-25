@@ -5,13 +5,18 @@
   "scripts": {
     "build:vendors": "node build/build-vendors.js",
     "build:vendors:prod": "cross-env NODE_ENV=production node build/build-vendors.js",
-    "build:src": "node build/build-src.js",
-    "build:src:prod": "cross-env NODE_ENV=production node build/build-src.js"
+    "build:src:prod": "cross-env NODE_ENV=production node build/build-src.js",
+    "build:html": "node build/build-html.js",
+    "build:html:prod": "cross-env NODE_ENV=production node build/build-html.js",
+    "build": "npm run build:vendors && npm run build:html",
+    "build:prod": "npm run build:vendors:prod && npm run build:src:prod && npm run build:html:prod",
+    "serve": "node server.js"
   },
   "author": "moufer",
   "license": "Apache-2.0",
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
+    "@vueuse/core": "^13.0.0",
     "@wangeditor/editor": "^5.1.23",
     "@wovosoft/wovoui-icons": "^1.1.11",
     "axios": "^1.7.8",
@@ -22,15 +27,19 @@
     "marked": "^15.0.2",
     "moment": "^2.30.1",
     "pinia": "^2.2.6",
+    "vconsole": "^3.15.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
-    "vue-ueditor-wrap": "^2.5.6"
+    "vue-ueditor-wrap": "^3.0.8"
   },
   "devDependencies": {
     "chokidar": "^4.0.1",
     "cross-env": "^7.0.3",
     "esbuild": "^0.24.0",
+    "express": "^4.21.2",
     "fs-extra": "^11.2.0",
-    "glob": "^11.0.0"
+    "glob": "^11.0.0",
+    "socket.io": "^4.8.1",
+    "dotenv": "^16.0.0"
   }
 }

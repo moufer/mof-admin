@@ -15,12 +15,18 @@ http.interceptors.request.use(
     }
     //application/json; charset=utf-8
     cfg.headers["Content-Type"] = "application/json; charset=utf-8";
+    //从localStorage中获取获取X-Session-Id
+    // const sessionId = localStorage.getItem("X-Session-Id");
+    // if (sessionId) {
+    //   cfg.headers["X-Session-Id"] = sessionId;
+    // }
     return cfg;
   },
   function (err) {
     return Promise.reject(err);
   }
 );
+
 http.interceptors.response.use(
   function (res) {
     if (res.data.errcode === 0) {

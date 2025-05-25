@@ -1,5 +1,10 @@
-import { serverUrl, clientUrl, storageUrl } from "/src/utils/index.js";
-import { VueUeditorWrap } from "vue-ueditor-wrap";
+import VueUeditorWrap from "vue-ueditor-wrap";
+import {
+  assetUrl,
+  vendorUrl,
+  serverUrl,
+  storageUrl,
+} from "/src/utils/index.js";
 import MfStorageDialog from "/src/components/mf-storage-dialog.js";
 export default {
   components: {
@@ -56,8 +61,8 @@ export default {
       this.editorConfig = {
         ...this.config,
         ...{
-          UEDITOR_HOME_URL: clientUrl("/resources/libraries/ueditor-plus/"),
-          UEDITOR_CORS_URL: clientUrl("/resources/libraries/ueditor-plus/"),
+          UEDITOR_HOME_URL: vendorUrl("ueditor-plus"),
+          UEDITOR_CORS_URL: vendorUrl("ueditor-plus"),
           serverUrl: serverUrl("/system/ueditor/index"),
           zIndex,
         },
@@ -91,9 +96,7 @@ export default {
       window.UE.registerUI(
         "mf-image-upload",
         (editor, uiName) => {
-          const iconUrl = clientUrl(
-            "/resources/libraries/ueditor-plus/themes/default/images/mf-image-upload.png"
-          );
+          const iconUrl = assetUrl("/images/editor/mf-image-upload.png");
           const btn = new window.UE.ui.Button({
             name: uiName,
             title: "上传图片",
@@ -116,9 +119,7 @@ export default {
       window.UE.registerUI(
         "mf-audio-upload",
         (editor, uiName) => {
-          const iconUrl = clientUrl(
-            "/resources/libraries/ueditor-plus/themes/default/images/mf-audio-upload.png"
-          );
+          const iconUrl = assetUrl("/images/editor/mf-audio-upload.png");
           const btn = new window.UE.ui.Button({
             name: uiName,
             title: "上传音频",
@@ -141,9 +142,7 @@ export default {
       window.UE.registerUI(
         "mf-video-upload",
         (editor, uiName) => {
-          const iconUrl = clientUrl(
-            "/resources/libraries/ueditor-plus/themes/default/images/mf-video-upload.png"
-          );
+          const iconUrl = assetUrl("/images/editor/mf-video-upload.png");
           const btn = new window.UE.ui.Button({
             name: uiName,
             title: "上传视频",

@@ -2,12 +2,23 @@ import * as esbuild from "esbuild";
 import fs from "fs-extra";
 import path from "path";
 import { fileURLToPath } from "url";
+import dotenv from "dotenv";
 
 import { vendorConfig } from "./vendors-config.js";
 import { readPackageJson } from "./utils.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, "..");
+
+// 加载环境变量
+const envFile =
+  process.env.NODE_ENV === "production"
+    ? ".env.production"
+    : ".env.development";
+dotenv.config({ path: path.resolve(projectRoot, envFile) });
+
+// 使用 DIST_DIR 构建路径
+const distPath = path.join(process.env.DIST_DIR, "vendor");
 
 class VendorBuilder {
   constructor(config) {
@@ -20,7 +31,7 @@ class VendorBuilder {
       const versions = await readPackageJson();
 
       // 清理输出目录
-      await this.cleanOutputDir();
+      await this.cleanOutputDir(vendorConfig.ignoreClearDirs);
 
       // 按类别构建
       for (const [category, packages] of Object.entries(this.config)) {
@@ -38,10 +49,34 @@ class VendorBuilder {
     }
   }
 
-  async cleanOutputDir() {
-    const outputDir = path.resolve(projectRoot, "public/js/vendor");
-    await fs.emptyDir(outputDir);
-    console.log("Cleaned output directory");
+  async cleanOutputDir(ignoreDirs = []) {
+    const outputDir = path.resolve(projectRoot, distPath);
+
+    // 检查目录是否存在，不存在则创建
+    if (!(await fs.exists(outputDir))) {
+      await fs.mkdir(outputDir, { recursive: true });
+      console.log(`Created output directory: ${outputDir}`);
+      return; // 新建目录后直接返回，无需清理
+    }
+
+    // 读取输出目录中的所有文件和文件夹
+    const items = await fs.readdir(outputDir);
+
+    // 遍历所有项目，删除不在忽略列表中的文件夹
+    for (const item of items) {
+      const itemPath = path.join(outputDir, item);
+
+      if (ignoreDirs.includes(item)) {
+        console.log(`Ignored directory: ${item}`);
+        continue; // 如果在忽略列表中，跳过删除
+      }
+
+      // 删除文件或文件夹
+      await fs.remove(itemPath);
+      console.log(`Removed: ${itemPath}`);
+    }
+
+    console.log("Cleaned output directory, ignoring specified folders");
   }
 
   async buildCategory(packages, versions) {
@@ -189,16 +224,19 @@ class VendorBuilder {
       define: {
         "process.env.NODE_ENV": `"${process.env.NODE_ENV || "development"}"`,
         global: "window",
+        __VUE_PROD_DEVTOOLS__: "false",
       },
       metafile: true,
       external: [
         "vue",
         "vue-router",
         "pinia",
-        "lodash",
+        "lodash-es",
         "axios",
         "moment",
         "@element-plus/icons-vue",
+        "@vueuse/core",
+        "@vueuse/shared",
       ],
     };
 
@@ -249,13 +287,17 @@ class VendorBuilder {
 
         // 对于有 input 的包，添加 JS 模块映射
         if (pkg.input) {
-          const mainPath = pkg.output(version).replace("./public", "");
+          const mainPath = pkg
+            .output(version)
+            .replace(new RegExp(`^\\.\/${process.env.DIST_DIR}\\/`), "./");
           importMap.imports[pkg.name] = mainPath;
 
           // 添加额外文件
           if (pkg.extras) {
             for (const extra of pkg.extras) {
-              const extraPath = extra.output(version).replace("./public", "");
+              const extraPath = extra
+                .output(version)
+                .replace(new RegExp(`^\\.\/${process.env.DIST_DIR}\\/`), "./");
               importMap.imports[`${pkg.name}/${extra.name}`] = extraPath;
             }
           }
@@ -267,7 +309,9 @@ class VendorBuilder {
             a.to(version).endsWith(".css")
           );
           if (cssAsset) {
-            const cssPath = cssAsset.to(version).replace("./public", "");
+            const cssPath = cssAsset
+              .to(version)
+              .replace(new RegExp(`^\\.\/${process.env.DIST_DIR}\\/`), "./");
             importMap.imports[`${pkg.name}/style`] = cssPath;
           }
         }
@@ -275,12 +319,12 @@ class VendorBuilder {
     }
 
     // 生成 importmap 文件
-    const importMapPath = "./public/js/vendor/import-map.json";
+    const importMapPath = path.join(projectRoot, distPath, "import-map.json");
     await fs.ensureDir(path.dirname(importMapPath));
     await fs.writeJson(importMapPath, importMap, { spaces: 2 });
 
     // 生成版本信息文件
-    const versionsPath = "./public/js/vendor/versions.json";
+    const versionsPath = path.join(projectRoot, distPath, "versions.json");
     await fs.writeJson(
       versionsPath,
       {

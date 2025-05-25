@@ -69,29 +69,29 @@ export default {
   },
   template: /*html*/ `
     <div class="mf-page-user data-manage">
-    <el-tabs v-model="activeName" type="card">
+      <el-tabs v-model="activeName" type="card">
         <el-tab-pane label="个人资料" name="info">
             <el-row class="table-box" style="borderTopWidth: 0;">
                 <el-col :xs="24" :sm="22" :md="20" :lg="16">
                 	<el-result icon="error" title="错误提示" :sub-title="error" v-if="error" />    
-					<el-form ref="formRef" :model="model" labelWidth="100px" :rules="formAttrs.rules">
-						<template v-for="item in formItems" :key="item.prop">
-							<mf-form-render v-if="showItem(item._visible)" :item="item" scene="edit" 
-								v-model="model[item.prop]"></mf-form-render>
-						</template>
-						<el-form-item label="&nbsp;">
-							<el-button type="primary" size="large" @click="submitForm" 
-								:loading="loading">提交</el-button>
-						</el-form-item>
-                    </el-form>
+					        <el-form ref="formRef" :model="model" labelWidth="100px" :rules="formAttrs.rules">
+                    <template v-for="item in formItems" :key="item.prop">
+                      <mf-form-render v-if="showItem(item._visible)" :item="item" scene="edit" 
+                        v-model="model[item.prop]"></mf-form-render>
+                    </template>
+                    <el-form-item label="&nbsp;">
+                      <el-button type="primary" size="large" @click="submitForm" 
+                        :loading="loading">提交</el-button>
+                    </el-form-item>
+                  </el-form>
                 </el-col>
             </el-row>
         </el-tab-pane>
         <el-tab-pane label="登录日志" name="log">
-			<div class="table-box" style="borderTopWidth: 0;" v-if="activeName==='log'">
-            	<mf-data-manage ref="manageRef" table-name="system:admin_login_log"></mf-data-manage>
-			<div>
+			    <div class="table-box" style="borderTopWidth: 0;" v-if="activeName==='log'">
+            <mf-data-manage ref="manageRef" table-name="system:admin_login_log"></mf-data-manage>
+			    </div>
         </el-tab-pane>
-    </<el-tabs>
+      </el-tabs>
     </div>`,
 };

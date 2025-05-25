@@ -11,7 +11,7 @@ export default {
   components: {
     MfFormRender,
   },
-  emits: ["submit"],
+  emits: ["submit", "operate"],
   data() {
     return {
       visible: false,
@@ -162,8 +162,8 @@ export default {
       });
       return values;
     },
-    //提交表单
-    handleSubmit() {
+    //检测表单
+    checkForm(callback) {
       let postData = {};
       this.items.forEach((item) => {
         postData[item.prop] = this.model[item.prop];
@@ -177,10 +177,26 @@ export default {
           this.$message.error("表单验证失败");
         } else {
           //触发提交事件
-          this.$emit("submit", this.action, postData, this.pkId);
-          this.submitted = true;
+          callback(postData);
         }
       });
+    },
+    //提交表单
+    handleSubmit() {
+      this.checkForm((postData) => {
+        this.$emit("submit", this.action, postData, this.pkId);
+      });
+    },
+    //操作表单
+    handleOperate(index) {
+      const operate = this.dialog.operates[index];
+      if (operate.validate) {
+        this.checkForm((postData) => {
+          this.$emit("operate", operate.command, this, postData);
+        });
+      } else {
+        this.$emit("operate", operate.command, this);
+      }
     },
     //重制表单内容
     handleReset() {
@@ -277,8 +293,12 @@ export default {
         </template>
         <template #footer>
             <div style="padding:0 10px;">
-                <el-button @click="hideDialog" size="large">取消</el-button>
-                <el-button type="primary" @click="handleSubmit" size="large">确定</el-button>
+                <el-button 
+                  v-for="(operate, index) in dialog.operates"
+                  :type="operate.type||'primary'" :size="operate.size||'large'" 
+                  @click="handleOperate(index)">{{operate.label}}</el-button>
+              <el-button type="primary" @click="handleSubmit" size="large">确定</el-button>
+              <el-button @click="hideDialog" size="large">取消</el-button>
             </div>
         </template>
     </el-dialog>

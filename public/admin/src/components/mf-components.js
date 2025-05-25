@@ -10,6 +10,8 @@ import MfInputDict from "/src/components/mf-input-dict.js";
 import MfSelectSearch from "/src/components/mf-select-search.js";
 import MfUpload from "/src/components/mf-upload.js";
 import MfEditor from "/src/components/mf-ueditor.js";
+import MfPage from "/src/components/mf-page.js";
+import MfCombEditor from "/src/components/mf-comb-editor.js";
 
 const commProps = {
   item: {
@@ -54,6 +56,7 @@ const MfComponentHub = {
     MfSelectSearch,
     MfUpload,
     MfEditor,
+    MfCombEditor,
   },
   tags: {
     cascader: "el-",
@@ -70,6 +73,7 @@ const MfComponentHub = {
     "select-search": "mf-",
     upload: "mf-",
     editor: "mf-",
+    "comb-editor": "mf-",
   },
   setup(props, { emit }) {
     const formValue = ref(props.modelValue);
@@ -315,7 +319,7 @@ const MfRadio = {
     <el-radio-group v-model="formValue" @update:modelValue="$emit('update:modelValue', $event)" 
         v-bind="item">
         <el-radio v-for="option in item.options" v-bind="option"
-            >{{option.caption}}</el-radio>
+            >{{option.label}}</el-radio>
     </el-radio-group>
     `,
 };
@@ -472,4 +476,6 @@ export {
   MfLabel,
   MfImage,
   MfHtml,
+  MfPage,
+  MfCombEditor,
 };

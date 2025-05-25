@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import http from "/src/utils/http.js";
+import api from "/src/modules/system/common/api.js";
 
 /**
  * 扁平化perms
@@ -62,7 +62,7 @@ export const usePermStore = defineStore("perm", {
       if (this.permHandler) {
         return await this.permHandler.apply(this);
       } else {
-        data = (await http.get(`/system/passport/perms`)).data;
+        const { data } = await api.passport.perms();
         this.setPerms(data); //加路由规则
         return data;
       }

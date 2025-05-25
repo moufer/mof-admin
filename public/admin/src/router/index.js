@@ -4,6 +4,7 @@ import { useAuthStore } from "/src/modules/system/store/authStore.js";
 import { usePermStore } from "/src/modules/system/store/permStore.js";
 
 let router = null;
+
 export function getRouter() {
   return router;
 }
@@ -20,7 +21,7 @@ export function mofRouter(app, module = "system", extraRoutes = []) {
       name: "login",
       path: "/login",
       meta: { title: "登录" },
-      component: import("/src/modules/system/login.js"),
+      component: () => import("/src/modules/system/login.js"),
     },
   ];
 
@@ -47,9 +48,10 @@ export function mofRouter(app, module = "system", extraRoutes = []) {
             requiresAuth: true,
           },
           component: () =>
-            import(`/src/modules/${perm.url}.js`).catch(() =>
-              import("/src/modules/common/404.js")
-            ),
+            import(`/src/modules/${perm.url}.js`).catch((err) => {
+              console.log(err);
+              return import("/src/modules/common/404.js");
+            }),
         });
       } else if (perm.type === "group" && perm.children.length > 0) {
         permsToRoutes(perm.children, params);
@@ -62,7 +64,7 @@ export function mofRouter(app, module = "system", extraRoutes = []) {
     let requiresAuth = to.meta?.requiresAuth || false;
     //检测to是不是存在的规则
     if (notfound) {
-      console.log("notfound", to.path);
+      //console.log("notfound", to.path);
       //路由不存在时，可能是登录后才能加载的规则，要求登录
       requiresAuth = true;
     }
