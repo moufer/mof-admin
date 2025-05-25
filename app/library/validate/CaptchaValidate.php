@@ -27,7 +27,6 @@ class CaptchaValidate
             }, ':attribute 错误');
             //图片验证码
             $validate->extend('imgCaptcha', function ($value) {
-                if($value==='123456')return true;
                 return ImgCaptcha::verify($value);
             }, ':attribute 错误');
         });

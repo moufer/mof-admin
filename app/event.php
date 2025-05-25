@@ -1,28 +1,24 @@
 <?php
 // 事件定义文件
 return [
-    'bind' => [
-    ],
-
+    'bind'   => [],
     'listen' => [
         'AppInit'  => [],
-        'HttpRun'  => [
+        'HttpRun'      => [
             \app\event\GetConfig::class,
         ],
-        'HttpEnd'  => [],
-        'LogLevel' => [],
-        'LogWrite' => [],
-
+        'HttpEnd'      => [],
+        'LogLevel'     => [],
+        'LogWrite'     => [],
         // 后台登录事件
         'AdminLogin' => [
             \app\event\LoginLog::class
         ],
         // 统计事件
-        'system.total'      => [
+        'system.total' => [
             \app\event\Total::class
         ]
     ],
 
-    'subscribe' => [
-    ],
+    'subscribe' => [],
 ];

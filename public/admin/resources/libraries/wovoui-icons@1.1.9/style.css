@@ -1,1 +1,0 @@
-@keyframes spin-animation{to{transform:rotate(360deg)}}.spin-icon{animation:.75s linear infinite spin-animation}

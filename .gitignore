@@ -1,12 +1,23 @@
-.settings/
-.vscode/
-vendor/
-
-*.swf
-*.air
-*.ipa
-*.apk
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 *.code-workspace
-.phpunit.*
-phpunit.xml
-composer.lock
+.history/
+
+# IDE
+.idea/*
+
+# Composer
+vendor/*
+
+# ThinkPHP
+.env
+runtime/*
+
+# Subject
+.phpunit.result.cache
+config/environment.php
+public/storage/*
+public/admin/vendor/*

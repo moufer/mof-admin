@@ -2,6 +2,8 @@
 
 namespace mof\interface;
 
+use mof\Model;
+
 interface AuthInterface
 {
     /**
@@ -10,7 +12,7 @@ interface AuthInterface
     public function getId(): int;
 
     /**
-     * @return UserInterface
+     * @return UserInterface|Model
      */
     public function getUser(): UserInterface;
 
@@ -51,4 +53,5 @@ interface AuthInterface
      * @return bool
      */
     public function isLogin(): bool;
+
 }

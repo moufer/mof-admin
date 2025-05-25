@@ -2,11 +2,10 @@
 
 namespace app\front\table;
 
-use mof\utils\FormComponentOptions;
-use app\model\Admin;
-use app\model\Module;
 use app\model\Role;
+use app\model\Admin;
 use mof\front\Table;
+use mof\enum\StatusEnum;
 use mof\utils\ElementData;
 
 class UserTable extends Table
@@ -69,8 +68,7 @@ class UserTable extends Table
             ->toArray();
 
         return [
-            "prop"      => "role.name",
-            "propAlias" => "role_id",
+            "prop"      => "role_id",
             "label"     => "角色",
             "type"      => "select",
             "options"   => ElementData::make($rows)->toSelectOptions('name', 'id'),
@@ -83,7 +81,7 @@ class UserTable extends Table
             "prop"    => "status",
             "label"   => "状态",
             "type"    => "select",
-            "options" => Admin::statusOptions(),
+            "options" => StatusEnum::toDict(),
             "search"  => [
                 'type'      => 'select',
                 'clearable' => true,

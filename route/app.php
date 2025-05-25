@@ -11,5 +11,7 @@
 
 use think\facade\Route;
 
+Route::get('/admin', '\app\controller\index@admin');
+
 // 404
 Route::miss(fn() => abort(404, '页面不存在'));

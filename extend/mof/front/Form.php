@@ -6,6 +6,7 @@ use Exception;
 use mof\FormValidate;
 use mof\Model;
 use mof\Request;
+use mof\utils\DictArray;
 
 /**
  * @mixin FormValidate
@@ -29,7 +30,14 @@ class Form
 
     /**
      * 验证信息
-     * 格式 [params=>params,allow=>allow,only=>only,rule=>rule,message=>message]
+     * 格式 [
+     *      params => array,
+     *      allow => array,
+     *      only => array,
+     *      rule => array,
+     *      extends => array,
+     *      message => array
+     * ]
      */
     protected array $validate = [];
 
@@ -48,7 +56,9 @@ class Form
         //检测$name是不是$formValidate里的方法，如果是则调用$formValidate里的方法
         if (method_exists($this->formValidate, $name)) {
             $result = call_user_func_array([$this->formValidate, $name], $arguments);
-            if ($result === $this->formValidate) return $this;
+            if ($result === $this->formValidate) {
+                return $this;
+            }
             return $result;
         } else {
             //如果不是则抛出异常
@@ -67,6 +77,15 @@ class Form
     protected function initValidate(): void
     {
         $this->formValidate = FormValidate::make($this->validate);
+
+        // 添加自定义验证规则
+        if (!empty($this->validate['extends'])) {
+            foreach ($this->validate['extends'] as $extend) {
+                if (method_exists($this, $extend)) {
+                    $this->formValidate->withExtend($extend, [$this, $extend]);
+                }
+            }
+        }
     }
 
     /**
@@ -117,7 +136,12 @@ class Form
         return $this;
     }
 
-    protected function dialogAttrs(\mof\Model $model = null): array
+    /**
+     * 对话框属性
+     * @param Model|null $model
+     * @return array
+     */
+    protected function dialogAttrs(Model $model = null): array
     {
         return [
             'title'      => ($model && !empty($model[$model->getPk()])) ? '编辑' : '新增',
@@ -132,7 +156,7 @@ class Form
      * @param Model|null $model
      * @return array
      */
-    protected function formAttrs(\mof\Model $model = null): array
+    protected function formAttrs(Model $model = null): array
     {
         return [
             'labelWidth' => 'auto',
@@ -144,7 +168,7 @@ class Form
      * @param Model|null $model
      * @return array
      */
-    protected function elements(\mof\Model $model = null): array
+    protected function elements(Model $model = null): array
     {
         return [];
     }
@@ -173,12 +197,18 @@ class Form
                 }
                 unset($item['rules']);
             }
+            //检测枚举选项
+            if (isset($item['type']) && in_array($item['type'], ['select', 'radio']) && $item['options'] instanceof DictArray) {
+                $item['options'] = $item['options']->toElementData()->toSelectOptions();
+            }
             $elements[$index] = $item;
         }
         //排序
-        if ($sort) usort($elements, function ($a, $b) {
-            return $a['order'] - $b['order'];
-        });
+        if ($sort) {
+            usort($elements, function ($a, $b) {
+                return $a['order'] - $b['order'];
+            });
+        }
     }
 
     /**

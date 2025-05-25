@@ -5,9 +5,9 @@ namespace app\command;
 use app\library\InstallModule;
 use app\library\InstallPerm;
 use app\model\Admin;
+use mof\Command;
 use mof\exception\LogicException;
 use mof\Module;
-use think\console\Command;
 use think\console\Input;
 use think\console\Output;
 use think\facade\Db;
@@ -138,7 +138,9 @@ class Install extends Command
 
         foreach (['system_admin', 'system_storage'] as $table) {
             $table = $config['prefix'] . $table;
-            if (in_array($table, $tables)) return true;
+            if (in_array($table, $tables)) {
+                return true;
+            }
         }
 
         return false;
@@ -217,8 +219,9 @@ class Install extends Command
 
         Admin::create([
             'username' => $username,
-            'nickname' => $username,
+            'name' => $username,
             'password' => $password,
+            'email' => $username . '@admin.com',
             'role_id'  => 1,
         ]);
 
@@ -234,7 +237,9 @@ class Install extends Command
         //检测模块是不是可用
         $modules = array_map(function ($path) {
             $module = basename($path);
-            if (!Module::verifyIntegrity($module)) return false;
+            if (!Module::verifyIntegrity($module)) {
+                return false;
+            }
             return $module;
         }, $modules);
         //移除无效的模块
@@ -250,12 +255,11 @@ class Install extends Command
                 //检测依赖是否为空
                 if (!empty($infoA['requires'])) {
                     return 1;
-                } else if (!empty($infoB['requires'])) {
+                } elseif (!empty($infoB['requires'])) {
                     return -1;
                 }
             }
             return 0;
-
         });
         //开始安装模块
         foreach ($modules as $module) {

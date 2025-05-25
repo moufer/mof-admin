@@ -2,13 +2,14 @@
 
 namespace app\front\form;
 
+use mof\Model;
+use app\model\Role;
+use mof\front\Form;
 use app\model\Admin;
 use app\model\Module;
-use app\model\Role;
-use app\validate\AdminValidate;
-use mof\front\Form;
-use mof\Model;
+use mof\enum\StatusEnum;
 use mof\utils\ElementData;
+use app\validate\AdminValidate;
 
 class UserForm extends Form
 {
@@ -124,7 +125,7 @@ class UserForm extends Form
                 "label"         => "状态",
                 "type"          => "select",
                 "value"         => $values['status'] ?? 1,
-                "options"       => Admin::statusOptions(),
+                "options"       => StatusEnum::toDict(),
                 '_defaultValue' => 1
             ]
 

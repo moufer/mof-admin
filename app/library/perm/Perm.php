@@ -19,7 +19,7 @@ use mof\exception\LogicException;
  */
 abstract class Perm implements PermInterface
 {
-    protected array $attrs = ['type', 'category', 'module', 'name', 'title', 'hash'];
+    protected array $attrs = ['type', 'category', 'module', 'name', 'title', 'hash', 'status'];
 
     protected array $data = [];
 
@@ -46,7 +46,7 @@ abstract class Perm implements PermInterface
     public function __set($name, $value)
     {
         if (!in_array($name, $this->attrs)) {
-            throw new LogicException(sprintf('属性 %s 不存在', $name));
+            throw new LogicException(sprintf('权限属性 %s 不存在', $name));
         }
         $this->data[$name] = $value;
     }

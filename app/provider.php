@@ -8,6 +8,7 @@ use mof\filesystem\Filesystem;
 // 容器Provider定义文件
 return [
     'route'                  => Route::class,
+    'think\route'            => Route::class,
     'think\Request'          => Request::class,
     'think\exception\Handle' => ExceptionHandle::class,
     'filesystem'             => Filesystem::class,

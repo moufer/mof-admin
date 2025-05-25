@@ -25,7 +25,7 @@ class SystemRolePerm extends Migrator
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function change()
+    public function up()
     {
         $table = $this->table('system_role_perm');
         if (!$table->hasColumn('perm_hash')) {
@@ -33,5 +33,9 @@ class SystemRolePerm extends Migrator
                 'limit' => 32, 'comment' => '权限hash', 'null' => false, 'after' => 'perm_id'
             ])->save();
         }
+    }
+
+    public function down()
+    {
     }
 }

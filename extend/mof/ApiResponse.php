@@ -101,11 +101,11 @@ class ApiResponse
      */
     public static function json($data = null, string $errmsg = '', int $errcode = 0): Json
     {
-        $result = array(
+        $result = [
             'errcode' => $errcode,
             'errmsg'  => $errmsg,
             'data'    => $data
-        );
+        ];
         return json($result);
     }
 

@@ -15,9 +15,10 @@ class Client extends ApiController
 {
     public function config(): Json
     {
-        $config = config('system');
         $data = [
-            'storageUrl' => empty($config['storage_domain']) ? rtrim(storage_url('/'), '/') : '',
+            'upload_url'           => upload_url('{type}', false),
+            'storage_url'          => rtrim(storage_url('/'), '/'),
+            'storage_selector_url' => storage_selector_url(),
         ];
         return ApiResponse::success($data);
     }

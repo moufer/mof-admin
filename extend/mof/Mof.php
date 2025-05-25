@@ -27,7 +27,9 @@ class Mof
      */
     public static function storageUrl($path, string $provider = ''): string
     {
-        if (empty(trim($path))) return '';
+        if (empty(trim($path))) {
+            return '';
+        }
         empty($provider) && $provider = config('filesystem.default');
         $path = str_replace('\\', '/', $path);
         if (str_starts_with($path, 'http')) {
@@ -39,7 +41,11 @@ class Mof
             $url = $path;
         }
         if (str_starts_with($url, '/')) {
-            $url = app('request')->domain() . $url;
+            $domain = config('system.storage_domain', '');
+            if (empty($domain)) {
+                $domain = app('request')->domain();
+            }
+            $url = $domain . $url;
         }
         return $url;
     }

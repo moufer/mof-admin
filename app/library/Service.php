@@ -9,7 +9,6 @@ use mof\ModuleService;
 class Service extends ModuleService
 {
     protected array $events = [
-
     ];
 
     protected array $commands = [

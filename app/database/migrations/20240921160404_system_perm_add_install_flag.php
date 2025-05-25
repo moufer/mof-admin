@@ -27,7 +27,7 @@ class SystemPermAddInstallFlag extends Migrator
      */
     protected string $name = 'system_perm';
 
-    public function change()
+    public function up()
     {
         //增加一个 install_flag 字段，varchar(10), after status
         $table = $this->table($this->name);
@@ -36,5 +36,9 @@ class SystemPermAddInstallFlag extends Migrator
                 'limit' => 10, 'default' => '', 'comment' => '安装标识', 'after' => 'status'
             ])->update();
         }
+    }
+
+    public function down()
+    {
     }
 }

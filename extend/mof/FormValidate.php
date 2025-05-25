@@ -61,22 +61,34 @@ class FormValidate
      */
     protected string $scene = '';
 
+    /**
+     * 扩展验证方法
+     *
+     * @var array
+     */
+    protected array $extend = [];
+
+    public static function make($option = []): static
+    {
+        $instance = new static();
+        if ($option) {
+            $instance->option($option);
+        }
+        return $instance;
+    }
+
     public function __construct()
     {
         $this->request = app(Request::class);
     }
 
-    public static function make($option = []): static
-    {
-        $instance = new static();
-        $instance->option($option);
-        return $instance;
-    }
-
     public function option($option): void
     {
         $keys = [
-            'param', 'allow', 'batch', 'scene',
+            'param',
+            'allow',
+            'batch',
+            'scene',
         ];
         foreach ($keys as $key) {
             $method = 'with' . ucfirst($key);
@@ -125,7 +137,9 @@ class FormValidate
 
         //默认值设置
         foreach ($this->default as $key => $value) {
-            if (!isset($data[$key])) $data[$key] = $value;
+            if (!isset($data[$key])) {
+                $data[$key] = $value;
+            }
         }
 
         //合并固定值设置
@@ -137,7 +151,7 @@ class FormValidate
                 if ($this->scene && !empty($this->sceneOnly[$this->scene])) {
                     //配置了场景验证字段
                     $allowParams = explode(',', $this->sceneOnly[$this->scene]);
-                } else if ($allowParams) {
+                } elseif ($allowParams) {
                     //只验证允许提交的字段
                     $allowParams = array_map(function ($item) {
                         //去除item里，"/"以及后面的字符
@@ -201,7 +215,7 @@ class FormValidate
     {
         if (is_array($param)) {
             $this->allow = $param;
-        } else if ($scene) {
+        } elseif ($scene) {
             $this->allow[$scene] = $scene;
         }
 
@@ -243,7 +257,7 @@ class FormValidate
     {
         if (is_array($param)) {
             $this->sceneOnly = $param;
-        } else if ($scene) {
+        } elseif ($scene) {
             $this->sceneOnly[$scene] = $scene;
         }
 
@@ -258,6 +272,18 @@ class FormValidate
     public function withScene(string $scene): static
     {
         $this->scene = $scene;
+        return $this;
+    }
+
+    /**
+     * 扩展验证规则
+     * @param string $name 规则名称
+     * @param callable $callback 回调方法
+     * @return $this
+     */
+    public function withExtend(string $name, callable $callback): static
+    {
+        $this->extend[$name] = $callback;
         return $this;
     }
 
@@ -282,10 +308,10 @@ class FormValidate
         }
 
         //判断param是否为空时，用规则里的字段作为param
-//        if (empty($this->param)) {
-//            $keys = $this->getValidate()->getRuleKeys();
-//            $this->withParam($keys);
-//        }
+        //        if (empty($this->param)) {
+        //            $keys = $this->getValidate()->getRuleKeys();
+        //            $this->withParam($keys);
+        //        }
 
         return $this;
     }
@@ -310,7 +336,7 @@ class FormValidate
     }
 
     /**
-     * 数据验证
+     * 独立的数据验证
      * @param array $data 验证数据
      * @param array|string $validate 验证规则 格式：[rule=>rule,message=>message] | ValidateClass
      * @param string $scene 场景
@@ -342,7 +368,6 @@ class FormValidate
         return $v->failException(true)->check($data);
     }
 
-
     /**
      * 获取验证规则
      * @return ?Validate 格式：[rule=>rule,message=>message]
@@ -359,13 +384,25 @@ class FormValidate
                 $validate = new Validate();
                 $validate->rule($rules);
             }
+
+            //增加扩展的验证规则
+            if ($this->extend) {
+                foreach ($this->extend as $name => $callback) {
+                    $validate->extend($name, $callback);
+                }
+            }
+
+            //验证消息
             if (!empty($this->message)) {
                 $validate->message($this->message);
             }
+
+            //场景
             if ($this->scene && $validate->hasScene($this->scene)) {
                 $validate->scene($this->scene);
             }
         }
+
         return $validate;
     }
 
@@ -382,8 +419,12 @@ class FormValidate
 
             //如果没有定义可接受参数，则默认以字符串形式全部接收
             $valType = !empty($this->param) ? ($this->param[$key] ?? false) : ['s', ''];
-            if (false === $valType) continue;                //未定义的字段
-            if (!$this->request->has($key, $type)) continue; //未赋值的字段
+            if (false === $valType) {
+                continue;
+            }                //未定义的字段
+            if (!$this->request->has($key, $type)) {
+                continue;
+            } //未赋值的字段
 
             //获取过滤后的数据
             $result[$key] = $this->request->{$type}("{$key}/{$valType[0]}", null, $valType[1] ?? '');

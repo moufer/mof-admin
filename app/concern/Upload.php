@@ -76,6 +76,11 @@ trait Upload
         $dirs = ['image' => 'images', 'media' => 'media'];
         $dir = $this->request->param('dir', $dirs[$type] ?? 'files');
 
+        //是否存在前缀目录
+        if ($this->prefixDirectory) {
+            $dir = $this->prefixDirectory . '/' . $dir;
+        }
+
         $local = $this->request->param('local/d', 0); //是否存在本地
         $fs = $this->app->filesystem->disk($local ? 'local' : null);
 
@@ -90,15 +95,17 @@ trait Upload
 
         //保存到数据库
         $data = [
-            'user_type' => $this->auth->getUser()->getUserType(),
-            'user_id'   => $this->auth->getId() ?? 0,
-            'name'      => basename($path),
-            'title'     => $file->getOriginalName(),
-            'path'      => $path,
-            'size'      => $file->getSize(),
-            'mime'      => $file->getOriginalMime(),
-            'sha1'      => $file->hash('sha1'),
-            'provider'  => $this->app->filesystem->getDefaultDriver(),
+            'extend_type' => $this->extend['type'] ?? 'system',
+            'extend_id'   => $this->extend['id'] ?? 0,
+            'user_type'   => $this->auth->getUser()->getUserType(),
+            'user_id'     => $this->auth->getId() ?? 0,
+            'name'        => basename($path),
+            'title'       => $file->getOriginalName(),
+            'path'        => $path,
+            'size'        => $file->getSize(),
+            'mime'        => $file->getOriginalMime(),
+            'sha1'        => $file->hash('sha1'),
+            'provider'    => $this->app->filesystem->getDefaultDriver(),
         ];
 
         if ('image' === $type && isset($image)) {
@@ -109,10 +116,8 @@ trait Upload
         if (!$local) {
             //保存到数据库
             $storage = Storage::create($data);
-
             //触发事件
             event('StorageUpload', $storage);
-
             //返回
             $data = $storage->visible([
                 'id', 'title', 'url', 'path', 'size', 'mime', 'width', 'height'

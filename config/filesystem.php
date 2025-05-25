@@ -47,11 +47,24 @@ return [
             'secretId'        => '******',
             'secretKey'       => '******',
             'bucket'          => '******', // 存储桶名称
-            'timeout'         => 60, // 超时时间
-            'connect_timeout' => 60, // 连接超时时间
+            'timeout'         => 30, // 超时时间
+            'connect_timeout' => 30, // 连接超时时间
             'cdn'             => 'https://******.cos.ap-shanghai.myqcloud.com', // CDN加速域名
             'scheme'          => 'https', //协议头部
-            'read_from_cdn'   => false, //是否从CDN读取
+        ],
+        // ftp
+        'ftp'    => [
+            'type'                 => 'ftp',
+            'host'                 => '******',
+            'username'             => '******',
+            'password'             => '******',
+            'port'                 => 21,
+            'root'                 => '', // 远程根目录
+            'url'                  => '', // 远程URL地址
+            'passive'              => false, // 是否被动模式
+            'timeout'              => 5,
+            'ignorePassiveAddress' => false, // 是否忽略被动模式地址
+            'ssl'                  => false, // 是否使用SSL加密
         ]
     ],
 ];

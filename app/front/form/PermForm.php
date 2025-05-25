@@ -4,6 +4,7 @@ namespace app\front\form;
 
 use app\model\Module;
 use app\validate\PermValidate;
+use mof\enum\StatusEnum;
 use mof\front\Form;
 use mof\Model;
 use mof\utils\DictArray;
@@ -13,8 +14,16 @@ class PermForm extends Form
 {
     protected array $validate = [
         'param' => [
-            'title', 'icon', 'type', 'module', 'category', 'pid/a', 'url', 'perm',
-            'sort/d', 'status/d',
+            'title',
+            'icon',
+            'type',
+            'module',
+            'category',
+            'pid/a',
+            'url',
+            'perm',
+            'sort/d',
+            'status/d',
         ],
         'rule'  => PermValidate::class,
     ];
@@ -95,10 +104,7 @@ class PermForm extends Form
                 "label"   => "状态",
                 "type"    => "select",
                 "value"   => (int)($values['status'] ?? 1),
-                "options" => [
-                    ["label" => "禁用", "value" => 0],
-                    ["label" => "启用", "value" => 1],
-                ]
+                "options" => StatusEnum::toDict(),
             ],
             [
                 "prop"     => "sort",

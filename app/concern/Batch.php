@@ -4,12 +4,16 @@ namespace app\concern;
 
 use app\library\Controller;
 use mof\ApiResponse;
+use mof\front\Form;
+use mof\Logic;
 use think\db\exception\DbException;
 use think\response\Json;
 
 /**
  * 批量操作
  * @mixin Controller
+ * @property Logic $logic
+ * @property Form $form
  */
 trait Batch
 {

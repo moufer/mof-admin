@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Project: MofAdmin
  * Author: moufer <moufer@163.com>
@@ -8,11 +9,10 @@
 namespace app\command;
 
 use app\library\InstallPerm;
-use think\console\Command;
+use mof\Command;
 use think\console\Input;
 use think\console\input\Argument;
 use think\console\Output;
-
 
 class Perm extends Command
 {
