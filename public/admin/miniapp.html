@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>磨锋小程序管理平台</title>
+  <link rel="stylesheet" href="./vendor/element-plus@2.8.8/element-plus.css"/>
+  <link rel="stylesheet" href="./assets/css/app.css"/>
+  <link rel="stylesheet" href="./assets/css/page.css"/>
+  <link rel="stylesheet" href="./assets/css/miniapp.css"/>
+
+  <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script> -->
+  <!-- <script>new window.VConsole()</script> -->
+  <script>
+    window.__SITE_NAME__ = "磨锋小程序管理平台";
+    window.__LOGIN_MODULE__ = "miniapp";
+  </script>
+    <script type="importmap">
+        {
+            "imports": {
+          "@/": "./src/",
+          "vue": "./vendor/vue@3.5.13/vue.js",
+          "vue/runtime": "./vendor/vue@3.5.13/vue.runtime.js",
+          "pinia": "./vendor/pinia@2.2.6/pinia.js",
+          "vue-router": "./vendor/vue-router@4.5.0/vue-router.js",
+          "lodash-es": "./vendor/lodash@4.17.21/lodash.js",
+          "axios": "./vendor/axios@1.7.8/axios.js",
+          "moment": "./vendor/moment@2.30.1/moment.js",
+          "moment/locale/zh-cn": "./vendor/moment@2.30.1/locale/zh-cn.js",
+          "@vueuse/core": "./vendor/vueuse@13.0.0/vueuse.js",
+          "@vueuse/shared": "./vendor/vueuse@13.0.0/vueuse-shared.js",
+          "element-plus": "./vendor/element-plus@2.8.8/element-plus.js",
+          "element-plus/locale/zh-cn": "./vendor/element-plus@2.8.8/locale/zh-cn.js",
+          "@element-plus/icons-vue": "./vendor/element-plus-icons@2.3.1/icons.js",
+          "bootstrap-icons/style": "./vendor/bootstrap-icons@1.11.3/bootstrap-icons.css",
+          "@wovosoft/wovoui-icons": "./vendor/wovoui-icons@1.1.11/icons.js",
+          "@wangeditor/editor": "./vendor/wangeditor@5.1.23/editor.js",
+          "vue-ueditor-wrap": "./vendor/vue-ueditor-wrap@3.0.8/vue-ueditor-wrap.js",
+          "echarts": "./vendor/echarts@5.5.1/echarts.js",
+          "echarts/theme/dark": "./vendor/echarts@5.5.1/theme/dark.js",
+          "marked": "./vendor/marked@15.0.2/marked.js",
+          "vconsole": "./vendor/vconsole@3.15.1/vconsole.js"
+}
+        }
+    </script>
+</head>
+
+<body>
+<div id="app"></div>
+<script>
+    //api域名
+    window.serverUrl = "http://localhost:8000";
+    //pathSplit
+    window.serverUrlSplit = window.serverUrl.indexOf("?") > -1? "&" : "?";
+    //客户端url
+    window.clientUrl = window.location.href.replace(/#.*$/, "");
+    //资源链接地址
+    window.assetUrl = window.clientUrl + "/assets";
+    //第三方资源链接地址
+    window.vendorUrl = window.clientUrl + "/vendor";
+  </script>
+<script type="module" src="./src/modules/miniapp/common/main.js" defer></script>
+</body>
+</html>
