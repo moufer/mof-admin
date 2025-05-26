@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import crypto from "crypto";
 import * as esbuild from "esbuild";
+import { glob } from "glob";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, "..");
@@ -22,10 +23,31 @@ const srcDistPath = path.join(process.env.DIST_DIR, "src");
 const assetsDistPath = path.join(process.env.DIST_DIR, "assets");
 const indexHtmlPath = path.join(process.env.DIST_DIR, "index.html");
 
-async function buildHtml() {
+// 自动查找 public/admin 目录下所有 html 文件
+function findAllHtmlFiles(dir) {
+  return new Promise((resolve, reject) => {
+    glob(`${dir}/**/*.html`, { nodir: true }, (err, files) => {
+      if (err) reject(err);
+      else resolve(files);
+    });
+  });
+}
+
+// 复制文件到目标目录
+async function copyHtmlFile(sourceHtmlPath) {
+  const fileName = path.basename(sourceHtmlPath);
+  const targetHtmlPath = isProduction
+    ? path.resolve(projectRoot, process.env.DIST_DIR, fileName)
+    : path.resolve(projectRoot, fileName);
+  await fs.ensureDir(path.dirname(targetHtmlPath));
+  await fs.copy(sourceHtmlPath, targetHtmlPath);
+  console.log(`Copied (no build): ${sourceHtmlPath} -> ${targetHtmlPath}`);
+}
+
+async function buildHtml(htmlFileName) {
   try {
-    // 读取 index.html
-    const sourceHtmlPath = path.resolve(projectRoot, "index.html");
+    // 读取源 HTML 路径
+    const sourceHtmlPath = path.resolve(projectRoot, htmlFileName);
     let htmlContent = await fs.readFile(sourceHtmlPath, "utf-8");
 
     htmlContent = await handleVendorLinks(htmlContent);
@@ -105,9 +127,19 @@ async function buildHtml() {
 
     if (isProduction) {
       // 修改：获取并处理 main 模块路径
-      const mainModulePath = mergedImports["@/modules/system/common/main"];
+      // 针对不同页面，自动查找 main module 路径
+      let mainModuleKey = null;
+      // 从文件名获取模块名
+      const moduleName = htmlFileName.replace(".html", "");
+      mainModuleKey =
+        moduleName === "index"
+          ? "@/modules/system/common/main"
+          : `@/modules/${moduleName}/common/main`;
+      const mainModulePath = mergedImports[mainModuleKey];
       if (!mainModulePath) {
-        throw new Error("Main module path not found in import map");
+        throw new Error(
+          `Main module path not found in import map for ${htmlFileName}`
+        );
       }
 
       // 替换 module src 路径
@@ -135,8 +167,8 @@ async function buildHtml() {
 
     // 使用 DIST_DIR 构建目标路径
     const targetHtmlPath = isProduction
-      ? path.resolve(projectRoot, indexHtmlPath)
-      : path.resolve(projectRoot, "index.html");
+      ? path.resolve(projectRoot, process.env.DIST_DIR, htmlFileName)
+      : path.resolve(projectRoot, htmlFileName);
 
     // 确保目标目录存在
     await fs.ensureDir(path.dirname(targetHtmlPath));
@@ -146,7 +178,7 @@ async function buildHtml() {
 
     console.log(`Successfully updated importmap in ${targetHtmlPath}`);
   } catch (error) {
-    console.error("Error building HTML:", error);
+    console.error(`Error building HTML for ${htmlFileName}:`, error);
     process.exit(1);
   }
 }
@@ -382,7 +414,22 @@ async function handleVendorLinks(htmlContent) {
 }
 
 // 执行构建
-buildHtml().catch((error) => {
-  console.error("Build failed:", error);
-  process.exit(1);
-});
+(async () => {
+  const htmlFiles = await findAllHtmlFiles(
+    path.resolve(projectRoot, "public/admin")
+  );
+  for (const htmlFile of htmlFiles) {
+    const content = await fs.readFile(htmlFile, "utf-8");
+    if (
+      content.includes("window.__LOGIN_MODULE__") &&
+      content.includes('<script type="importmap"') &&
+      content.includes('<script type="module"')
+    ) {
+      await buildHtml(path.basename(htmlFile));
+    } else {
+      if (isProduction) {
+        await copyHtmlFile(htmlFile);
+      }
+    }
+  }
+})();
